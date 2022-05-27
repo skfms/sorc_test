@@ -1,0 +1,31 @@
+$ openssl genrsa -out ssl_test.pem 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..............................................................+++++
+..............................................+++++
+e is 65537 (0x010001
+
+$ openssl req -new -key ssl_test.pem -out ssl_test.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:
+State or Province Name (full name) []:
+Locality Name (eg, city) [Default City]:
+Organization Name (eg, company) [Default Company Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:
+Email Address []:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+
+$ openssl x509 -req -days 365 -in ssl_test.csr -signkey ssl_test.pem -out ssl_test.crt
+Signature ok
+subject=C = XX, L = Default City, O = Default Company Ltd
+Getting Private key
