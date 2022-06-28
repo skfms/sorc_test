@@ -1,0 +1,51 @@
+################################
+# git
+
+-- 상태보기
+$ git status
+
+-- 로그보기
+$ git log
+
+-- 소스 올리기
+# git push [branch]
+
+-- 소스 내리기
+# git pull origin [branch]
+
+-- Untracked file remove
+$ git clean -f
+
+-- 복원
+$ git log
+$ git reset --hard <commit_id>
+
+-- 특정파일 복원
+$ git checkout <commit_id> <file_name>
+
+################################
+# branch 명령
+
+-- 목록 출력
+$ git branch
+
+-- 생성
+$ git branch <branch_name>
+
+-- 활성
+$ git checkout <branch_name>
+
+-- Upload
+$ git push orign <branch_name>
+
+-- 삭제
+$ git branch -d <branch_name>
+
+-- 병합
+$ git checkout main
+$ git pull
+$ git merge <branch_name>
+$ git push
+
+-- 그래프 보기
+$ git log --online --graph
