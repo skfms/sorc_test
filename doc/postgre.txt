@@ -1,0 +1,19 @@
+################################
+PostgreSQL 접속
+$ psql -U <userid> -d <database>
+
+################################
+PostgreSQL 쿼리
+
+-- 데이터베이스 목록 조회
+# \l
+> select * from pg_database;
+
+-- 사용자 조회
+# \du
+> select * from pg_user;
+
+
+-- 테이블 조회
+# \dt
+> select * from pg_catalog.pg_tables where schemaname not in ('pg_catalog', 'information_schema');

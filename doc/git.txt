@@ -49,3 +49,12 @@ $ git push
 
 -- 그래프 보기
 $ git log --online --graph
+
+################################
+# tag 명령
+
+-- tag 생성
+$ git tag -a vX.X.X -m "내용"
+
+-- tag 서버 반영
+$ git push origin vX.X.X

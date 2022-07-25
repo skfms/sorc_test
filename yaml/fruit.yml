@@ -1,0 +1,12 @@
+fruit:
+  - name: apple
+    color: red
+    count: 12
+    varieties:
+    - name: macintosh
+      seedless: false
+    - name: granny smith
+      seedless: false
+  - name: orange
+    color: orange
+    count: 3
