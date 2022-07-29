@@ -1,0 +1,228 @@
+C++ 14
+
+#############################
+# for
+
+char buf[4] = { 'a', 'b', 'c', 'd' };
+
+for (auto it : buf) 
+{
+  std::cout << it;
+}
+
+
+#############################
+# enum class
+
+enum class ISCSI_PARAM 
+{
+  ....
+  CONN_PORT,
+  CONN_ADDRESS,
+  ....
+};
+ 
+enum class ISCSI_HOST 
+{
+  ....
+  PARAM_IPADDRESS,
+  ....
+};
+
+int iscsi_conn_get_addr_param(ISCSI_PARAM param)
+{
+  ....
+  switch (param) 
+  {
+  case ISCSI_PARAM::CONN_ADDRESS:
+  case ISCSI_HOST::PARAM_IPADDRESS:
+  ....
+  }
+ 
+  return len;
+}
+
++++
+
+int rgb = RED; // 정상, 자동 변환 허용
+int traffic = TrafficLight::RED; // 오류, 자동 변환 허용 안 함
+int yield = static_cast<int>(TrafficLight::Yellow); //정상
+
++++
+
+enum class Color; //선언
+class FontStyle {
+    Color getColor();
+};
+
+enum class Color { //정의
+    RED,
+    GREEN,
+    BLUE
+};
+
+  > 정의 부분을 소스 코드에 사용이 가능
+
+
+#############################
+# std::copy()
+
+int main()
+{
+    std::vector<int> scores;
+    std::vector<int> copiedScores;
+    copiedScores.resize(scores.size());
+
+    std::copy(scores.begin(), scores.end(), copiedScores.begin());
+}
+
+
+#############################
+# auto
+  > 반드시 초기화 필수
+  > 가독성을 위해 auto *, auto & 사용
+
+Cat* myCat = new Cat("Coco", 2);
+auto myCatPtr = myCat;
+
+
+#############################
+# static_assert 추가
+  > 컴파일시 식을 평가
+  > assert 는 런타입 & 디버그 시만 동작
+
+#include <cassert>
+const Student* Class::GetStudentInfo(const char* name)
+{
+    assert(name != NULL); // 조건이 false면 실행을 멈춤
+}
+
+
+#############################
+# default/delete
+
+// Dog.h
+class Dog
+{
+public:
+    Dog() = default;
+    Dog(const Dog& other) = delete;
+};
+
+// Main.cpp
+#include "Dog.h"
+int main()
+{
+    Dog myDog;
+    Dog copiedMyDog(myDog); // error
+}
+
+
+#############################
+# final/override
+
+// Animal.h
+class Animal final
+{
+public:
+    virtual void SetWeight(int weight);
+}
+
+// Dog.h
+#include "Animal.h"
+class Dog: public Animal
+{
+public:
+    virtual void SetWeight(int weight);
+};
+
++++
+
+// Animal.h
+class Animal
+{
+public:
+    virtual void SetWeight(float weight);
+    void PrintAll();
+};
+
+// Dog.h
+#include "Animal.h"
+
+class Dog :public Animal
+{
+public:
+    // OK
+    virtual void SetWeight(float weight) override;
+    
+    // 컴파일 에러
+    virtual void SetWeight(int weight) override;
+    
+    // 컴파일 에러: 가상 함수가 아님
+    void PrintAll() override;
+};
+
+
+#############################
+# nullptr
+
+// Main.cpp
+Class* myClass = new Class("COMP3200");
+
+const Student* student = myClass->GetStudent("Coco");
+if (student != nullptr)
+{
+	std::cout << student->GetID() << ":" << student->GetName() << std::endL;
+}
+
+
+#############################
+# unordered_map
+
+
+#############################
+# array
+
+#include <array>
+
+std::array<int, 3> numbers;
+
+numbers[0] = 1;
+std:cout << numbers.size() << std::endL; // 3
+std:cout << numbers.max_size() << std::endL; // 3
+
+
+#############################
+# splite
+
+const vector<string> explode(const string& s, const char& c)
+{
+	string buff{""};
+	vector<string> v;
+	
+	for(auto n:s)
+	{
+		if(n != c) buff+=n; else
+		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
+	}
+	if(buff != "") v.push_back(buff);
+	
+	return v;
+}
+
+int main()
+{
+	string str{"the quick brown fox jumps over the lazy dog"};
+	vector<string> v{explode(str, ' ')};
+	for(auto n:v) cout << n << endl;
+	
+	return 0;
+}
+
+
+#############################
+# std::regex
+
+
+#############################
+# std::thread

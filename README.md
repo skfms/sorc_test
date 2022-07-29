@@ -1,9 +1,11 @@
-# Å×½ºÆ® ÇÁ·Î±×·¥ ¿¹Á¦
-<br>
- ¦¨ sorc_test<br>
- ¦§¦¡ net                      -- ³×Æ®¿öÅ© °ü·Ã Å×½ºÆ®<br>
- ¦§¦¡ openssl                  -- openssl °ü·Ã Å×½ºÆ®<br>
- ¦§¦¡ spdlog                   -- logging ¶óÀÌºê·¯¸® Å×½ºÆ®<br>
- ¦§¦¡ yaml                     -- libyaml & yaml-cpp ¶óÀÌºê·¯¸® Å×½ºÆ®<br>
- ¦§¦¡ cpp_ver.cpp              -- c compiler version
- ¦¦¦¡ str.c                    -- ¹®ÀÚ¿­ÇÔ¼ö Ã³¸® sample ¼Ò½º
+# í…ŒìŠ¤íŠ¸ ì†ŒìŠ¤
+
+â”€â”¬ sorc_test
+ â”œâ”€ cpp            -- c++ ìƒ˜í”Œ ì½”ë“œ
+ â”œâ”€ doc            -- ë¬¸ì„œ
+ â”œâ”€ libpqxx        -- PostgreSQL - libpqxx ë¼ì´ë¸ŒëŸ¬ë¦¬ í…ŒìŠ¤íŠ¸
+ â”œâ”€ net            -- ë„¤íŠ¸ì›Œí¬ ê´€ë ¨ í…ŒìŠ¤íŠ¸
+ â”œâ”€ openssl        -- openssl ê´€ë ¨ í…ŒìŠ¤íŠ¸
+ â”œâ”€ random         -- ë‚œìˆ˜ ê´€ë ¨ í…ŒìŠ¤íŠ¸
+ â””â”€ spdlog         -- logging ë¼ì´ë¸ŒëŸ¬ë¦¬ í…ŒìŠ¤íŠ¸
+
