@@ -7,6 +7,14 @@ $ git status
 -- 로그보기
 $ git log
 
+-- working -> stage 영역에 등록
+$ git add <file>
+$ git add -A		// 
+$ git add -U		// deleted and modified files only
+
+--commit
+# git commit -m "내용"
+
 -- 소스 올리기
 # git push [branch]
 
