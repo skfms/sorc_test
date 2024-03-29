@@ -1,68 +1,69 @@
 ################################
 # git
 
--- 상태보기
+# 상태보기
 $ git status
 
--- 로그보기
+# 로그보기
 $ git log
+$ git log -n				// 로그 출력 개수
+$ git log --online --graph	// 그래프 출력
 
--- working -> stage 영역에 등록
-$ git add <file>
-$ git add -A		// 
-$ git add -U		// deleted and modified files only
+# ADD
+$ git add <file>			// file 의 변경을 git에 적용
+$ git add .					// 현재 폴더 및 하위폴더의 내용을 모두 등록
 
---commit
-# git commit -m "내용"
+# commit
+$ git commit -m <내용>
 
--- 소스 올리기
-# git push [branch]
+# 소스 올리기
+$ git push [branch]
 
--- 소스 내리기
-# git pull origin [branch]
+# 소스 내리기
+$ git clone <URL>
+$ git pull origin [branch]
 
--- Untracked file remove
+# Untracked file remove
 $ git clean -f
 
--- 복원
+# 복원
 $ git log
 $ git reset --hard <commit_id>
 
--- 특정파일 복원
+# 특정파일 복원
 $ git checkout <commit_id> <file_name>
+
 
 ################################
 # branch 명령
 
--- 목록 출력
+# 목록 출력
 $ git branch
 
--- 생성
+# 생성
 $ git branch <branch_name>
 
--- 활성
+# 활성
 $ git checkout <branch_name>
 
--- Upload
+# Upload
 $ git push orign <branch_name>
 
--- 삭제
+# 삭제
 $ git branch -d <branch_name>
 
--- 병합
+# 병합
 $ git checkout main
 $ git pull
 $ git merge <branch_name>
 $ git push
 
--- 그래프 보기
-$ git log --online --graph
 
 ################################
 # tag 명령
 
--- tag 생성
+# tag 생성
 $ git tag -a vX.X.X -m "내용"
 
--- tag 서버 반영
+# tag 서버 반영
 $ git push origin vX.X.X

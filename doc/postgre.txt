@@ -1,19 +1,20 @@
 ################################
-PostgreSQL ¡¢º”
+PostgreSQL Ï†ëÏÜç
 $ psql -U <userid> -d <database>
 
 ################################
-PostgreSQL ƒı∏Æ
+PostgreSQL ÏøºÎ¶¨
 
--- µ•¿Ã≈Õ∫£¿ÃΩ∫ ∏Ò∑œ ¡∂»∏
-# \l
+# Îç∞Ïù¥ÌÑ∞Î≤†Ïù¥Ïä§ Î™©Î°ù Ï°∞Ìöå
+> \l
 > select * from pg_database;
 
--- ªÁøÎ¿⁄ ¡∂»∏
-# \du
+# ÏÇ¨Ïö©Ïûê Ï°∞Ìöå
+> \du
 > select * from pg_user;
 
 
--- ≈◊¿Ã∫Ì ¡∂»∏
-# \dt
+# ÌÖåÏù¥Î∏î Ï°∞Ìöå
+> \dt
 > select * from pg_catalog.pg_tables where schemaname not in ('pg_catalog', 'information_schema');
+

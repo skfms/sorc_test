@@ -1,0 +1,19 @@
+# ignore all
+*
+
+# unignore all with extensions
+!*.*
+
+# ignore file
+*.so
+*.so.*
+*.o
+*.a
+a.out
+
+# unignore all folder
+!*/
+
+# ignore folder
+log/
+temp/

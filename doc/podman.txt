@@ -1,49 +1,49 @@
 ################################
 ### 명령어
--- 검색
+# 검색
 $ podman search <AppName>
 
--- 다운로드
+# 다운로드
 $ podman pull <AppName>
 
 ################################
 ### 이미지 명령어
 
--- 이미지 검색
+# 이미지 검색
 $ podman images
 
--- 이미지 삭제
+# 이미지 삭제
 $ podman rmi <image_name or image_id>
 
--- 이미지 실행
+# 이미지 실행
 $ podman run -itd <image>
 
--- Tag 생성 (이름변경)
+# Tag 생성 (이름변경)
 $ podman tag <old_image> <new_image>
 
--- 이미지 백업/로드
+# 이미지 백업/로드
 $ podman save -o <tar_file> <inage_name>
 $ podman load -i < tar_file>
 
 ################################
 ### 컨테이너 명령어
 
--- 실행중인 컨테이너 목록
+# 실행중인 컨테이너 목록
 $ podman ps
 
--- 컨테이너 이름 변경
+# 컨테이너 이름 변경
 $ podman rename <old_container> <new_container>
 
--- 실행 컨테이너 접속
+# 실행 컨테이너 접속
 $ podman exec -it <container> bash
 
--- 모든 컨테이너 중지/삭제
+# 모든 컨테이너 중지/삭제
 $ podman stop/rm $(podman ps -a -q)
 
--- 실행 컨테이너 저장
+# 실행 컨테이너 저장
 $ podman commit <container> <new_image>[:tag]
 
--- 실행 컨테이너에서 파일 가져오기/보내기
+# 실행 컨테이너에서 파일 가져오기/보내기
 $ podman cp <container>:<fullpath_file> <local_file>
 $ podman cp <local_file> <container>:<fullpath_file> 
 
