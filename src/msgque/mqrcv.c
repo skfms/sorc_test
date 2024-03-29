@@ -1,4 +1,4 @@
-// gcc -o mqrcv mqrcv.c
+// gcc -g -o mqrcv mqrcv.c
 
 #include "mq.h"
 
@@ -9,11 +9,12 @@ void mqview(int v_qid)
 	int rval = msgctl(v_qid, IPC_STAT, &mqstat);
 	if(rval < 0)
 	{
-		fprintf(stderr, "msgctl failed !\n");
+		perror("msgctl");
 		exit(-1);
 	};
 
-	fprintf(stdout, "cbytes=%lu, qnum=%lu, qbytes=%lu\n", mqstat.msg_cbytes, mqstat.msg_qnum, mqstat.msg_qbytes);
+	fprintf(stdout, "cbytes=%lu, qnum=%lu, qbytes=%lu\n", 
+		mqstat.msg_cbytes, mqstat.msg_qnum, mqstat.msg_qbytes);
 };
 
 int main()
@@ -21,7 +22,7 @@ int main()
 	int qid = msgget(key, IPC_CREAT | 0666);
 	if(qid < 0)
 	{
-		fprintf(stderr, "msgget() failed !\n");
+		perror("msgget");
 		return -1;
 	};
 
@@ -38,9 +39,18 @@ int main()
 		{
 			switch(errno)
 			{
-				case E2BIG	: bsz += INIT_BUFSZ; continue;
-				case EAGAIN	: break;
-				dafault		: perror("msgrcv");
+				case E2BIG	: 
+					free(pbuf);
+					bsz += INIT_BUFSZ; 
+					continue;
+
+				case EAGAIN	: 
+					break;
+
+				dafault		: 
+					free(pbuf);
+					perror("msgrcv");
+					exit(-1);
 			};
 		}
 		else

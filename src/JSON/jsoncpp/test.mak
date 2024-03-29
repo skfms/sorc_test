@@ -6,11 +6,8 @@ MODULE=test
 CXX=g++
 LINK=g++
 
-CFLAGS=-g -m32 -I $(O2MROOT)/src/include
-LFLAGS=-g -m32 -L $(O2MROOT)/lib -ljsoncpp
-
-#CFLAGS=-g -m64 -I $(O2MROOT)/src/include -I $(O2MROOT)/src/include/oracle
-#LFLAGS=-g -m64 -L $(O2MROOT)/lib -lclntsh -lnnz19
+CFLAGS=-g -m32 -I ./../../include
+LFLAGS=-g -m32 -L ./../../lib -ljsoncpp
 
 EXEC=$(MODULE)
 
