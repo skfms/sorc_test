@@ -17,8 +17,27 @@ void mqview(int v_qid)
 		mqstat.msg_cbytes, mqstat.msg_qnum, mqstat.msg_qbytes);
 };
 
-int main()
+void usage()
 {
+    fprintf(stdout,
+        "Usage : mqrcv <msg_type>\n"
+        "    Pull Message from Message Queue.\n"
+        "  Option :\n"
+        "    msg_type   Value for pulling Messages from Message Queue.\n"
+		"               0 for all Messages, greater than 0 for Only Messages\n"
+        "\n"
+        );
+    exit(-1);
+};
+
+
+int main(int v_argc, char * v_argv[])
+{
+	if(v_argc < 2) usage();
+
+	int msg_type = atoi(v_argv[1]);
+	fprintf(stdout, "msg_type = %d\n", msg_type);
+
 	int qid = msgget(key, IPC_CREAT | 0666);
 	if(qid < 0)
 	{
@@ -33,7 +52,7 @@ int main()
 	{
 		pbuf = (stmsgbuf *) malloc(sizeof(stmsgbuf) + bsz);
 
-		ssize_t rsz = msgrcv(qid, pbuf, bsz, 0, IPC_NOWAIT);
+		ssize_t rsz = msgrcv(qid, pbuf, bsz, msg_type, IPC_NOWAIT);
 
 		if(rsz < 0)
 		{
@@ -56,7 +75,7 @@ int main()
 		else
 		{
 			fprintf(stdout, "%03ld [%s]\n", rsz, pbuf->m_text);
-			mqview(qid);
+			//mqview(qid);
 			bsz = INIT_BUFSZ;
 		};
 

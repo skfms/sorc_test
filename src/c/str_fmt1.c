@@ -3,10 +3,16 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include <string>
+
 int main()
 {
 	
-	printf("[%*s]\n", 20, "Test");
-	printf("[%-*s]\n", 20, "Test");
-	printf("[%-20s %s]\n", "Test aaaaaaaaaaaaaaaaaaa bbbbbbbbb", "bbb");
+	printf("1 : [%20s]\n", "Test");
+	printf("2 : [%*s]\n", 20, "Test");
+
+	printf("3 : [%-*s]\n", 20, "Test");
+	printf("4 : [%-20s %s]\n", "Test aaaaaaaaaaaaaaaaaaa bbbbbbbbb", "bbb");
+
+	printf("5 : [%s]\n", std::string(20, '=').c_str());
 };

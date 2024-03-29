@@ -56,8 +56,25 @@ int gen_str2(char ** v_outstr)
 	return rval+1;
 };
 
-int main()
+void usage()
 {
+	fprintf(stdout, 
+		"Usage : mqsnd <msg_type>\n"
+		"    Push Message into the Message Queue.\n"
+		"  Option :\n"
+		"    msg_type    the numeric value of the message, greater than zero\n"
+		"\n"
+		);
+	exit(-1);
+};
+
+int main(int v_argc, char * v_argv[])
+{
+	if(v_argc < 2) usage();
+
+	int msg_type = atoi(v_argv[1]);
+	if(msg_type < 1) usage();
+
 	srand(time(0L)*getpid());
 
 	int qid = msgget(key, IPC_CREAT | 0666);
@@ -81,7 +98,7 @@ int main()
 
 		fprintf(stdout, "%03d [%s]\n", rlen, ranstr);
 		pbuf = malloc(sizeof(stmsgbuf) + rlen);
-		pbuf->m_type = 1;
+		pbuf->m_type = msg_type;
 		memcpy(pbuf->m_text, ranstr, rlen);
 		free(ranstr);
 
