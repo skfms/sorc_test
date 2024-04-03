@@ -19,8 +19,11 @@ int main(void)
     for(int i=0; i<100; i++)       // add 0-99 to the vector
         numbers.push_back(i);
 
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
+    //unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    //std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(seed));
+
+	std::random_device rd;
+    std::shuffle(numbers.begin(), numbers.end(), std::default_random_engine(rd()));
 
     for(int i=0; i<40; i++)        // print the first 40 randomly sorted numbers
         std::cout << numbers[i] << std::endl;

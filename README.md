@@ -1,15 +1,27 @@
-# 테스트 소스
+# Test Source
 
 ## 구성
 
-    ─┬ sorc_test
-     ├─ c                    # c 샘플 코드
-     ├─ cpp                  # c++ 샘플 코드
-     ├─ doc                  # 문서
-     ├─ pqxx                 # PostgreSQL - libpqxx 라이브러리 테스트
-     ├─ net                  # 네트워크 관련 테스트
-     ├─ msgque               # Message Queue
-     ├─ openssl              # openssl 관련 테스트
-     ├─ random               # 난수 관련 테스트
-     └─ spdlog               # logging 라이브러리 테스트
+    ┬ sorc_test
+    ├─ comm_cpp               # c++ 공통 소스 라이브러리
+    ├─ doc                    # 문서
+    ├─ include                # c/c++ Header
+    ├─ lib                    # c/c++ Library
+    ├─ perl                   # Perl Script
+    ├─ shell                  # Shell Script
+    └┬ src
+      ├─ JSON                     # JSON 관련 소스
+      ├─ c                        # c 소스
+      ├─ cpp                      # c++ 소스
+      ├─ msgque                   # Message Queue 소스
+      ├─ net                      # 네트워크 소스
+      ├─ openssl                  # openssl 소스
+      ├─ random                   # 난수 소스
+      ├─ spdlog                   # spdlog library 소스
+      ├┬ DB                       # DB
+      │├─ mysql                      # myqql - c library 소스
+      │└─ pqxx                       # PostgreSQL - libpqxx library 소스
+      └┬ JSON                     # JSON
+        ├─ jsoncpp                    # jsoncpp library 소스
+        └─ rapidjson                  # rapidjson library 소스
 

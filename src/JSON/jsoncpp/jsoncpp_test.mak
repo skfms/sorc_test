@@ -1,17 +1,17 @@
 .SUFFIXES:.cpp .o
 
 PLATFORM=$(shell uname)
-MODULE=test
+MODULE=jsoncpp_test
 
 CXX=g++
 LINK=g++
 
-CFLAGS=-g -m32 -I ./../../include
-LFLAGS=-g -m32 -L ./../../lib -ljsoncpp
+CFLAGS=-g -I ./../../../include
+LFLAGS=-g -L ./../../../lib -ljsoncpp
 
 EXEC=$(MODULE)
 
-OBJS=test.o ./../../common/sutil.o ./../../common/exception.o
+OBJS=jsoncpp_test.o ./../../../comm_cpp/sutil.o ./../../../comm_cpp/exception.o
 
 all : build
 
