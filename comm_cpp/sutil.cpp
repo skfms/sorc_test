@@ -84,13 +84,16 @@ string csutil::str_ltrim(
  * @param [in] v_indata 문자열
  * @param [in] v_from 변경할문자열
  * @param [in] v_to 변경문자열
+ * @param [in] v_case 대소문자 구분 여부
  * @return 치환된 문자열
+ * @remark 대소문자 구분없이 비교
 */
 string csutil::str_replace
 (
 	const char * v_indata,
-	const char * v_from,
-	const char * v_to
+	string v_from,
+	string v_to,
+	int v_case
 )
 {
 	string retstr = v_indata;
@@ -99,24 +102,23 @@ string csutil::str_replace
 	{
 		string s = v_indata;
 
-		int t_len = strlen(v_from);
-		int t_pos;
-		retstr = "";
+		int offset = 0, pos = 0;
+		char *pfind;
+		char *ps = (char *)v_indata;
 		
 		while(1)
 		{
-			t_pos = s.find(v_from);
-			if(t_pos<0) 
-			{
-				if(!s.empty()) retstr += s;
-				break;
-			}
+			if(v_case)	pfind = strcasestr	((char *)retstr.c_str() + offset, v_from.c_str());
+			else		pfind = strstr		((char *)retstr.c_str() + offset, v_from.c_str());
 
-			retstr += s.substr(0, t_pos) + v_to;
-			s = s.substr(t_pos+t_len);
+			if(pfind == 0L) break;
+
+			pos = pfind - retstr.c_str();
+			retstr.replace(retstr.begin() + pos, retstr.begin() + pos + v_from.size(), v_to);
+			offset = pos + v_to.size();
 		};
 	};
-	
+
 	return retstr;
 };
 

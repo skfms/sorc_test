@@ -23,7 +23,7 @@ public :
 	
 public:
 	///< 문자열 함수
-	static string	str_replace	(const char * v_indata, const char * v_form, const char * v_to);
+	static string	str_replace	(const char * v_indata, string v_form, string v_to, int v_case = 0);
 	static strvect	str_splite	(const char * v_indata, const char * v_delimiter);
 	static string	str_ltrim	(const char * v_indata	);
 	static string	str_rtrim	(const char * v_indata	);
