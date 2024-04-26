@@ -1,4 +1,5 @@
-/* Copyright (c) 2000, 2008, Oracle. All rights reserved.  */
+/* Copyright (c) 2000, 2013, Oracle and/or its affiliates. 
+All rights reserved. */
  
 /* 
    NAME 
@@ -566,6 +567,8 @@ const T* rawPtr() const;
   OCCI_STD_NAMESPACE::vector<double> &vect);
   void getVector(ResultSet  *rs, unsigned int,
   OCCI_STD_NAMESPACE::vector<BDouble> &vect);
+  void getVector(ResultSet  *rs, unsigned int,
+  OCCI_STD_NAMESPACE::vector<Bytes> &vect);
   void getVector(ResultSet  *rs, unsigned int, 
   OCCI_STD_NAMESPACE::vector<Date> &vect) ;
   void getVector(ResultSet  *rs, unsigned int, 
@@ -619,6 +622,8 @@ const T* rawPtr() const;
   OCCI_STD_NAMESPACE::vector<IntervalDS> &vect) ;
   void getVector( Statement *rs, unsigned int index, 
   OCCI_STD_NAMESPACE::vector<int> &vect) ;
+  void getVector( Statement *rs, unsigned int index, 
+  OCCI_STD_NAMESPACE::vector<Bytes> &vect) ;
   void getVector( Statement *rs, unsigned int index,
   OCCI_STD_NAMESPACE::vector<OCCI_STD_NAMESPACE::string> &vect) ;
   void getVector( Statement *rs, unsigned int index,
@@ -676,6 +681,9 @@ const T* rawPtr() const;
                  const OCCI_STD_NAMESPACE::string &sqltype) ;
   void setVector(Statement *stmt, unsigned int paramIndex,
                  const OCCI_STD_NAMESPACE::vector<Number> &vect,
+                 const OCCI_STD_NAMESPACE::string &sqltype);
+  void setVector(Statement *stmt, unsigned int paramIndex,
+                 const OCCI_STD_NAMESPACE::vector<Bytes> &vect,
                  const OCCI_STD_NAMESPACE::string &sqltype);
   void setVector(Statement *stmt, unsigned int paramIndex, 
          const OCCI_STD_NAMESPACE::vector<OCCI_STD_NAMESPACE::string> &vect,
@@ -757,6 +765,10 @@ const T* rawPtr() const;
                  const OCCI_STD_NAMESPACE::string &typeName) ;
   void setVector(Statement *stmt, unsigned int paramIndex,
                  const OCCI_STD_NAMESPACE::vector<Number> &vect,
+                 const OCCI_STD_NAMESPACE::string &schemaName,
+                 const OCCI_STD_NAMESPACE::string &typeName);
+  void setVector(Statement *stmt, unsigned int paramIndex,
+                 const OCCI_STD_NAMESPACE::vector<Bytes> &vect,
                  const OCCI_STD_NAMESPACE::string &schemaName,
                  const OCCI_STD_NAMESPACE::string &typeName);
   void setVector(Statement *stmt, unsigned int paramIndex, 
@@ -852,6 +864,10 @@ const T* rawPtr() const;
                  const UString &typeName) ;
   void setVector(Statement *stmt, unsigned int paramIndex,
                  const OCCI_STD_NAMESPACE::vector<Number> &vect,
+                 const UString &schemaName,
+                 const UString &typeName);
+  void setVector(Statement *stmt, unsigned int paramIndex,
+                 const OCCI_STD_NAMESPACE::vector<Bytes> &vect,
                  const UString &schemaName,
                  const UString &typeName);
   void setVector(Statement *stmt, unsigned int paramIndex, 

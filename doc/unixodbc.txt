@@ -1,0 +1,36 @@
+
+-- wsl (ubuntu)
+
+1. unixodbc 설치
+  $ sudo apt install unixodbc-dev
+
+2. Mysql ODBC
+  2.1. myODBC 설치 (Mysql용)
+    $ wget https://downloads.mysql.com/archives/get/p/10/file/mysql-connector-odbc-8.0.17-linux-ubuntu19.04-x86-64bit.tar.gz
+  
+    $ tar xvf mysql-connector-odbc-8.0.17-linux-ubuntu19.04-x86-64bit.tar.gz
+    $ cp  mysql-connector-odbc-8.0.17-linux-ubuntu19.04-x86-64bit/bin/* /usr/local/bin
+    $ cp  mysql-connector-odbc-8.0.17-linux-ubuntu19.04-x86-64bit/lib/* /usr/local/lib
+    $ sudo myodbc-installer -a -d -n "MySQL ODBC 8.0 Driver" -t "Driver=/usr/local/lib/libmyodbc8a.so"
+    $ sudo myodbc-installer -d -l
+
+  2.2. odbc 설정
+    $ cd
+    $ vi .odbc.ini		# odbc 설정
+      [ODBC Data Sources]
+      mariadb     = MyODBC 8.3 ANSI Driver DSN
+
+      [mariadb]
+      Driver       = /usr/local/lib/libmyodbc8a.so
+      Description  = Connector/ODBC 8.3 ANSI Driver DSN
+      SERVER       = 127.0.0.1
+      PORT         =
+      USER         =
+      Password     =
+      Database     = test
+      OPTION       = 3
+      SOCKET       =
+
+    $ ldd /usr/local/lib/libmyodbc8a.so		# 라이브러리가 실행이 가능한지 확인
+    $ isql -v <id> <pwd> mariadb
+

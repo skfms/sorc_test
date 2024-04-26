@@ -1,10 +1,9 @@
 /* DISABLE check_long_lines  */
 
 /*
- * $Header: security_src/public/nzerror.h /st_ldap_db11.2/1 2009/07/15 13:57:04 rchahal Exp $
+ * $Header: security_src/public/nzerror.h /main/80 2018/04/23 03:43:08 vipuljai Exp $
  *
- * Copyright (c) 1995, 2009, Oracle and/or its affiliates. 
- * All rights reserved. 
+* Copyright (c) 1995, 2018, Oracle and/or its affiliates. All rights reserved.
  */
 
 /* ENABLE check_long_lines  */
@@ -21,6 +20,16 @@
      A pragma is used to silence olint about the enum value names not being
      unique within 7 characters. This limit is being changed to 30.
   MODIFIED
+     mevyas     01/05/16 - ALPN Implementation
+     abjuneja   05/14/13 - A360Id 770690: PKIX enhancements
+     tnallath   03/21/13 - 16163238: xbranchmerge 8616736 to main
+     sourajai   06/20/12 - Error code for csf api enhacements (map, key not
+                           present)
+     tnallath   03/03/12 - crldp for ssl
+     tnallath   02/15/12 - nzupg12: enable fips
+     shiahuan   11/04/11 - mscapi errors
+     tnallath   03/23/11 - nz upgrade: use rsa-mes
+     tnallath   08/18/09 - bug 8612354: error for large crl file
      rchahal    06/12/06 - 
      skalyana   01/30/05 - 
      rchahal    07/16/04 - add cert label 
@@ -115,7 +124,30 @@
 #ifndef ORATYPES
 # include <oratypes.h>
 #endif /* ORATYPES */
-
+/*
+Warning suppressed 
+    warning #2157: NULL defined to 0 (type is integer not pointer): when we define Null to 0
+    warning #2312: pointer cast involving 64-bit pointed-to type : Any higher bit cast to lower bit pointer 
+    warning #1684: conversion from pointer to same-sized integral type (potential portability problem): Any cast from pointer to an int type
+    warning #1740: dllexport/dllimport conflict with "NZXK_EXTENDED_KEY_USAGE" (declared at line 77 of "../include/nzxk.h"); dllexport assumed : Don't Know
+    warning #556: a value of type "R_PKEY *" cannot be assigned to an entity of type "ub1={unsigned char} *" : When assign void * to an other type.
+    warning #2330: argument of type "const nzttIdentity *" is incompatible with parameter of type "nzttIdentity *" (dropping qualifiers) : This occur when non constant variable is passed where const variable required.
+    warning #1478: function "GetVersionExA" (declared at line 433 of "C:\PROGRA~2\WINDOW~4\8.1\Include\um\sysinfoapi.h") was declared deprecated : This occurs when function deprecated.
+	warning #2259: non-pointer conversion from "size_t={unsigned __int64}" to "unsigned int" may lose significant bits : when converting higher bit to lower bit
+*/
+#ifdef _WIN32 
+#ifdef __ICL
+#pragma warning(disable : 2259)
+#pragma warning(disable : 2312)
+#pragma warning(disable : 47)
+#pragma warning(disable : 1684)
+#pragma warning(disable : 2330)
+#pragma warning(disable : 1478)
+#pragma warning(disable : 556)
+#pragma warning(disable : 1740)
+#pragma warning(disable : 2157)
+#endif /* _WIN32 */
+#endif /* _WIN32 */
 /*
 ** Errors - when an error is added here, a message corresponding to the
 ** error number must be added to the message file.
@@ -337,8 +369,12 @@ typedef enum nzerror
   NZERROR_EntrustLoadCertificateFailed = 28892,
   NZERROR_EntrustGetNameFailed = 28893,
 
+/* ============>>>  MSCAPI ERRORS */
+  NZERROR_OPEN_WINDOWS_CERT_STORE_FAILED = 28900,
+
 /* ============>>> NZERRORS CONTINUED */
   NZERROR_CertNotInstalled = 29000,
+  NZERROR_BAD_DATETIME_FORMAT = 29001,
   NZERROR_ServerDNMisMatched = 29002,
   NZERROR_ServerDNMisConfigured = 29003,
 
@@ -489,6 +525,8 @@ typedef enum nzerror
 /* ============>>> EXTENSIONS Errors 29140 - 29149 */
   NZERROR_BS_CERTOBJ_CREAT_FAILED = 29140,
   NZERROR_BS_DER_IMP_FAILED = 29141,
+  NZERROR_CERT_NAME_ERROR = 29142,
+  NZERROR_EXT_ERROR = 29143,   /* ext processing failed */
 
 
 /* ============>>> FIPS ERRORS 29150 - 29175 */
@@ -508,6 +546,7 @@ typedef enum nzerror
   NZERROR_VENDOR_NOT_SUPPORTED_FIPS_MODE = 29163,
   NZERROR_EXTERNAL_PKCS12_NOT_SUPPORTED_FIPS_MODE = 29164,
   NZERROR_AES_SELF_TEST_FAILED = 29165,
+  NZERROR_FIPS_BAD_KEYSIZE = 29166,
 
 /* ============>>> CRL ERRORS 29176 - 29200 */
   NZERROR_CRL_SIG_VERIFY_FAILED = 29176, /*CRL signature verification failed*/ 
@@ -534,7 +573,10 @@ typedef enum nzerror
                                      /* No CRL found using CRLDP mechanism */
   NZERROR_CRL_NOT_IN_CACHE = 29194,  /* No CRL found in the cache*/
   NZERROR_CRL_EXPIRED = 29195,       /* CRL nextUpdate time is in the past */
-
+  NZERROR_CRL_FILETOOBIG = 29196,    /* CRL file is too large */
+  NZERROR_CRL_CACHE_FULL = 29197,    /* CRL could not be added in CRL cache,
+                 CRL cache max size < (CRL cache current size + input CRL size)
+                 */
 /* ============>>>  ADD ERRORS HERE -- NOTE DECREASING numbers */
   NZERROR_DN_MATCH  =            29222,  /* for nztCompareDN */
   NZERROR_CERT_CHAIN_CREATION  = 29223,  /* unable to create a cert chain
@@ -636,6 +678,14 @@ typedef enum nzerror
   NZERROR_CANNOT_MODIFY_AL = 43072,       /* Cannot modify AL wallet */
   NZERROR_FILE_LOCK_FAILED = 43073,       /* Cannot lock wallet file */
 
+  /* Certificate selection errors 43080 - 43099 */
+  NZERROR_MULTIPLE_MATCHING_CREDENTIALS = 43080, /* Multiple matching certs */
+  NZERROR_KEYPAIR_CHECK = 43081,          /* Error matching pub and pvt keys */
+  NZERROR_SSL_DUPLICATE_RSA_CERTIFICATES = 43082, /* Multiple matching certs */
+  NZERROR_SSL_DUPLICATE_ECC_CURVE_CERTIFICATES = 43083, /* Multiple matching certs */
+  NZERROR_FORBIDDEN_SIGNATURE_ALGORITHM = 43084, /* insecure cert signature algorithm */
+
+
   NZERROR_CSF_ALIAS_INVALID = 43100,      /* alias is invalid */
   NZERROR_CSF_KEY_INVALID = 43101,        /* key invalid */
   NZERROR_CSF_CRED_NOT_SUPPORTED = 43102, /* only pwd cred supported */
@@ -645,8 +695,42 @@ typedef enum nzerror
   NZERROR_CSF_MAP_NOT_IN_STORE = 43106,   /* map does not exist in store */
   NZERROR_CSF_KEY_NOT_IN_STORE = 43107,   /* key does not exist in store */
   NZERROR_CSF_ENTRY_EXISTS = 43108,       /* entry with map/key exists */
+  NZERROR_CSF_BTSTRP_WLT_PATH_NOT_SET = 43109, /* bootWallet Path not set */
+  NZERROR_CSF_BTSTRP_WLT_MAP_NOT_SET = 43110,  /* bootWallet map (alias) not set */
+  NZERROR_CSF_BTSTRP_WLT_KEY_NOT_SET = 43111,  /* bootWallet key not set */
+  NZERROR_CSF_LDAP_USERNAME_NOT_SET = 43112,   /* ldap username not set */
+  NZERROR_CSF_LDAP_PWD_NOT_SET = 43113,        /* ldap password not set */
+  NZERROR_CSF_LDAP_URL_NOT_SET = 43114,        /* ldap url not set */
+  NZERROR_CSF_LDAP_PORT_NOT_SET = 43115,       /* ldap port not set */
+  NZERROR_CSF_LDAP_FARMNAME_NOT_SET = 43116,   /* ldap farmname not set */
+  NZERROR_CSF_LDAP_ROOTNAME_NOT_SET = 43117,   /* ldap rootname not set */
 
-  NZERROR_LX_ERROR = 43120,     /* lx api returned error */
+  NZERROR_SSL_UNSUPPORTED_CIPHER = 43120,
+  NZERROR_SSL_BAD_ENCRYPTED_VAUE = 43121,
+  NZERROR_SSL_ERR_SIGNATURE = 43122,
+  NZERROR_SSL_HARDWARE_FAILURE = 43123,
+  NZERROR_SSL_ERR_PKEY = 43124,
+  NZERROR_SSL_HANDSHAKE_FAILED = 43125,
+  NZERROR_SSL_BAD_CLIENT_HELLO = 43126,
+  NZERROR_SSL_BAD_SERVER_HELLO = 43127,
+
+  NZERROR_UNKNOWN_ECC_CURVE = 43130,
+
+  NZERROR_ODBC_SQL_FAILED = 43131,           /* C CSF ODBC Callback error code      */
+  NZERROR_CSF_DB_B64_DECODE_FAILED = 43132,     /* C CSF DB - zt base 64 decode failed */
+  NZERROR_CSF_DB_DEC_SPLIT_FAILED = 43133,   /* Split during decryption is failed   */
+  NZERROR_CSF_DB_DECKEY_NULL = 43134,        /* Master key is not present in bootwallet   */
+  NZERROR_CSF_MAP_NOT_PRESENT = 43135,        /* Map is not present in credstore */
+  NZERROR_CSF_KEY_NOT_PRESENT = 43136,        /* Key is not present in credstore */
+
+  NZERROR_SET_ALPN_PROTOCOL_FAILED = 43137,
+  NZERROR_GET_ALPN_PROTOCOL_FAILED = 43138,
+  NZERROR_NO_COMMON_ALPN_PROTOCOL = 43139,
+  NZERROR_HANDSHAKE_FAILED_NO_COMMON_ALPN_PROTOCOL = 43140,
+  NZERROR_ALPN_FEATURE_NOT_SUPPORTED  = 43141,
+  NZERROR_CERT_CHAIN_TOO_BIG = 43142,      /* cert chain is too big */
+
+  NZERROR_LX_ERROR = 43490,                /* lx api returned error */
 
   NZERROR_LAST_ERROR = 43499,                        /* Last available error */
                                             /* MAXIMUM ERROR NUMBER IS 43499 */

@@ -1,5 +1,5 @@
-/* Copyright (c) 2003, 2010, Oracle and/or its affiliates. 
-All rights reserved. */
+/* Copyright (c) 2003, 2014, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
@@ -24,6 +24,15 @@ All rights reserved. */
    NOTES
 
    MODIFIED   (MM/DD/YY)
+   stirmizi    06/05/14 - OCI properties for client side binary XML processing
+   alejgarc    05/29/14 - 18857660 - added OCIXmlGetDiffBndVersion.
+   tojhuan     07/10/13 - Update OCIXmlDr_DEF revision
+   tojhuan     06/05/13 - 16318092: add csform and csid to OCIXmlDiffBnd
+   tojhuan     12/17/12 - fwd merge 15980280 expose table alias parameters of
+                          qmudxRewriteXMLDiffRaw for OCIXmlDbRewriteXMLDiff
+   srirkris    06/15/11 - Add OCIXmlDr_DEF 
+   srirkris    03/01/11 - OCIXmlDbRewriteXMLDiff definition change
+   vmedi       01/14/11 - OCIXmlDbGetFullyQualifiedSchemaUrl
    sipatel     03/08/10 - add lob arg to OCIXmlDbRewriteXMLDiff
    samane      01/20/10 - Bug 9302227
    yifeng      11/05/09 - add OCIXmlDbRewriteXMLDiff
@@ -61,6 +70,22 @@ All rights reserved. */
 struct xmlctx; typedef struct xmlctx xmlctx;
 #endif
 
+
+typedef struct OCIXmlDiffBnd {
+ oratext *bndnmp;
+ ub1      bndnml;
+ ub2      bndpos; 
+ ub2      bndnum;
+ ub2      bnddty;
+ void    *bndvalp;
+ ub4      bndvallen;
+ ub2      bndcsid;
+ ub1      bndcsform;
+ 
+} OCIXmlDiffBnd;
+
+struct xmldrctx; typedef struct xmldrctx xmldrctx;
+
 typedef enum 
 {
   XCTXINIT_OCIDUR  = 1,
@@ -74,6 +99,23 @@ typedef struct ocixmldbparam
 } ocixmldbparam;
 
 #define NUM_OCIXMLDBPARAMS 2
+
+#define OCIXMLDB_BINDBYNAME 1
+#define OCIXMLDB_BINDBYNUM 2
+
+#define OCIMAXXQUBNDLMT 1000
+
+#define OCIXmlDr_DEF 2
+
+/* property names for client-side encoding/decoding of binary XML */
+#define OCIXMLDB_ENCODE    "XML_ENCODE_ON"
+#define OCIXMLDB_DECODEL   13
+#define OCIXMLDB_DECODE    "XML_DECODE_ON"
+#define OCIXMLDB_DECODEL   13
+
+/*
+ * At version 2, OCIXmlDiffBnd has attributes bndcsid, bndcsform
+ */
 
 /*---------------------------------------------------------------------------
                      PRIVATE TYPES AND CONSTANTS
@@ -158,9 +200,29 @@ sword OCIXmlDbStreamClose(OCIError *errhp, void *stream);
                           INTERNAL FUNCTIONS
   ---------------------------------------------------------------------------*/
 /* This function is for internal usage only */
-sword OCIXmlDbRewriteXMLDiff(OCIEnv *envhp, OCIError *errhp, OCISvcCtx *svchp,
-                             oratext* colname, ub4 colnamelen, 
-                             const void* xmldiff, ub4 xmldifflen,
-                             OCILobLocator* xdiff_locator, oratext** updstmt);
+sword OCIXmlDbRewriteXMLDiff(OCIEnv *envhp, OCIError *errhp, OCISvcCtx *svchp, 
+                             xmldrctx *xctx , oratext* colname, ub4 colnamelen,  
+                             const void* xmldiff, ub4 xmldifflen, 
+                             OCILobLocator *xdiff_locator, oratext** updstmt, 
+                             ub2 binditerator, ub2 *colvalbndcount,  
+                             OCIXmlDiffBnd **bindlist,
+                             oratext *obj_tab_prefix, ub2 obj_tab_prefix_len);
+
+struct xmldrctx *OCIXmlInitDRCtx(OCIEnv *env, OCISvcCtx *svc, OCIError *err, 
+                                 ub1 bindtyp);
+
+void OCIXmlFreeDRCtx(xmldrctx *xctx);
+
+ub1 OCIXmlGetDiffBndVersion();
+
+sword OCIXmlDbGetFullyQualifiedSchemaUrl(OCIError *errhp,
+                                         oratext  *schema_url,
+                                         ub2       schema_url_len,
+                                         oratext  *schema_owner,
+                                         ub2       schema_owner_len,
+                                         oratext **fq_schema_url,
+                                         ub4      *fs_schema_url_len);
+
+void *OCIXmlDbMemCallback(void *ctx, size_t size);
 
 #endif                                              /* OCIXMLDB_ORACLE */

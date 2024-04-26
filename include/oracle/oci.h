@@ -1,5 +1,5 @@
-/* Copyright (c) 1995, 2010, Oracle and/or its affiliates. 
-All rights reserved. */
+/* Copyright (c) 1995, 2019, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
@@ -35,7 +35,207 @@ All rights reserved. */
    NOTES 
 
 
+
    MODIFIED   (MM/DD/YY)
+   apfwkr      02/08/19 - Backport shubhaku_bug-14735102 from main
+   shubhaku    12/13/18 - Backport shubhaku_bug-28463805 from main
+   shubhaku    01/22/19 - Proj 67702: define OCI_FO_AUTO
+   nikeda      11/15/18 - Bug 28579279: Expose client side connect string
+   anjs        07/10/18 - Bug 28275692: add OCI_ATTR_SESSGET_FLAGS
+   sriksure    07/01/18 - Bug 27907027: Add support for JSON image formats
+                          (OSON)
+   rphillip    06/18/18 - Bug 28174299: Add NUMBER_FORMAT
+   ngcolloo    06/14/18 - Bug 28075083: add OCI_ATTR_RESERVED_607/608
+   rajeekku    05/08/18 - Bug 28100801: add OCI_ENVCR_RESERVED10
+   rajeekku    04/20/18 - Bug 26413407: Add OCI_ATTR_RESERVED_604/605/606 
+   mbastawa    05/28/18 - Bug 16780576: add OCI_ATTR_RESERVED_603
+   sriksure    04/20/18 - Remove unused public SODA attrs
+   avnandak    04/13/18 - Bug 27604835: Add OCI_ATTR_SPOOL_MAX_PER_SHARD
+   sriksure    04/03/18 - Bug 27797046: Rename OCI_SODA_COMMIT_ON_SUCCESS ->
+                          OCI_SODA_ATOMIC_COMMIT,
+                          Remove OCI_SODA_BATCH_ERRORS and
+                          OCI_ATTR_SODA_NUM_DML_ERRORS
+   sriksure    03/23/18 - Bug 27741070: Add OCI_SODA_INDEX_DROP_FORCE
+   rphillip    03/20/18 - Parquet reader
+   kneel       03/12/18 - Bug 25905140: new reserved modes
+   vjitta      03/02/18 - Bug 27365834: Changing the name of output options
+                          attribute.
+   sriksure    02/20/18 - Bug 27535335: Use different HTYPE constants for SODA
+                          collection and document cursor handles
+   rpingte     01/30/18 - Bug 27405242: add OCI_DESCANY_RESERVED_1
+   kneel       01/30/18 - Bug 26398145: add OCI_FNCODE_RESERVED_155,196,197
+   bhshanmu    01/19/18 - bhshanmu_librnm19_rdbms5
+   sriksure    12/01/17 - Project 74694: SODA Enhancements -
+                          Add OCI_FNCODE_SODAOPERKEYSSET
+   vjitta      10/25/17 - Bug 26865240: Soda removing unwanted attributes
+   prramakr    10/22/17 - Bug 27006717: add macros to get server version 
+   morgiyan    10/20/17 - Bug 27033953: Add OCI_SODA_COLL_CREATE_MAP
+   ngcolloo    09/15/17 - Bug 26414141: Add OCI_ATTR_RESERVED_600
+   shubhaku    10/18/17 - Bug 26428574: Add OCI_ATTR_RESERVED_599
+   samys       10/09/17 - Bug 26922120: Fixing OCI SODA FNCODE names
+   ngcolloo    09/30/17 - Bug 26482143: Add OCI_ATTR_RESERVED_598
+   prramakr    09/25/17 - Bug 26831390: Add OCI_FNCODE_SERVERRELEASE2
+   ngcolloo    09/15/17 - Bug 26418352: Add OCI_ATTR_RESERVED_597
+   rkanodia    09/07/17 - Bug 26715862: add OCI_ATTR_RESERVED_596
+   rpingte     08/24/17 - OCI_MAJOR_VERSION & OCI_MINOR_VERSION into ociver.h
+   ssahu       08/14/17 - Bug 26368952: Add attribute OCI_ATTR_RESERVED_584
+   rphillip    08/08/17 - Add column array convert attribute
+   mbastawa    08/04/17 - Bug 26049373: add OCI_ATTR_AUTOTUNING_ENABLED
+   mbastawa    08/04/17 - Bug 25893448: Add OCI_ATTR_RESERVED_595
+   rajarsel    08/03/17 - Bug 12314489: Add new reserved mode
+   thbaby      08/01/17 - Bug 26548426: add OCI_ATTR_COL_PROPERTY_IS_CONID
+   rkanodia    06/14/17 - Bug 26253175: add OCI_ATTR_LOB_TYPE
+   jdavison    06/12/17 - Version 18 changes
+   bhshanmu    06/08/17 - bhshanmu_bug-26003322_windows
+   bhammers    02/07/17 - bug 25424304: add OCI_ATTR_JSON_COL
+   sriksure    06/05/17 - Bug 25839907: Add OCI_SODA_DETECT_JSON_ENC,
+                          OCI_ATTR_SODA_JSON_CHARSET_ID and
+                          OCI_ATTR_SODA_DETECT_JSON_ENC
+   vjitta      06/04/17 - Bug 26089218: Name changes for SODA
+   bhammers    02/07/17 - bug 25424304: add OCI_ATTR_JSON_COL
+   shubhaku    06/06/17 - Bug 25666173: Add OCI_ATTR_RESERVED_588
+   rajeekku    06/04/17 - Bug 26078057: Sync key value pairs
+   rkanodia    05/26/17 - Bug 26126348: add OCI_ENVCR_RESERVED8
+   kkverma     05/15/17 - Bug 25389765: add OCI_ATCH_RESERVED_9
+   vjitta      04/24/17 - Bug 25906775: Using default OCI DATA TYPES, removing
+                          close method function codes
+   rkanodia    04/18/17 - Bug 25931554: Add OCI_ATTR_RESERVED_587
+   vjitta      04/13/17 - Bug 25506531: List collection.
+   rajeekku    03/31/17 - Bug 25756140: Force iovec request  
+   vjitta      03/19/17 - Bug 25505506: OCI SODA diagnostic code.
+   thbaby      03/29/17 - Bug 25774866: add OCI_ATTR_RESERVED_533
+   thbaby      03/17/17 - Bug 25684526: add OCI_ATTR_COL_PROPERTY_IS_LPART
+   jibyun      03/02/17 - Bug 25616645: add OCI_PREP2_RESERVED_8
+   kkverma     03/01/17 - Bug 25649955: Add OCI_ATTR_SPOOL_MAX_USE_SESSION
+   vjitta      02/16/17 - Bug 25508124: SODA name changes and refactoring
+   ssonawan    02/03/17 - ER 24826993: add OCI_PREP2_RESERVED_7
+   jstenois    01/23/17 - proj 72314 DWCS: add OCIDirPath features needed for DWCS
+   rphillip    01/20/17 - Add column level NULL on errors
+   skabraha    01/11/17 - Proj 68652: add OCI_ATTR_IS_NOT_PERSISTABLE_TYPE
+   prramakr    01/10/17 - proj 68530: add call timeout attribute
+   sriksure    12/23/16 - Project: 68452 - Add SODA handles
+   ngcolloo    12/19/16 - Proj 68323: add new OCI_ATTR_RESERVED
+   suhgarg     12/16/16 - Bug 24963543: add OCI_ATTR_PDBNAME
+   ssubrama    12/06/16 - bug 20473441 OCIAQEnq2 and OCIAQDeq2
+   kneel       10/10/16 - Bug 24375258: add OCI_FNCODE_RESERVED_155
+   kneel       09/12/16 - Bug 24655077: no ltxid if TAF is on
+                          Bug 24656359: Add OCI_ATTR_RESERVED_522
+   rphillip    08/17/16 - Project 58357: continue on errors
+   nikeda      08/12/16 - Bug 24313297: Add OCI_ATTR_RESERVED_521
+   kneel       05/27/16 - Bug 14614524: add OCI_ATTR_TRANSACTIONAL_TAF
+   kneel       05/07/16 - Bug 21123869: add OCI_FNCODE_LOBFILEOPEN,_LOBFILECLOSE
+                                        remove OCI_ENVCR_RESERVED8
+   rkanodia    03/29/16 - Bug 22993915: add OCI_ATTR_LOB_REMOTE attribute to
+                          lob descriptor
+   kneel       01/27/16 - add OCI_ATTR_RESERVED_516
+   mstasiew    01/26/16 - Bug 22601751: remove OCI_PTYPE_HIERARCHY_CUBE
+   mstasiew    12/16/15 - Bug 22265417: hcs rename
+   rphillip    12/05/15 - Bug 22266179 add verify_stream_format
+   mbastawa    11/28/15 - add OCI_ATTR_RESERVED_515, OCI_ATTR_RESERVED_516
+   avnandak    11/27/15 - Bug21752673: Add new attr for client to server
+                          charset conversion ratio
+   shubhaku    11/18/15 - Cross-Shard query enhancement
+   rphillip    11/06/15 - Bug 22157258: default expression cache 
+   ssonawan    10/27/15 - Bug 19077509: add mode flags for OCIPasswordChange()
+   kkverma     09/13/15 - Rename attributes related to sharding key
+   rkanodia    09/10/15 - Bug 21811157: add reserved attribute
+   mstasiew    08/24/15 - Bug 21034838: hierarchy/hierarchy cube describe
+                          updates
+   rphillip    08/06/15 - for coverage
+   rphillip    07/13/15 - Bug 21142313: add OCI_ATTR_DIRPATH_DEFAULTS, default
+                          on null 
+   kneel       06/22/15 - Bug 21027805: OCI_ATTR_RESERVED_507; shard attrs
+                          update
+   cochang     06/17/15 - Bug 21142968: add OCI_ATTR_VIRTUAL_COL
+   rpingte     06/15/15 - add OCI_ATTR_DESCRIBE_NATIVE
+   rpingte     04/30/15 - bug 20963017: add OCI_PREP2_GET_SQL_ID
+   kkverma     04/18/15 - proj 56337: OCI Sharding
+   avnandak    04/18/15 - Adding Attribute OCI_ATTR_SPOOL_WAIT_TIME
+   rpingte     03/30/15 - add OCI_ATTR_SQL_ID
+   mbastawa    03/25/15 - add OCI_ATTR_RESERVED_503
+   kneel       03/23/15 - add OCI_REQUEST_END_KEEP_SESSION
+   kneel       03/09/15 - add OCI_ENVCR_RESERVED8
+   kneel       03/09/15 - new server handle attribute: OCI_ATTR_TAF_TYPE
+   kneel       03/09/15 - add codes for OCILobWriteAppend{,2}
+   thbaby      02/27/15 - Proj 47234: add OCI_PREP2_RESERVED_6
+   aalmahm     01/05/15 - Bug 20305121: Add comments for the collation
+                          constants
+   ssahu       12/09/14 - New mode OCI_SESSGET_MULTI_PROPERTY_TAG
+   hcdoshi     12/03/14 - add new values for qosflags
+   aalmahm     11/07/14 - project 35746: add OCI_ATTR_MAX_IDENTIFIER_LEN
+   aalmahm     10/30/14 - Bug 19926996: Add OCI_FNCODE_LOBGETCHUNKSIZE
+   aalmahm     10/28/14 - Bug 19905260: Wrong collation IDs in OCI
+   mwjohnso    07/15/14 - Bug 15979889: Add OCI_ATTR_DIRPATH_FLAGS_VLDT
+   aalmahm     04/23/14 - project 47513: collation ID
+   lenovak     06/24/14 - project 46694 add OCI shard attributes
+   sanbhara    06/13/14 - Project 46816 - adding support for SYSRAC.
+   aalmahm     04/23/14 - project 47513: collation ID
+   rphillip    03/19/14 - Add new direct path flags attribute
+   nikeda      02/13/14 - new statement handle attribute iters_processed
+   rpingte     02/07/14 - OCI_ATTR_DESCRIBE_NATIVE is reserved
+   bwright     02/05/14 - Bug 12998987: Add DIRPATH FLAGS attribute
+   umabhat     01/05/14 - 17334431 add OCI_ATTR_BREAK_ON_NET_TIMEOUT
+   nikeda      09/28/13 - 17259075 - new private attribute
+   rphillip    09/10/13 - Add direct path spilling attributes
+   mbastawa    09/18/12 - add OCI_ATTR_RESERVED_492
+   nikeda      09/12/12 - Bug 14465821 - private attr and mode
+   rphillip    08/17/12 - Bug 10117567: indicate xmltype dumpfile format
+   jstewart    08/13/12 - change macro name to correspond to max_string_size
+                          value
+   rajeekku    08/03/12 - Bug 13864144 : Enable expiry time for sessions
+   jstewart    07/23/12 - 14361749: adding new attribute for 32K
+   ardesai     06/12/12 - Bug[7706324] Make column security attributes public
+   nikeda      06/01/12 - reserved attributes
+   siravic     04/19/12 - Bug# 13472027 Username setting is not respected in
+                          client wallet authentication
+   ssahu       04/18/12 - New attribute on env handle to disable subscribing to
+                          FAN HA
+   ardesai     04/17/12 - Bug[11780187]Add OCI_DISABLE_DIAG
+   rphillip    03/12/12 - Add OCI_ATTR_REJECT_REPL_CHARS
+   hayu        03/14/12 - lrg-6827256
+   hayu        11/04/11 - add OCI_ATTR_DBOP
+   nikeda      03/12/12 - add function codes for OCIType functions
+   nikeda      02/05/12 - Bug 13636638: add OCI_ATTR_TRANSACTION_IN_PROGRESS
+   vipmodi     01/27/12 - added OCI_ATTR_ILM_TRACK_WRITE
+   ssubrama    11/03/11 - bug 13105135 JMS attributes private and reserved
+   rpang       09/23/11 - add OCI_ATTR_TRANS_PROFILE_FOREIGN
+   tbhosle     09/12/11 - add OCI_SUBSCR_QOS_TX_ACK, OCI_SUBSCR_QOS_AUTO_ACK
+   rtati       09/12/11 - add OCI_ATTR_SUBSCR_FAILURE_CBK,
+                          OCI_SUBSCR_QOS_NONDURABLE,
+                          OCI_SUBSCR_QOS_ASYNC_DEQ
+   nikeda      08/23/11 - proj 32251 - OCI_ATTR_IS_RECOVERABLE
+   rpang       08/05/11 - 12842638: add OCI_PREP2_IMPL_RESULTS_CLIENT
+                          prepare mode
+   rpang       06/02/11 - add OCI_ATTR_SQL_TRANSLATION_PROFILE
+   mbastawa    07/11/11 - add OCI_ATTR_MAX_OPEN_CURSORS
+   rphillip    06/21/11 - Long varchar
+   amadan      03/31/11 - Add OCI_DTYPE_AQJMS_PROPERTIES
+   pbagal      07/05/11 - #11819411: Add instance types for proxy and ioserver
+   kkverma     07/05/11 - add stmthndle attribute OCI_ATTR_DML_ROW_COUNT_ARRAY  
+                          and exec mode OCI_RETURN_ROW_COUNT_ARRAY 
+   nikeda      06/28/11 - add reserved attr for non-blocking testing
+   rdecker     05/02/11 - New ATTRs for plsql package type support
+   pjavaji     05/01/11 - Add OCI_ATTR_ENV_NLS_LANG & OCI_ATTR_ENV_NLS_TERR 
+   jmadduku    03/16/11 - Proj 32507: Add new OCI attribute for Last
+                          Successful Logon Time
+   kneel       05/30/11 - new reserved attributes, modes
+   shiyer      04/09/11 - #36904:add OCI_RESULT_TYPE_SELECT,
+                          OCI_ATTR_IMPLICIT_RESULT_COUNT,
+                          OCI_FNCODE_STMGETNEXTRESULT
+   ardesai     03/24/11 - Project[36905]Invisible columns support
+   slari       03/24/11 - add OCI_ATTR_RESERVED_438 and OCI_ATTR_RESERVED_439
+   nikeda      03/23/11 - Project 32251: LTXID Support
+   shiyer      01/04/11 - #32874:OCIStmtPrepare modes
+   jibyun      03/14/11 - Project 5687: Define OCI_SYSBKP, OCI_SYSDGD, and
+                          OCI_SYSKMT for new administrative privileges
+   mbastawa    02/08/11 - add ub8 row count
+   umabhat     01/27/11 - add OCI_ERROR_MAXMSG_SIZE2
+   rpang       12/16/10 - add OCI_FOREIGN_SYNTAX
+   rpingte     12/16/10 - Add OCIBindByPos2, OCIBindByName2 & OCIDefineByPos2
+   wbattist    12/06/10 - add reserved attributes
+   rphillip    09/28/10 - Bug 9835605: recnum changes
+   rphillip    08/03/09 - Bug 8720046: add OCI_ATTR_DIRPATH_USE_ACTIVE_TRANS
+   rpingte     07/23/10 - update version number
    mbastawa    03/15/10 - add OCI_FETCH_RESERVED_6
    ebatbout    12/28/09 - 8465341: Add OCI_ATTR_DIRPATH_RESERVED_22
    ssahu       04/15/09 - Add user handle as an attribute to session pool
@@ -541,6 +741,10 @@ extern "C" {
 #include <ocidfn.h>
 #endif
 
+#ifndef OCIVER_ORACLE
+#include <ociver.h>
+#endif
+
 #ifndef OCI_ORACLE
 # define OCI_ORACLE
 
@@ -888,8 +1092,14 @@ extern "C" {
 #define OCI_HTYPE_SPOOL         27                    /* session pool handle */
 #define OCI_HTYPE_ADMIN         28                           /* admin handle */
 #define OCI_HTYPE_EVENT         29                        /* HA event handle */
-
-#define OCI_HTYPE_LAST          29            /* last value of a handle type */
+#define OCI_HTYPE_SODA_COLLECTION      30         /* SODA: Collection handle */
+#define OCI_HTYPE_SODA_DOCUMENT        31           /* SODA: Document handle */
+#define OCI_HTYPE_SODA_COLL_CURSOR     32  /* SODA: Collection Cursor handle */
+#define OCI_HTYPE_SODA_OPER_OPTIONS    33  /* SODA: Operation options handle */
+#define OCI_HTYPE_SODA_OUTPUT_OPTIONS  34     /* SODA: Output options handle */
+#define OCI_HTYPE_SODA_METADATA        35           /* SODA: Metadata handle */
+#define OCI_HTYPE_SODA_DOC_CURSOR      36    /* SODA: Document cursor handle */
+#define OCI_HTYPE_LAST                 36     /* last value of a handle type */
 
 /*---------------------------------------------------------------------------*/
 
@@ -913,12 +1123,12 @@ extern "C" {
 #define OCI_DTYPE_INTERVAL_YM 62                      /* Interval year month */
 #define OCI_DTYPE_INTERVAL_DS 63                      /* Interval day second */
 #define OCI_DTYPE_AQNFY_DESCRIPTOR  64               /* AQ notify descriptor */
-#define OCI_DTYPE_DATE 65                            /* Date */
-#define OCI_DTYPE_TIME 66                            /* Time */
-#define OCI_DTYPE_TIME_TZ 67                         /* Time with timezone */
-#define OCI_DTYPE_TIMESTAMP 68                       /* Timestamp */
-#define OCI_DTYPE_TIMESTAMP_TZ 69                /* Timestamp with timezone */
-#define OCI_DTYPE_TIMESTAMP_LTZ 70             /* Timestamp with local tz */
+#define OCI_DTYPE_DATE              65                               /* Date */
+#define OCI_DTYPE_TIME              66                               /* Time */
+#define OCI_DTYPE_TIME_TZ           67                 /* Time with timezone */
+#define OCI_DTYPE_TIMESTAMP         68                          /* Timestamp */
+#define OCI_DTYPE_TIMESTAMP_TZ  69                /* Timestamp with timezone */
+#define OCI_DTYPE_TIMESTAMP_LTZ 70                /* Timestamp with local tz */
 #define OCI_DTYPE_UCB           71               /* user callback descriptor */
 #define OCI_DTYPE_SRVDN         72              /* server DN list descriptor */
 #define OCI_DTYPE_SIGNATURE     73                              /* signature */
@@ -928,9 +1138,12 @@ extern "C" {
 #define OCI_DTYPE_CHDES         77     /* Top level change notification desc */
 #define OCI_DTYPE_TABLE_CHDES   78      /* Table change descriptor           */
 #define OCI_DTYPE_ROW_CHDES     79       /* Row change descriptor            */
-#define OCI_DTYPE_CQDES  80                       /* Query change descriptor */
+#define OCI_DTYPE_CQDES         80                /* Query change descriptor */
 #define OCI_DTYPE_LOB_REGION    81            /* LOB Share region descriptor */
-#define OCI_DTYPE_LAST          81        /* last value of a descriptor type */
+#define OCI_DTYPE_AQJMS_PROPERTIES 82           /* AQ JMS message properties */
+#define OCI_DTYPE_SHARDING_KEY  83 /* Sharding/Super Sharding Key Descriptor */
+#define OCI_DTYPE_SHARD_INST    84              /* Shard Instance Descriptor */
+#define OCI_DTYPE_LAST          84        /* last value of a descriptor type */
 
 /*---------------------------------------------------------------------------*/
 
@@ -943,445 +1156,59 @@ extern "C" {
 #define OCI_OTYPE_NAME 1                                      /* object name */
 #define OCI_OTYPE_REF  2                                       /* REF to TDO */
 #define OCI_OTYPE_PTR  3                                       /* PTR to TDO */
-/*---------------------------------------------------------------------------*/
-
-/*=============================Attribute Types===============================*/
-/* 
-   Note: All attributes are global.  New attibutes should be added to the end
-   of the list. Before you add an attribute see if an existing one can be 
-   used for your handle. 
-
-   If you see any holes please use the holes first. 
- 
-*/
-/*===========================================================================*/
-
-
-#define OCI_ATTR_FNCODE  1                          /* the OCI function code */
-#define OCI_ATTR_OBJECT   2 /* is the environment initialized in object mode */
-#define OCI_ATTR_NONBLOCKING_MODE  3                    /* non blocking mode */
-#define OCI_ATTR_SQLCODE  4                                  /* the SQL verb */
-#define OCI_ATTR_ENV  5                            /* the environment handle */
-#define OCI_ATTR_SERVER 6                               /* the server handle */
-#define OCI_ATTR_SESSION 7                        /* the user session handle */
-#define OCI_ATTR_TRANS   8                         /* the transaction handle */
-#define OCI_ATTR_ROW_COUNT   9                  /* the rows processed so far */
-#define OCI_ATTR_SQLFNCODE 10               /* the SQL verb of the statement */
-#define OCI_ATTR_PREFETCH_ROWS  11    /* sets the number of rows to prefetch */
-#define OCI_ATTR_NESTED_PREFETCH_ROWS 12 /* the prefetch rows of nested table*/
-#define OCI_ATTR_PREFETCH_MEMORY 13         /* memory limit for rows fetched */
-#define OCI_ATTR_NESTED_PREFETCH_MEMORY 14   /* memory limit for nested rows */
-#define OCI_ATTR_CHAR_COUNT  15 
-                    /* this specifies the bind and define size in characters */
-#define OCI_ATTR_PDSCL   16                          /* packed decimal scale */
-#define OCI_ATTR_FSPRECISION OCI_ATTR_PDSCL   
-                                          /* fs prec for datetime data types */
-#define OCI_ATTR_PDPRC   17                         /* packed decimal format */
-#define OCI_ATTR_LFPRECISION OCI_ATTR_PDPRC 
-                                          /* fs prec for datetime data types */
-#define OCI_ATTR_PARAM_COUNT 18       /* number of column in the select list */
-#define OCI_ATTR_ROWID   19                                     /* the rowid */
-#define OCI_ATTR_CHARSET  20                      /* the character set value */
-#define OCI_ATTR_NCHAR   21                                    /* NCHAR type */
-#define OCI_ATTR_USERNAME 22                           /* username attribute */
-#define OCI_ATTR_PASSWORD 23                           /* password attribute */
-#define OCI_ATTR_STMT_TYPE   24                            /* statement type */
-#define OCI_ATTR_INTERNAL_NAME   25             /* user friendly global name */
-#define OCI_ATTR_EXTERNAL_NAME   26      /* the internal name for global txn */
-#define OCI_ATTR_XID     27           /* XOPEN defined global transaction id */
-#define OCI_ATTR_TRANS_LOCK 28                                            /* */
-#define OCI_ATTR_TRANS_NAME 29    /* string to identify a global transaction */
-#define OCI_ATTR_HEAPALLOC 30                /* memory allocated on the heap */
-#define OCI_ATTR_CHARSET_ID 31                           /* Character Set ID */
-#define OCI_ATTR_CHARSET_FORM 32                       /* Character Set Form */
-#define OCI_ATTR_MAXDATA_SIZE 33       /* Maximumsize of data on the server  */
-#define OCI_ATTR_CACHE_OPT_SIZE 34              /* object cache optimal size */
-#define OCI_ATTR_CACHE_MAX_SIZE 35   /* object cache maximum size percentage */
-#define OCI_ATTR_PINOPTION 36             /* object cache default pin option */
-#define OCI_ATTR_ALLOC_DURATION 37
-                                 /* object cache default allocation duration */
-#define OCI_ATTR_PIN_DURATION 38        /* object cache default pin duration */
-#define OCI_ATTR_FDO          39       /* Format Descriptor object attribute */
-#define OCI_ATTR_POSTPROCESSING_CALLBACK 40
-                                         /* Callback to process outbind data */
-#define OCI_ATTR_POSTPROCESSING_CONTEXT 41
-                                 /* Callback context to process outbind data */
-#define OCI_ATTR_ROWS_RETURNED 42
-               /* Number of rows returned in current iter - for Bind handles */
-#define OCI_ATTR_FOCBK        43              /* Failover Callback attribute */
-#define OCI_ATTR_IN_V8_MODE   44 /* is the server/service context in V8 mode */
-#define OCI_ATTR_LOBEMPTY     45                              /* empty lob ? */
-#define OCI_ATTR_SESSLANG     46                  /* session language handle */
-
-#define OCI_ATTR_VISIBILITY             47                     /* visibility */
-#define OCI_ATTR_RELATIVE_MSGID         48            /* relative message id */
-#define OCI_ATTR_SEQUENCE_DEVIATION     49             /* sequence deviation */
-
-#define OCI_ATTR_CONSUMER_NAME          50                  /* consumer name */
-#define OCI_ATTR_DEQ_MODE               51                   /* dequeue mode */
-#define OCI_ATTR_NAVIGATION             52                     /* navigation */
-#define OCI_ATTR_WAIT                   53                           /* wait */
-#define OCI_ATTR_DEQ_MSGID              54             /* dequeue message id */
-
-#define OCI_ATTR_PRIORITY               55                       /* priority */
-#define OCI_ATTR_DELAY                  56                          /* delay */
-#define OCI_ATTR_EXPIRATION             57                     /* expiration */
-#define OCI_ATTR_CORRELATION            58                 /* correlation id */
-#define OCI_ATTR_ATTEMPTS               59                  /* # of attempts */
-#define OCI_ATTR_RECIPIENT_LIST         60                 /* recipient list */
-#define OCI_ATTR_EXCEPTION_QUEUE        61           /* exception queue name */
-#define OCI_ATTR_ENQ_TIME               62 /* enqueue time (only OCIAttrGet) */
-#define OCI_ATTR_MSG_STATE              63/* message state (only OCIAttrGet) */
-                                                   /* NOTE: 64-66 used below */
-#define OCI_ATTR_AGENT_NAME             64                     /* agent name */
-#define OCI_ATTR_AGENT_ADDRESS          65                  /* agent address */
-#define OCI_ATTR_AGENT_PROTOCOL         66                 /* agent protocol */
-#define OCI_ATTR_USER_PROPERTY          67                  /* user property */
-#define OCI_ATTR_SENDER_ID              68                      /* sender id */
-#define OCI_ATTR_ORIGINAL_MSGID         69            /* original message id */
-
-#define OCI_ATTR_QUEUE_NAME             70                     /* queue name */
-#define OCI_ATTR_NFY_MSGID              71                     /* message id */
-#define OCI_ATTR_MSG_PROP               72             /* message properties */
-
-#define OCI_ATTR_NUM_DML_ERRORS         73       /* num of errs in array DML */
-#define OCI_ATTR_DML_ROW_OFFSET         74        /* row offset in the array */
 
               /* AQ array error handling uses DML method of accessing errors */
 #define OCI_ATTR_AQ_NUM_ERRORS          OCI_ATTR_NUM_DML_ERRORS
 #define OCI_ATTR_AQ_ERROR_INDEX         OCI_ATTR_DML_ROW_OFFSET
 
-#define OCI_ATTR_DATEFORMAT             75     /* default date format string */
-#define OCI_ATTR_BUF_ADDR               76                 /* buffer address */
-#define OCI_ATTR_BUF_SIZE               77                    /* buffer size */
-
-/* For values 78 - 80, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_NUM_ROWS               81 /* number of rows in column array */
-                                  /* NOTE that OCI_ATTR_NUM_COLS is a column
-                                   * array attribute too.
-                                   */
-#define OCI_ATTR_COL_COUNT              82        /* columns of column array
-                                                     processed so far.       */
-#define OCI_ATTR_STREAM_OFFSET          83  /* str off of last row processed */
-#define OCI_ATTR_SHARED_HEAPALLOC       84    /* Shared Heap Allocation Size */
-
-#define OCI_ATTR_SERVER_GROUP           85              /* server group name */
-
-#define OCI_ATTR_MIGSESSION             86   /* migratable session attribute */
-
-#define OCI_ATTR_NOCACHE                87                 /* Temporary LOBs */
-
-#define OCI_ATTR_MEMPOOL_SIZE           88                      /* Pool Size */
-#define OCI_ATTR_MEMPOOL_INSTNAME       89                  /* Instance name */
-#define OCI_ATTR_MEMPOOL_APPNAME        90               /* Application name */
-#define OCI_ATTR_MEMPOOL_HOMENAME       91            /* Home Directory name */
-#define OCI_ATTR_MEMPOOL_MODEL          92     /* Pool Model (proc,thrd,both)*/
-#define OCI_ATTR_MODES                  93                          /* Modes */
-
-#define OCI_ATTR_SUBSCR_NAME            94           /* name of subscription */
-#define OCI_ATTR_SUBSCR_CALLBACK        95            /* associated callback */
-#define OCI_ATTR_SUBSCR_CTX             96    /* associated callback context */
-#define OCI_ATTR_SUBSCR_PAYLOAD         97             /* associated payload */
-#define OCI_ATTR_SUBSCR_NAMESPACE       98           /* associated namespace */
-
-#define OCI_ATTR_PROXY_CREDENTIALS      99         /* Proxy user credentials */
-#define OCI_ATTR_INITIAL_CLIENT_ROLES  100       /* Initial client role list */
-
-#define OCI_ATTR_UNK              101                   /* unknown attribute */
-#define OCI_ATTR_NUM_COLS         102                   /* number of columns */
-#define OCI_ATTR_LIST_COLUMNS     103        /* parameter of the column list */
-#define OCI_ATTR_RDBA             104           /* DBA of the segment header */
-#define OCI_ATTR_CLUSTERED        105      /* whether the table is clustered */
-#define OCI_ATTR_PARTITIONED      106    /* whether the table is partitioned */
-#define OCI_ATTR_INDEX_ONLY       107     /* whether the table is index only */
-#define OCI_ATTR_LIST_ARGUMENTS   108      /* parameter of the argument list */
-#define OCI_ATTR_LIST_SUBPROGRAMS 109    /* parameter of the subprogram list */
-#define OCI_ATTR_REF_TDO          110          /* REF to the type descriptor */
-#define OCI_ATTR_LINK             111              /* the database link name */
-#define OCI_ATTR_MIN              112                       /* minimum value */
-#define OCI_ATTR_MAX              113                       /* maximum value */
-#define OCI_ATTR_INCR             114                     /* increment value */
-#define OCI_ATTR_CACHE            115   /* number of sequence numbers cached */
-#define OCI_ATTR_ORDER            116     /* whether the sequence is ordered */
-#define OCI_ATTR_HW_MARK          117                     /* high-water mark */
-#define OCI_ATTR_TYPE_SCHEMA      118                  /* type's schema name */
-#define OCI_ATTR_TIMESTAMP        119             /* timestamp of the object */
-#define OCI_ATTR_NUM_ATTRS        120                /* number of sttributes */
-#define OCI_ATTR_NUM_PARAMS       121                /* number of parameters */
-#define OCI_ATTR_OBJID            122       /* object id for a table or view */
-#define OCI_ATTR_PTYPE            123           /* type of info described by */
-#define OCI_ATTR_PARAM            124                /* parameter descriptor */
-#define OCI_ATTR_OVERLOAD_ID      125     /* overload ID for funcs and procs */
-#define OCI_ATTR_TABLESPACE       126                    /* table name space */
-#define OCI_ATTR_TDO              127                       /* TDO of a type */
-#define OCI_ATTR_LTYPE            128                           /* list type */
-#define OCI_ATTR_PARSE_ERROR_OFFSET 129                /* Parse Error offset */
-#define OCI_ATTR_IS_TEMPORARY     130          /* whether table is temporary */
-#define OCI_ATTR_IS_TYPED         131              /* whether table is typed */
-#define OCI_ATTR_DURATION         132         /* duration of temporary table */
-#define OCI_ATTR_IS_INVOKER_RIGHTS 133                  /* is invoker rights */
-#define OCI_ATTR_OBJ_NAME         134           /* top level schema obj name */
-#define OCI_ATTR_OBJ_SCHEMA       135                         /* schema name */
-#define OCI_ATTR_OBJ_ID           136          /* top level schema object id */
-
-/* For values 137 - 141, see DirPathAPI attribute section in this file */
-
-
-#define OCI_ATTR_TRANS_TIMEOUT              142       /* transaction timeout */
-#define OCI_ATTR_SERVER_STATUS              143/* state of the server handle */
-#define OCI_ATTR_STATEMENT                  144 /* statement txt in stmt hdl */
-
-/* For value 145, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_DEQCOND                    146         /* dequeue condition */
-#define OCI_ATTR_RESERVED_2                 147                  /* reserved */
-
-  
-#define OCI_ATTR_SUBSCR_RECPT               148 /* recepient of subscription */
-#define OCI_ATTR_SUBSCR_RECPTPROTO          149    /* protocol for recepient */
-
-/* For values 150 - 151, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_LDAP_HOST       153              /* LDAP host to connect to */
-#define OCI_ATTR_LDAP_PORT       154              /* LDAP port to connect to */
-#define OCI_ATTR_BIND_DN         155                              /* bind DN */
-#define OCI_ATTR_LDAP_CRED       156       /* credentials to connect to LDAP */
-#define OCI_ATTR_WALL_LOC        157               /* client wallet location */
-#define OCI_ATTR_LDAP_AUTH       158           /* LDAP authentication method */
-#define OCI_ATTR_LDAP_CTX        159        /* LDAP adminstration context DN */
-#define OCI_ATTR_SERVER_DNS      160      /* list of registration server DNs */
-
-#define OCI_ATTR_DN_COUNT        161             /* the number of server DNs */
-#define OCI_ATTR_SERVER_DN       162                  /* server DN attribute */
-
-#define OCI_ATTR_MAXCHAR_SIZE               163     /* max char size of data */
-
-#define OCI_ATTR_CURRENT_POSITION           164 /* for scrollable result sets*/
-
-/* Added to get attributes for ref cursor to statement handle */
-#define OCI_ATTR_RESERVED_3                 165                  /* reserved */
-#define OCI_ATTR_RESERVED_4                 166                  /* reserved */
-
-/* For value 167, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_DIGEST_ALGO                168          /* digest algorithm */
-#define OCI_ATTR_CERTIFICATE                169               /* certificate */
-#define OCI_ATTR_SIGNATURE_ALGO             170       /* signature algorithm */
-#define OCI_ATTR_CANONICAL_ALGO             171    /* canonicalization algo. */
-#define OCI_ATTR_PRIVATE_KEY                172               /* private key */
-#define OCI_ATTR_DIGEST_VALUE               173              /* digest value */
-#define OCI_ATTR_SIGNATURE_VAL              174           /* signature value */
-#define OCI_ATTR_SIGNATURE                  175                 /* signature */
-
-/* attributes for setting OCI stmt caching specifics in svchp */
-#define OCI_ATTR_STMTCACHESIZE              176     /* size of the stm cache */
-
-/* --------------------------- Connection Pool Attributes ------------------ */
-#define OCI_ATTR_CONN_NOWAIT               178
-#define OCI_ATTR_CONN_BUSY_COUNT            179
-#define OCI_ATTR_CONN_OPEN_COUNT            180
-#define OCI_ATTR_CONN_TIMEOUT               181
-#define OCI_ATTR_STMT_STATE                 182
-#define OCI_ATTR_CONN_MIN                   183
-#define OCI_ATTR_CONN_MAX                   184
-#define OCI_ATTR_CONN_INCR                  185
-
-/* For value 187, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_NUM_OPEN_STMTS             188     /* open stmts in session */
-#define OCI_ATTR_DESCRIBE_NATIVE            189  /* get native info via desc */
-
-#define OCI_ATTR_BIND_COUNT                 190   /* number of bind postions */
-#define OCI_ATTR_HANDLE_POSITION            191 /* pos of bind/define handle */
-#define OCI_ATTR_RESERVED_5                 192                 /* reserverd */
-#define OCI_ATTR_SERVER_BUSY                193 /* call in progress on server*/
-
-/* For value 194, see DirPathAPI attribute section in this file */
-
-/* notification presentation for recipient */
-#define OCI_ATTR_SUBSCR_RECPTPRES           195
-#define OCI_ATTR_TRANSFORMATION             196 /* AQ message transformation */
-
-#define OCI_ATTR_ROWS_FETCHED               197 /* rows fetched in last call */
-
-/* --------------------------- Snapshot attributes ------------------------- */
-#define OCI_ATTR_SCN_BASE                   198             /* snapshot base */
-#define OCI_ATTR_SCN_WRAP                   199             /* snapshot wrap */
-
-/* --------------------------- Miscellanous attributes --------------------- */
-#define OCI_ATTR_RESERVED_6                 200                  /* reserved */
-#define OCI_ATTR_READONLY_TXN               201           /* txn is readonly */
-#define OCI_ATTR_RESERVED_7                 202                  /* reserved */
-#define OCI_ATTR_ERRONEOUS_COLUMN           203 /* position of erroneous col */
-#define OCI_ATTR_RESERVED_8                 204                  /* reserved */
-#define OCI_ATTR_ASM_VOL_SPRT               205     /* ASM volume supported? */
-
-/* For value 206, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_INST_TYPE                  207      /* oracle instance type */
-/******USED attribute 208 for  OCI_ATTR_SPOOL_STMTCACHESIZE*******************/
-
-#define OCI_ATTR_ENV_UTF16                  209     /* is env in utf16 mode? */
-#define OCI_ATTR_RESERVED_9                 210                  /* reserved */
-#define OCI_ATTR_RESERVED_10                211                  /* reserved */
-
-/* For values 212 and 213, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_RESERVED_12                214                  /* reserved */
-#define OCI_ATTR_RESERVED_13                215                  /* reserved */
-#define OCI_ATTR_IS_EXTERNAL                216 /* whether table is external */
-
-
-/* -------------------------- Statement Handle Attributes ------------------ */
-
-#define OCI_ATTR_RESERVED_15                217                  /* reserved */
-#define OCI_ATTR_STMT_IS_RETURNING          218 /* stmt has returning clause */
-#define OCI_ATTR_RESERVED_16                219                  /* reserved */
-#define OCI_ATTR_RESERVED_17                220                  /* reserved */
-#define OCI_ATTR_RESERVED_18                221                  /* reserved */
-
-/* --------------------------- session attributes ---------------------------*/
-#define OCI_ATTR_RESERVED_19                222                  /* reserved */
-#define OCI_ATTR_RESERVED_20                223                  /* reserved */
-#define OCI_ATTR_CURRENT_SCHEMA             224            /* Current Schema */
-#define OCI_ATTR_RESERVED_21                415                  /* reserved */
-
-/* ------------------------- notification subscription ----------------------*/
-#define OCI_ATTR_SUBSCR_QOSFLAGS            225                 /* QOS flags */
-#define OCI_ATTR_SUBSCR_PAYLOADCBK          226          /* Payload callback */
-#define OCI_ATTR_SUBSCR_TIMEOUT             227                   /* Timeout */
-#define OCI_ATTR_SUBSCR_NAMESPACE_CTX       228         /* Namespace context */
-#define OCI_ATTR_SUBSCR_CQ_QOSFLAGS         229
-                              /* change notification (CQ) specific QOS flags */
-#define OCI_ATTR_SUBSCR_CQ_REGID            230
-                                      /* change notification registration id */
-#define OCI_ATTR_SUBSCR_NTFN_GROUPING_CLASS        231/* ntfn grouping class */
-#define OCI_ATTR_SUBSCR_NTFN_GROUPING_VALUE        232/* ntfn grouping value */
-#define OCI_ATTR_SUBSCR_NTFN_GROUPING_TYPE         233 /* ntfn grouping type */
-#define OCI_ATTR_SUBSCR_NTFN_GROUPING_START_TIME   234/* ntfn grp start time */
-#define OCI_ATTR_SUBSCR_NTFN_GROUPING_REPEAT_COUNT 235 /* ntfn grp rep count */
-#define OCI_ATTR_AQ_NTFN_GROUPING_MSGID_ARRAY      236 /* aq grp msgid array */
-#define OCI_ATTR_AQ_NTFN_GROUPING_COUNT            237  /* ntfns recd in grp */
-
-/* ----------------------- row callback attributes ------------------------- */
-#define OCI_ATTR_BIND_ROWCBK                301         /* bind row callback */
-#define OCI_ATTR_BIND_ROWCTX                302 /* ctx for bind row callback */
-#define OCI_ATTR_SKIP_BUFFER                303  /* skip buffer in array ops */
-
-/* ----------------------- XStream API attributes -------------------------- */
-#define OCI_ATTR_XSTREAM_ACK_INTERVAL       350      /* XStream ack interval */
-#define OCI_ATTR_XSTREAM_IDLE_TIMEOUT       351      /* XStream idle timeout */
-
-/*-----  Db Change Notification (CQ) statement handle attributes------------ */
-#define OCI_ATTR_CQ_QUERYID               304
-/* ------------- DB Change Notification reg handle attributes ---------------*/
-#define OCI_ATTR_CHNF_TABLENAMES          401 /* out: array of table names   */
-#define OCI_ATTR_CHNF_ROWIDS              402     /* in: rowids needed */ 
-#define OCI_ATTR_CHNF_OPERATIONS          403
-                                        /* in: notification operation filter*/ 
-#define OCI_ATTR_CHNF_CHANGELAG           404
-                                           /* txn lag between notifications  */
-
-/* DB Change: Notification Descriptor attributes -----------------------*/
-#define OCI_ATTR_CHDES_DBNAME            405    /* source database    */
-#define OCI_ATTR_CHDES_NFYTYPE           406    /* notification type flags */
-#define OCI_ATTR_CHDES_XID               407    /* XID  of the transaction */
-#define OCI_ATTR_CHDES_TABLE_CHANGES     408/* array of table chg descriptors*/
-
-#define OCI_ATTR_CHDES_TABLE_NAME        409    /* table name */
-#define OCI_ATTR_CHDES_TABLE_OPFLAGS     410    /* table operation flags */
-#define OCI_ATTR_CHDES_TABLE_ROW_CHANGES 411   /* array of changed rows   */
-#define OCI_ATTR_CHDES_ROW_ROWID         412   /* rowid of changed row    */
-#define OCI_ATTR_CHDES_ROW_OPFLAGS       413   /* row operation flags     */
-
-/* Statement handle attribute for db change notification */
-#define OCI_ATTR_CHNF_REGHANDLE          414   /* IN: subscription handle  */
-#define OCI_ATTR_NETWORK_FILE_DESC       415   /* network file descriptor */
-
-/* client name for single session proxy */
-#define OCI_ATTR_PROXY_CLIENT            416
-
-/* 415 is already taken - see OCI_ATTR_RESERVED_21 */
-
-/* TDE attributes on the Table */
-#define OCI_ATTR_TABLE_ENC         417/* does table have any encrypt columns */
-#define OCI_ATTR_TABLE_ENC_ALG     418         /* Table encryption Algorithm */
-#define OCI_ATTR_TABLE_ENC_ALG_ID  419 /* Internal Id of encryption Algorithm*/
-
-/* -------- Attributes related to Statement cache callback ----------------- */
-#define OCI_ATTR_STMTCACHE_CBKCTX           420    /* opaque context on stmt */
-#define OCI_ATTR_STMTCACHE_CBK              421 /* callback fn for stmtcache */
-
-/*---------------- Query change descriptor attributes -----------------------*/
-#define OCI_ATTR_CQDES_OPERATION 422
-#define OCI_ATTR_CQDES_TABLE_CHANGES 423
-#define OCI_ATTR_CQDES_QUERYID 424
-
-
-#define OCI_ATTR_CHDES_QUERIES 425 /* Top level change desc array of queries */
-  
-/* Please use from 143 */
-
-/* -------- Internal statement attributes ------- */
-#define OCI_ATTR_RESERVED_26                422      
-
-/* 424 is used by OCI_ATTR_DRIVER_NAME */
-/* --------- Attributes added to support server side session pool ---------- */
-#define OCI_ATTR_CONNECTION_CLASS  425
-#define OCI_ATTR_PURITY            426
-
 #define OCI_ATTR_PURITY_DEFAULT    0x00
 #define OCI_ATTR_PURITY_NEW        0x01
 #define OCI_ATTR_PURITY_SELF       0x02
 
-/* -------- Attributes for Times Ten --------------------------*/
-#define OCI_ATTR_RESERVED_28               426                   /* reserved */
-#define OCI_ATTR_RESERVED_29               427                   /* reserved */
-#define OCI_ATTR_RESERVED_30               428                   /* reserved */
-#define OCI_ATTR_RESERVED_31               429                   /* reserved */
-#define OCI_ATTR_RESERVED_32               430                   /* reserved */
-#define OCI_ATTR_RESERVED_41               454                   /* reserved */
+#define OCI_XDS_POLICY_NONE     0
+#define OCI_XDS_POLICY_ENABLED  1
+#define OCI_XDS_POLICY_UNKNOWN  2
 
 
-/* ----------- Reserve internal attributes for workload replay  ------------ */
-#define OCI_ATTR_RESERVED_33               433
-#define OCI_ATTR_RESERVED_34               434
+/*----------------------------OCI Collation IDs------------------------------*/
+/* collation IDs of a number of frequently used collations, mainly
+   pseudo-collations; they are returned as values of the attribute
+   OCI_ATTR_COLLATION_ID; the SQL names of the collations corresponding
+   to the IDs are given in comments below */
 
-/* statement attribute */
-#define OCI_ATTR_RESERVED_36               444
+/* undefined collation; no collation has been specified */
+#define OCI_COLLATION_NONE                   ((ub4)0x00000000)
+/* pseudo-collation USING_NLS_COMP */ 
+#define OCI_COLLATION_NLS_COMP               ((ub4)0x00003FFE) 
+/* pseudo-collation USING_NLS_SORT */
+#define OCI_COLLATION_NLS_SORT               ((ub4)0x00003FFD)
+/* pseudo-collation USING_NLS_SORT_CI */ 
+#define OCI_COLLATION_NLS_SORT_CI            ((ub4)0x00003FFC)
+/* pseudo-collation USING_NLS_SORT_AI */
+#define OCI_COLLATION_NLS_SORT_AI            ((ub4)0x00003FFB)
+/* pseudo-collation USING_NLS_SORT_CS */ 
+#define OCI_COLLATION_NLS_SORT_CS            ((ub4)0x00003FFA)
+/* pseudo-collation USING_NLS_SORT_VAR1 */ 
+#define OCI_COLLATION_NLS_SORT_VAR1          ((ub4)0x00003FF9)
+/* pseudo-collation USING_NLS_SORT_VAR1_CI */
+#define OCI_COLLATION_NLS_SORT_VAR1_CI       ((ub4)0x00003FF8)
+/* pseudo-collation USING_NLS_SORT_VAR1_AI */ 
+#define OCI_COLLATION_NLS_SORT_VAR1_AI       ((ub4)0x00003FF7)
+/* pseudo-collation USING_NLS_SORT_VAR1_CS */ 
+#define OCI_COLLATION_NLS_SORT_VAR1_CS       ((ub4)0x00003FF6)
+/* BINARY */ 
+#define OCI_COLLATION_BINARY                 ((ub4)0x00003FFF)
+/* BINARY_CI */
+#define OCI_COLLATION_BINARY_CI              ((ub4)0x00023FFF)
+/* BINARY_AI */
+#define OCI_COLLATION_BINARY_AI              ((ub4)0x00013FFF)
 
-/* -------- Attributes for Network Session Time Out--------------------------*/
-#define OCI_ATTR_SEND_TIMEOUT               435           /* NS send timeout */
-#define OCI_ATTR_RECEIVE_TIMEOUT            436        /* NS receive timeout */
-
-/*--------- Attributes related to LOB prefetch------------------------------ */
-#define OCI_ATTR_DEFAULT_LOBPREFETCH_SIZE     438   /* default prefetch size */
-#define OCI_ATTR_LOBPREFETCH_SIZE             439           /* prefetch size */
-#define OCI_ATTR_LOBPREFETCH_LENGTH           440 /* prefetch length & chunk */
-
-/*--------- Attributes related to LOB Deduplicate Regions ------------------ */
-#define OCI_ATTR_LOB_REGION_PRIMARY       442         /* Primary LOB Locator */
-#define OCI_ATTR_LOB_REGION_PRIMOFF       443     /* Offset into Primary LOB */ 
-#define OCI_ATTR_LOB_REGION_OFFSET        445               /* Region Offset */
-#define OCI_ATTR_LOB_REGION_LENGTH        446   /* Region Length Bytes/Chars */
-#define OCI_ATTR_LOB_REGION_MIME          447            /* Region mime type */
-
-/*--------------------Attribute to fetch ROWID ------------------------------*/
-#define OCI_ATTR_FETCH_ROWID                 448
-
-/* server attribute */
-#define OCI_ATTR_RESERVED_37              449
-
-/*------------------- Client Internal Attributes -----------------------*/
-#define OCI_ATTR_RESERVED_38           450
-#define OCI_ATTR_RESERVED_39           451
-
-/* --------------- ip address attribute in environment handle -------------- */
-#define OCI_ATTR_SUBSCR_IPADDR         452       /* ip address to listen on  */
-
-/* server attribute */
-#define OCI_ATTR_RESERVED_40           453  
+  
+/* ATTRIBUTE NUMBERS ARE GLOBAL
+ *
+ * DO NOT ADD NEW ATTRIBUTES HERE -- ADD WHERE IT SAYS
+ * "new attributes must be added just before this block" (UPPERCASED, unquoted)
+ */
 
 /* DB Change: Event types ---------------*/
 #define OCI_EVENT_NONE 0x0                                           /* None */
@@ -1403,26 +1230,6 @@ extern "C" {
 #define OCI_OPCODE_DROP 0x20                                   /* DROP TABLE */
 #define OCI_OPCODE_UNKNOWN 0x40                           /* GENERIC/ UNKNOWN*/
 
-/* -------- client side character and national character set ids ----------- */
-#define OCI_ATTR_ENV_CHARSET_ID   OCI_ATTR_CHARSET_ID   /* charset id in env */
-#define OCI_ATTR_ENV_NCHARSET_ID  OCI_ATTR_NCHARSET_ID /* ncharset id in env */
-
-/* ----------------------- ha event callback attributes -------------------- */
-#define OCI_ATTR_EVTCBK                     304               /* ha callback */
-#define OCI_ATTR_EVTCTX                     305       /* ctx for ha callback */
-
-/* ------------------ User memory attributes (all handles) ----------------- */
-#define OCI_ATTR_USER_MEMORY               306     /* pointer to user memory */
-
-/* ------- unauthorised access and user action auditing banners ------------ */
-#define OCI_ATTR_ACCESS_BANNER              307             /* access banner */
-#define OCI_ATTR_AUDIT_BANNER               308              /* audit banner */
-
-/* ----------------- port no attribute in environment  handle  ------------- */
-#define OCI_ATTR_SUBSCR_PORTNO              390  /* port no to listen        */
-
-#define OCI_ATTR_RESERVED_35                437
-
 /*------------- Supported Values for protocol for recepient -----------------*/
 #define OCI_SUBSCR_PROTO_OCI                0                         /* oci */
 #define OCI_SUBSCR_PROTO_MAIL               1                        /* mail */
@@ -1439,12 +1246,19 @@ extern "C" {
 #define OCI_SUBSCR_QOS_RELIABLE             0x01                 /* reliable */
 #define OCI_SUBSCR_QOS_PAYLOAD              0x02         /* payload delivery */
 #define OCI_SUBSCR_QOS_REPLICATE            0x04    /* replicate to director */
+/* internal qos - 12c secure ntfns with client initiated connections */
 #define OCI_SUBSCR_QOS_SECURE               0x08  /* secure payload delivery */
 #define OCI_SUBSCR_QOS_PURGE_ON_NTFN        0x10      /* purge on first ntfn */
 #define OCI_SUBSCR_QOS_MULTICBK             0x20  /* multi instance callback */
                                          /* 0x40 is used for a internal flag */
 #define OCI_SUBSCR_QOS_HAREG                0x80                   /* HA reg */
-
+       /* non-durable registration. For now supported only with secure ntfns */
+#define OCI_SUBSCR_QOS_NONDURABLE           0x100         /* non-durable reg */
+#define OCI_SUBSCR_QOS_ASYNC_DEQ            0x200         /* Asyncronous Deq */
+#define OCI_SUBSCR_QOS_AUTO_ACK             0x400    /* auto acknowledgement */
+#define OCI_SUBSCR_QOS_TX_ACK               0x800         /* transacted acks */
+#define OCI_SUBSCR_QOS_PLS_NTFN            0x1000 /*11g plsql ntfn - sharded */
+#define OCI_SUBSCR_QOS_AUTO_DEQ            0x2000    /*  plsql automatic deq */
 /* ----QOS flags specific to change notification/ continuous queries CQ -----*/
 #define OCI_SUBSCR_CQ_QOS_QUERY  0x01            /* query level notification */
 #define OCI_SUBSCR_CQ_QOS_BEST_EFFORT 0x02       /* best effort notification */
@@ -1461,6 +1275,9 @@ extern "C" {
 #define OCI_UCS2ID            1000                        /* UCS2 charset ID */
 #define OCI_UTF16ID           1000                       /* UTF16 charset ID */
 
+/* -------------------------- Implicit Result types ------------------------ */
+#define OCI_RESULT_TYPE_SELECT                1
+
 /*============================== End OCI Attribute Types ====================*/
 
 /*---------------- Server Handle Attribute Values ---------------------------*/
@@ -1475,15 +1292,17 @@ extern "C" {
 #define OCI_SUBSCR_NAMESPACE_ANONYMOUS   0            /* Anonymous Namespace */
 #define OCI_SUBSCR_NAMESPACE_AQ          1                /* Advanced Queues */
 #define OCI_SUBSCR_NAMESPACE_DBCHANGE    2            /* change notification */
-#define OCI_SUBSCR_NAMESPACE_MAX         3          /* Max Name Space Number */
+#define OCI_SUBSCR_NAMESPACE_RESERVED1   3
+#define OCI_SUBSCR_NAMESPACE_MAX         4          /* Max Name Space Number */
 
 
 /*-------------------------Credential Types----------------------------------*/
-#define OCI_CRED_RDBMS      1                  /* database username/password */
-#define OCI_CRED_EXT        2             /* externally provided credentials */
-#define OCI_CRED_PROXY      3                        /* proxy authentication */
-#define OCI_CRED_RESERVED_1 4                                    /* reserved */
-#define OCI_CRED_RESERVED_2 5                                    /* reserved */
+#define OCI_CRED_RDBMS       1                 /* database username/password */
+#define OCI_CRED_EXT         2            /* externally provided credentials */
+#define OCI_CRED_PROXY       3                       /* proxy authentication */
+#define OCI_CRED_RESERVED_1  4                                   /* reserved */
+#define OCI_CRED_RESERVED_2  5                                   /* reserved */
+#define OCI_CRED_RESERVED_3  6                                   /* reserved */
 /*---------------------------------------------------------------------------*/
 
 /*------------------------Error Return Values--------------------------------*/
@@ -1548,6 +1367,7 @@ extern "C" {
 #define OCI_V7_SYNTAX 2       /* V815 language - for backwards compatibility */
 #define OCI_V8_SYNTAX 3       /* V815 language - for backwards compatibility */
 #define OCI_NTV_SYNTAX 1    /* Use what so ever is the native lang of server */
+#define OCI_FOREIGN_SYNTAX UB4MAXVAL /* Foreign syntax - require translation */
                      /* these values must match the values defined in kpul.h */
 /*---------------------------------------------------------------------------*/
 
@@ -1600,9 +1420,9 @@ extern "C" {
 #define OCI_NO_MUTEX        0x00000080 /* the environment handle will not be */
                                          /*  protected by a mutex internally */
 #define OCI_SHARED_EXT      0x00000100              /* Used for shared forms */
-/************************** 0x00000200 free **********************************/
+#define OCI_ENVCR_RESERVED9 0x00000200                           /* reserved */
 #define OCI_ALWAYS_BLOCKING 0x00000400    /* all connections always blocking */
-/************************** 0x00000800 free **********************************/
+#define OCI_ENVCR_RESERVED10 0x00000800                          /* reserved */
 #define OCI_USE_LDAP        0x00001000            /* allow  LDAP connections */
 #define OCI_REG_LDAPONLY    0x00002000              /* only register to LDAP */
 #define OCI_UTF16           0x00004000        /* mode for all UTF16 metadata */
@@ -1621,7 +1441,15 @@ extern "C" {
 #define OCI_NCHAR_LITERAL_REPLACE_OFF 0x00800000 /* nchar literal replace off*/
 #define OCI_ENABLE_NLS_VALIDATION     0x01000000    /* enable nls validation */
 #define OCI_ENVCR_RESERVED4           0x02000000                 /* reserved */
+#define OCI_ENVCR_RESERVED5           0x04000000                 /* reserved */
+#define OCI_ENVCR_RESERVED6           0x08000000                 /* reserved */
+#define OCI_ENVCR_RESERVED7           0x10000000                 /* reserved */
+#define OCI_ENVCR_RESERVED8           0x80000000                 /* reserved */
 
+/* client initiated notification listener connections, applicable only for 
+   12c queues and above */
+#define OCI_SECURE_NOTIFICATION        0x20000000 
+#define OCI_DISABLE_DIAG               0x40000000     /* disable diagnostics */
 /*---------------------------------------------------------------------------*/
 /*------------------------OCIConnectionpoolCreate Modes----------------------*/
 
@@ -1630,24 +1458,23 @@ extern "C" {
 /*---------------------------------------------------------------------------*/
 /*--------------------------------- OCILogon2 Modes -------------------------*/
 
-#define OCI_LOGON2_SPOOL       0x0001     /* Use session pool */
-#define OCI_LOGON2_CPOOL       OCI_CPOOL  /* Use connection pool */
-#define OCI_LOGON2_STMTCACHE   0x0004     /* Use Stmt Caching */
-#define OCI_LOGON2_PROXY       0x0008     /* Proxy authentiaction */
+#define OCI_LOGON2_SPOOL       0x0001                    /* Use session pool */
+#define OCI_LOGON2_STMTCACHE   0x0004                    /* Use Stmt Caching */
+#define OCI_LOGON2_PROXY       0x0008                /* Proxy authentiaction */
+#define OCI_LOGON2_CPOOL       0x0200                 /* Use connection pool */
 
 /*---------------------------------------------------------------------------*/
 /*------------------------- OCISessionPoolCreate Modes ----------------------*/
 
-#define OCI_SPC_REINITIALIZE 0x0001   /* Reinitialize the session pool */
-#define OCI_SPC_HOMOGENEOUS  0x0002   /* Session pool is homogeneneous */
-#define OCI_SPC_STMTCACHE    0x0004   /* Session pool has stmt cache */
-#define OCI_SPC_NO_RLB       0x0008 /* Do not enable Runtime load balancing. */ 
+#define OCI_SPC_REINITIALIZE 0x0001         /* Reinitialize the session pool */
+#define OCI_SPC_HOMOGENEOUS  0x0002         /* Session pool is homogeneneous */
+#define OCI_SPC_STMTCACHE    0x0004           /* Session pool has stmt cache */
+#define OCI_SPC_NO_RLB       0x0008  /* Do not enable Runtime load balancing */
 
 /*---------------------------------------------------------------------------*/
 /*--------------------------- OCISessionGet Modes ---------------------------*/
 
 #define OCI_SESSGET_SPOOL      0x0001     /* SessionGet called in SPOOL mode */
-#define OCI_SESSGET_CPOOL      OCI_CPOOL  /* SessionGet called in CPOOL mode */
 #define OCI_SESSGET_STMTCACHE  0x0004                 /* Use statement cache */
 #define OCI_SESSGET_CREDPROXY  0x0008     /* SessionGet called in proxy mode */
 #define OCI_SESSGET_CREDEXT    0x0010     
@@ -1655,19 +1482,33 @@ extern "C" {
 #define OCI_SESSGET_PURITY_NEW     0x0040 
 #define OCI_SESSGET_PURITY_SELF    0x0080 
 #define OCI_SESSGET_SYSDBA    0x0100    /* SessionGet with SYSDBA privileges */
+#define OCI_SESSGET_CPOOL     0x0200      /* SessionGet called in CPOOL mode */
+#define OCI_SESSGET_MULTIPROPERTY_TAG 0x0400           /* multi property tag */
+#define OCI_SESSGET_CUSTOM_POOL       0x0800             /* Custom Pool Mode */
+
+/*---------------------------------------------------------------------------*/
+/*------------------- OCI_ATTR_SESSGET_FLAGS values -------------------------*/
+#define OCI_SESSGET_FLAGS_NEW           0x0001             /* new connection */
+#define OCI_SESSGET_FLAGS_POOLED_SERVER 0x0002   /* pooled server connection */
+#define OCI_SESSGET_FLAGS_SHARD  0x0004  /* connected to shard in sharded DB */
+#define OCI_SESSGET_FLAGS_RAC_DATA_AFFN 0x0008      /* connected to RAC Data
+                                                   Affinity enabled database */
 
 /*---------------------------------------------------------------------------*/
 /*------------------------ATTR Values for Session Pool-----------------------*/
 /* Attribute values for OCI_ATTR_SPOOL_GETMODE */
-#define OCI_SPOOL_ATTRVAL_WAIT     0         /* block till you get a session */
-#define OCI_SPOOL_ATTRVAL_NOWAIT   1    /* error out if no session avaliable */
-#define OCI_SPOOL_ATTRVAL_FORCEGET 2  /* get session even if max is exceeded */
+#define OCI_SPOOL_ATTRVAL_WAIT      0        /* block till you get a session */
+#define OCI_SPOOL_ATTRVAL_NOWAIT    1   /* error out if no session avaliable */
+#define OCI_SPOOL_ATTRVAL_FORCEGET  2 /* get session even if max is exceeded */
+#define OCI_SPOOL_ATTRVAL_TIMEDWAIT 3  /* wait for specified timeout if pool
+                                        * is maxed out                       */
 
 /*---------------------------------------------------------------------------*/
 /*--------------------------- OCISessionRelease Modes -----------------------*/
 
-#define OCI_SESSRLS_DROPSESS 0x0001                    /* Drop the Session */
-#define OCI_SESSRLS_RETAG    0x0002                   /* Retag the session */
+#define OCI_SESSRLS_DROPSESS 0x0001                      /* Drop the Session */
+#define OCI_SESSRLS_RETAG    0x0002                     /* Retag the session */
+#define OCI_SESSRLS_MULTIPROPERTY_TAG 0x0004           /* multi property tag */
 
 /*---------------------------------------------------------------------------*/
 /*----------------------- OCISessionPoolDestroy Modes -----------------------*/
@@ -1675,6 +1516,17 @@ extern "C" {
 #define OCI_SPD_FORCE        0x0001       /* Force the sessions to terminate. 
                                              Even if there are some busy 
                                              sessions close them */
+
+/*---------------------------------------------------------------------------*/
+
+/*---------------------------- OCIRequestBegin Modes ------------------------*/
+#define OCI_REQUEST_BEGIN_RESERVED_1   0X0001                    /* reserved */
+
+/*----------------------------- OCIRequestEnd Modes -------------------------*/
+
+#define OCI_REQUEST_END_KEEP_SESSION 0x0001   /* Don't drop the session for
+                                                 planned maintenance       */
+#define OCI_REQUEST_END_RESERVED_2   0X0002                      /* reserved */
  
 /*---------------------------------------------------------------------------*/
 /*----------------------------- Statement States ----------------------------*/
@@ -1737,7 +1589,7 @@ extern "C" {
 #define OCI_RESULT_CACHE           0x00020000   /* hint to use query caching */
 #define OCI_NO_RESULT_CACHE        0x00040000  /*hint to bypass query caching*/
 #define OCI_EXEC_RESERVED_7        0x00080000                    /* reserved */
-
+#define OCI_RETURN_ROW_COUNT_ARRAY 0x00100000 /* Per Iter DML Row Count mode */
 /*---------------------------------------------------------------------------*/
 
 /*------------------------Authentication Modes-------------------------------*/
@@ -1757,6 +1609,10 @@ extern "C" {
 #define OCI_AUTH_RESERVED_5 0x00002000                           /* reserved */
 #define OCI_SYSASM          0x00008000           /* for SYSASM authorization */
 #define OCI_AUTH_RESERVED_6 0x00010000                           /* reserved */
+#define OCI_SYSBKP          0x00020000        /* for SYSBACKUP authorization */
+#define OCI_SYSDGD          0x00040000            /* for SYSDG authorization */
+#define OCI_SYSKMT          0x00080000            /* for SYSKM authorization */
+#define OCI_SYSRAC          0x00100000           /* for SYSRAC authorization */
 
 /*---------------------------------------------------------------------------*/
 
@@ -1782,6 +1638,7 @@ extern "C" {
 #define OCI_ATCH_RESERVED_6  0x8000                              /* reserved */
 #define OCI_ATCH_RESERVED_7  0x10000                              /* reserved */
 #define OCI_ATCH_RESERVED_8  0x20000                             /* reserved */
+#define OCI_ATCH_RESERVED_9  0x40000                             /* reserved */
 
 #define OCI_SRVATCH_RESERVED5 0x01000000                         /* reserved */
 #define OCI_SRVATCH_RESERVED6 0x02000000                         /* reserved */
@@ -1790,6 +1647,16 @@ extern "C" {
 #define OCI_PREP2_CACHE_SEARCHONLY    0x0010                  /* ONly Search */
 #define OCI_PREP2_GET_PLSQL_WARNINGS  0x0020         /* Get PL/SQL warnings  */
 #define OCI_PREP2_RESERVED_1          0x0040                     /* reserved */
+#define OCI_PREP2_RESERVED_2          0x0080                     /* reserved */
+#define OCI_PREP2_RESERVED_3          0x0100                     /* reserved */
+#define OCI_PREP2_RESERVED_4          0x0200                     /* reserved */
+#define OCI_PREP2_IMPL_RESULTS_CLIENT 0x0400  /* client for implicit results */
+#define OCI_PREP2_RESERVED_5          0x0800                     /* reserved */
+#define OCI_PREP2_RESERVED_6          0x1000                     /* reserved */
+#define OCI_PREP2_GET_SQL_ID          0x2000  /* Get SQL_ID for the SQL stmt */
+#define OCI_PREP2_RESERVED_7          0x4000                     /* reserved */
+#define OCI_PREP2_RESERVED_8          0x8000                     /* reserved */
+#define OCI_PREP2_RESERVED_9          0x10000                    /* reserved */
 
 /*---------------------OCIStmtRelease Modes----------------------------------*/
 #define OCI_STRLS_CACHE_DELETE      0x0010              /* Delete from Cache */
@@ -1899,13 +1766,26 @@ extern "C" {
 #define OCI_MSG_PERSISTENT               1
 
 /* ----------------------- Reserved/AQE pisdef flags ------------------------*/
-/* see aqeflg defines in kwqp.h */
 #define OCI_AQ_RESERVED_1      0x0002
 #define OCI_AQ_RESERVED_2      0x0004
 #define OCI_AQ_RESERVED_3      0x0008
 #define OCI_AQ_RESERVED_4      0x0010
 
 #define OCI_AQ_STREAMING_FLAG  0x02000000
+
+/* AQ JMS message types */
+#define OCI_AQJMS_RAW_MSG    0x00000001                       /* raw message */
+#define OCI_AQJMS_TEXT_MSG   0x00000002                      /* text message */
+#define OCI_AQJMS_MAP_MSG    0x00000004                       /* map message */
+#define OCI_AQJMS_BYTE_MSG   0x00000008                      /* byte message */
+#define OCI_AQJMS_STREAM_MSG 0x00000010                    /* stream message */
+#define OCI_AQJMS_ADT_MSG    0x00000020                       /* adt message */
+
+/* AQ JMS Message streaming flags */
+#define OCI_AQMSG_FIRST_CHUNK 0x00000001           /* first chunk of message */
+#define OCI_AQMSG_NEXT_CHUNK  0x00000002            /* next chunk of message */
+#define OCI_AQMSG_LAST_CHUNK  0x00000004            /* last chunk of message */
+
 
 /* ------------------------------ Replay Info -------------------------------*/
 #define OCI_AQ_LAST_ENQUEUED     0
@@ -1930,8 +1810,12 @@ extern "C" {
 
 /*=======================Describe Handle Parameter Attributes ===============*/
 /* 
-   These attributes are orthogonal to the other set of attributes defined 
-   above.  These attrubutes are to be used only for the describe handle. 
+   These attributes were historically orthogonal to the other set of attributes
+   defined above.  These attrubutes are to be used only for the describe
+   handle.  However, this contributes to confusion during attribute
+   creation. All new attributes for handles and descriptors should be added
+   where it says "new attributes must be added just before this block"
+   (UPPERCASED, unquoted)
 */
 /*===========================================================================*/
 /* Attributes common to Columns and Stored Procs */
@@ -1948,266 +1832,20 @@ extern "C" {
 #define OCI_ATTR_SUB_NAME       10      /* type name if package private type */
 #define OCI_ATTR_POSITION       11
                     /* relative position of col/arg in the list of cols/args */
-/* complex object retrieval parameter attributes */
-#define OCI_ATTR_COMPLEXOBJECTCOMP_TYPE         50 
-#define OCI_ATTR_COMPLEXOBJECTCOMP_TYPE_LEVEL   51
-#define OCI_ATTR_COMPLEXOBJECT_LEVEL            52
-#define OCI_ATTR_COMPLEXOBJECT_COLL_OUTOFLINE   53
-
-/* Only Columns */
-#define OCI_ATTR_DISP_NAME      100                      /* the display name */
-#define OCI_ATTR_ENCC_SIZE      101                   /* encrypted data size */
-#define OCI_ATTR_COL_ENC        102                 /* column is encrypted ? */
-#define OCI_ATTR_COL_ENC_SALT   103          /* is encrypted column salted ? */
-
-/*Only Stored Procs */
-#define OCI_ATTR_OVERLOAD       210           /* is this position overloaded */
-#define OCI_ATTR_LEVEL          211            /* level for structured types */
-#define OCI_ATTR_HAS_DEFAULT    212                   /* has a default value */
-#define OCI_ATTR_IOMODE         213                         /* in, out inout */
-#define OCI_ATTR_RADIX          214                       /* returns a radix */
-#define OCI_ATTR_NUM_ARGS       215             /* total number of arguments */
-
-/* only named type attributes */
-#define OCI_ATTR_TYPECODE                  216       /* object or collection */
-#define OCI_ATTR_COLLECTION_TYPECODE       217     /* varray or nested table */
-#define OCI_ATTR_VERSION                   218      /* user assigned version */
-#define OCI_ATTR_IS_INCOMPLETE_TYPE        219 /* is this an incomplete type */
-#define OCI_ATTR_IS_SYSTEM_TYPE            220              /* a system type */
-#define OCI_ATTR_IS_PREDEFINED_TYPE        221          /* a predefined type */
-#define OCI_ATTR_IS_TRANSIENT_TYPE         222           /* a transient type */
-#define OCI_ATTR_IS_SYSTEM_GENERATED_TYPE  223      /* system generated type */
-#define OCI_ATTR_HAS_NESTED_TABLE          224 /* contains nested table attr */
-#define OCI_ATTR_HAS_LOB                   225        /* has a lob attribute */
-#define OCI_ATTR_HAS_FILE                  226       /* has a file attribute */
-#define OCI_ATTR_COLLECTION_ELEMENT        227 /* has a collection attribute */
-#define OCI_ATTR_NUM_TYPE_ATTRS            228  /* number of attribute types */
-#define OCI_ATTR_LIST_TYPE_ATTRS           229    /* list of type attributes */
-#define OCI_ATTR_NUM_TYPE_METHODS          230     /* number of type methods */
-#define OCI_ATTR_LIST_TYPE_METHODS         231       /* list of type methods */
-#define OCI_ATTR_MAP_METHOD                232         /* map method of type */
-#define OCI_ATTR_ORDER_METHOD              233       /* order method of type */
-
-/* only collection element */
-#define OCI_ATTR_NUM_ELEMS                 234         /* number of elements */
-
-/* only type methods */
-#define OCI_ATTR_ENCAPSULATION             235        /* encapsulation level */
-#define OCI_ATTR_IS_SELFISH                236             /* method selfish */
-#define OCI_ATTR_IS_VIRTUAL                237                    /* virtual */
-#define OCI_ATTR_IS_INLINE                 238                     /* inline */
-#define OCI_ATTR_IS_CONSTANT               239                   /* constant */
-#define OCI_ATTR_HAS_RESULT                240                 /* has result */
-#define OCI_ATTR_IS_CONSTRUCTOR            241                /* constructor */
-#define OCI_ATTR_IS_DESTRUCTOR             242                 /* destructor */
-#define OCI_ATTR_IS_OPERATOR               243                   /* operator */
-#define OCI_ATTR_IS_MAP                    244               /* a map method */
-#define OCI_ATTR_IS_ORDER                  245               /* order method */
-#define OCI_ATTR_IS_RNDS                   246  /* read no data state method */
-#define OCI_ATTR_IS_RNPS                   247      /* read no process state */
-#define OCI_ATTR_IS_WNDS                   248 /* write no data state method */
-#define OCI_ATTR_IS_WNPS                   249     /* write no process state */
-
-#define OCI_ATTR_DESC_PUBLIC               250              /* public object */
-
-/* Object Cache Enhancements : attributes for User Constructed Instances     */
-#define OCI_ATTR_CACHE_CLIENT_CONTEXT      251
-#define OCI_ATTR_UCI_CONSTRUCT             252
-#define OCI_ATTR_UCI_DESTRUCT              253
-#define OCI_ATTR_UCI_COPY                  254
-#define OCI_ATTR_UCI_PICKLE                255
-#define OCI_ATTR_UCI_UNPICKLE              256
-#define OCI_ATTR_UCI_REFRESH               257
-
-/* for type inheritance */
-#define OCI_ATTR_IS_SUBTYPE                258
-#define OCI_ATTR_SUPERTYPE_SCHEMA_NAME     259
-#define OCI_ATTR_SUPERTYPE_NAME            260
-
-/* for schemas */
-#define OCI_ATTR_LIST_OBJECTS              261  /* list of objects in schema */
-
-/* for database */
-#define OCI_ATTR_NCHARSET_ID               262                /* char set id */
-#define OCI_ATTR_LIST_SCHEMAS              263            /* list of schemas */
-#define OCI_ATTR_MAX_PROC_LEN              264       /* max procedure length */
-#define OCI_ATTR_MAX_COLUMN_LEN            265     /* max column name length */
-#define OCI_ATTR_CURSOR_COMMIT_BEHAVIOR    266     /* cursor commit behavior */
-#define OCI_ATTR_MAX_CATALOG_NAMELEN       267         /* catalog namelength */
-#define OCI_ATTR_CATALOG_LOCATION          268           /* catalog location */
-#define OCI_ATTR_SAVEPOINT_SUPPORT         269          /* savepoint support */
-#define OCI_ATTR_NOWAIT_SUPPORT            270             /* nowait support */
-#define OCI_ATTR_AUTOCOMMIT_DDL            271             /* autocommit DDL */
-#define OCI_ATTR_LOCKING_MODE              272               /* locking mode */
-
-/* for externally initialized context */
-#define OCI_ATTR_APPCTX_SIZE               273 /* count of context to be init*/
-#define OCI_ATTR_APPCTX_LIST               274 /* count of context to be init*/
-#define OCI_ATTR_APPCTX_NAME               275 /* name  of context to be init*/
-#define OCI_ATTR_APPCTX_ATTR               276 /* attr  of context to be init*/
-#define OCI_ATTR_APPCTX_VALUE              277 /* value of context to be init*/
-
-/* for client id propagation */
-#define OCI_ATTR_CLIENT_IDENTIFIER         278   /* value of client id to set*/
-
-/* for inheritance - part 2 */
-#define OCI_ATTR_IS_FINAL_TYPE             279            /* is final type ? */
-#define OCI_ATTR_IS_INSTANTIABLE_TYPE      280     /* is instantiable type ? */
-#define OCI_ATTR_IS_FINAL_METHOD           281          /* is final method ? */
-#define OCI_ATTR_IS_INSTANTIABLE_METHOD    282   /* is instantiable method ? */
-#define OCI_ATTR_IS_OVERRIDING_METHOD      283     /* is overriding method ? */
-
-#define OCI_ATTR_DESC_SYNBASE              284   /* Describe the base object */
-
-
-#define OCI_ATTR_CHAR_USED                 285      /* char length semantics */
-#define OCI_ATTR_CHAR_SIZE                 286                /* char length */
-
-/* SQLJ support */
-#define OCI_ATTR_IS_JAVA_TYPE              287 /* is java implemented type ? */
-
-/* N-Tier support */
-#define OCI_ATTR_DISTINGUISHED_NAME        300        /* use DN as user name */
-#define OCI_ATTR_KERBEROS_TICKET           301   /* Kerberos ticket as cred. */
- 
-/* for multilanguage debugging */
-#define OCI_ATTR_ORA_DEBUG_JDWP            302   /* ORA_DEBUG_JDWP attribute */
-
-#define OCI_ATTR_EDITION                   288                /* ORA_EDITION */
-
-#define OCI_ATTR_RESERVED_14               303                   /* reserved */
-
-
+#define OCI_ATTR_PACKAGE_NAME   12           /* package name of package type */
+#define OCI_ATTR_REFERENCED     13        /* column is referenced (reserved) */
 /*---------------------------End Describe Handle Attributes -----------------*/
 
-/* For values 303 - 307, see DirPathAPI attribute section in this file */
+/*--------------------------------------------------------------
+   Flags coresponding to the column properties
+----------------------------------------------------------------*/
+#define OCI_ATTR_COL_PROPERTY_IS_IDENTITY           0x0000000000000001 
+#define OCI_ATTR_COL_PROPERTY_IS_GEN_ALWAYS         0x0000000000000002 
+#define OCI_ATTR_COL_PROPERTY_IS_GEN_BY_DEF_ON_NULL 0x0000000000000004 
+#define OCI_ATTR_COL_PROPERTY_IS_LPART              0x0000000000000008 
+#define OCI_ATTR_COL_PROPERTY_IS_CONID              0x0000000000000010 
 
-/* ----------------------- Session Pool Attributes ------------------------- */
-#define OCI_ATTR_SPOOL_TIMEOUT              308           /* session timeout */
-#define OCI_ATTR_SPOOL_GETMODE              309          /* session get mode */
-#define OCI_ATTR_SPOOL_BUSY_COUNT           310        /* busy session count */
-#define OCI_ATTR_SPOOL_OPEN_COUNT           311        /* open session count */
-#define OCI_ATTR_SPOOL_MIN                  312         /* min session count */
-#define OCI_ATTR_SPOOL_MAX                  313         /* max session count */
-#define OCI_ATTR_SPOOL_INCR                 314   /* session increment count */
-#define OCI_ATTR_SPOOL_STMTCACHESIZE        208   /*Stmt cache size of pool  */
-#define OCI_ATTR_SPOOL_AUTH                 460 /* Auth handle on pool handle*/
-/*------------------------------End Session Pool Attributes -----------------*/
-/*---------------------------- For XML Types ------------------------------- */
-/* For table, view and column */
-#define OCI_ATTR_IS_XMLTYPE          315         /* Is the type an XML type? */
-#define OCI_ATTR_XMLSCHEMA_NAME      316               /* Name of XML Schema */
-#define OCI_ATTR_XMLELEMENT_NAME     317              /* Name of XML Element */
-#define OCI_ATTR_XMLSQLTYPSCH_NAME   318    /* SQL type's schema for XML Ele */
-#define OCI_ATTR_XMLSQLTYPE_NAME     319     /* Name of SQL type for XML Ele */
-#define OCI_ATTR_XMLTYPE_STORED_OBJ  320       /* XML type stored as object? */
-#define OCI_ATTR_XMLTYPE_BINARY_XML  422       /* XML type stored as binary? */
-
-/*---------------------------- For Subtypes ------------------------------- */
-/* For type */
-#define OCI_ATTR_HAS_SUBTYPES        321                    /* Has subtypes? */
-#define OCI_ATTR_NUM_SUBTYPES        322               /* Number of subtypes */
-#define OCI_ATTR_LIST_SUBTYPES       323                 /* List of subtypes */
-
-/* XML flag */
-#define OCI_ATTR_XML_HRCHY_ENABLED   324               /* hierarchy enabled? */
-
-/* Method flag */
-#define OCI_ATTR_IS_OVERRIDDEN_METHOD 325           /* Method is overridden? */
-
-/* For values 326 - 335, see DirPathAPI attribute section in this file */
-
-/*------------- Attributes for 10i Distributed Objects ----------------------*/
-#define OCI_ATTR_OBJ_SUBS                   336 /* obj col/tab substitutable */
-
-/* For values 337 - 338, see DirPathAPI attribute section in this file */
-
-/*---------- Attributes for 10i XADFIELD (NLS language, territory -----------*/
-#define OCI_ATTR_XADFIELD_RESERVED_1        339                  /* reserved */
-#define OCI_ATTR_XADFIELD_RESERVED_2        340                  /* reserved */
-/*------------- Kerberos Secure Client Identifier ---------------------------*/
-#define OCI_ATTR_KERBEROS_CID               341 /* Kerberos db service ticket*/
-
-
-/*------------------------ Attributes for Rules objects ---------------------*/
-#define OCI_ATTR_CONDITION                  342            /* rule condition */
-#define OCI_ATTR_COMMENT                    343                   /* comment */
-#define OCI_ATTR_VALUE                      344             /* Anydata value */
-#define OCI_ATTR_EVAL_CONTEXT_OWNER         345        /* eval context owner */
-#define OCI_ATTR_EVAL_CONTEXT_NAME          346         /* eval context name */
-#define OCI_ATTR_EVALUATION_FUNCTION        347        /* eval function name */
-#define OCI_ATTR_VAR_TYPE                   348             /* variable type */
-#define OCI_ATTR_VAR_VALUE_FUNCTION         349   /* variable value function */
-#define OCI_ATTR_VAR_METHOD_FUNCTION        350  /* variable method function */
-#define OCI_ATTR_ACTION_CONTEXT             351            /* action context */
-#define OCI_ATTR_LIST_TABLE_ALIASES         352     /* list of table aliases */
-#define OCI_ATTR_LIST_VARIABLE_TYPES        353    /* list of variable types */
-#define OCI_ATTR_TABLE_NAME                 356                /* table name */
-
-/* For values 357 - 359, see DirPathAPI attribute section in this file */
-
-#define OCI_ATTR_MESSAGE_CSCN               360              /* message cscn */
-#define OCI_ATTR_MESSAGE_DSCN               361              /* message dscn */
-
-/*--------------------- Audit Session ID ------------------------------------*/
-#define OCI_ATTR_AUDIT_SESSION_ID           362          /* Audit session ID */
-
-/*--------------------- Kerberos TGT Keys -----------------------------------*/
-#define OCI_ATTR_KERBEROS_KEY               363  /* n-tier Kerberos cred key */
-#define OCI_ATTR_KERBEROS_CID_KEY           364    /* SCID Kerberos cred key */
-
-
-#define OCI_ATTR_TRANSACTION_NO             365         /* AQ enq txn number */
-
-/*----------------------- Attributes for End To End Tracing -----------------*/
-#define OCI_ATTR_MODULE                     366        /* module for tracing */
-#define OCI_ATTR_ACTION                     367        /* action for tracing */
-#define OCI_ATTR_CLIENT_INFO                368               /* client info */
-#define OCI_ATTR_COLLECT_CALL_TIME          369         /* collect call time */
-#define OCI_ATTR_CALL_TIME                  370         /* extract call time */
-#define OCI_ATTR_ECONTEXT_ID                371      /* execution-id context */
-#define OCI_ATTR_ECONTEXT_SEQ               372  /*execution-id sequence num */
-
-
-/*------------------------------ Session attributes -------------------------*/
-#define OCI_ATTR_SESSION_STATE              373             /* session state */
-#define OCI_SESSION_STATELESS  1                             /* valid states */
-#define OCI_SESSION_STATEFUL   2
-
-#define OCI_ATTR_SESSION_STATETYPE          374        /* session state type */
-#define OCI_SESSION_STATELESS_DEF  0                    /* valid state types */
-#define OCI_SESSION_STATELESS_CAL  1
-#define OCI_SESSION_STATELESS_TXN  2
-#define OCI_SESSION_STATELESS_APP  3
-
-#define OCI_ATTR_SESSION_STATE_CLEARED      376     /* session state cleared */
-#define OCI_ATTR_SESSION_MIGRATED           377       /* did session migrate */
-#define OCI_ATTR_SESSION_PRESERVE_STATE     388    /* preserve session state */
-#define OCI_ATTR_DRIVER_NAME                424               /* Driver Name */
-
-/* -------------------------- Admin Handle Attributes ---------------------- */
-
-#define OCI_ATTR_ADMIN_PFILE                389    /* client-side param file */
-
-/*----------------------- Attributes for End To End Tracing -----------------*/
-/* -------------------------- HA Event Handle Attributes ------------------- */
-
-#define OCI_ATTR_HOSTNAME         390                /* SYS_CONTEXT hostname */
-#define OCI_ATTR_DBNAME           391                  /* SYS_CONTEXT dbname */
-#define OCI_ATTR_INSTNAME         392           /* SYS_CONTEXT instance name */
-#define OCI_ATTR_SERVICENAME      393            /* SYS_CONTEXT service name */
-#define OCI_ATTR_INSTSTARTTIME    394      /* v$instance instance start time */
-#define OCI_ATTR_HA_TIMESTAMP     395                          /* event time */
-#define OCI_ATTR_RESERVED_22      396                            /* reserved */
-#define OCI_ATTR_RESERVED_23      397                            /* reserved */
-#define OCI_ATTR_RESERVED_24      398                            /* reserved */
-#define OCI_ATTR_DBDOMAIN         399                           /* db domain */
-#define OCI_ATTR_RESERVED_27      425                            /* reserved */
-
-#define OCI_ATTR_EVENTTYPE        400                          /* event type */
 #define OCI_EVENTTYPE_HA            0  /* valid value for OCI_ATTR_EVENTTYPE */
-
-#define OCI_ATTR_HA_SOURCE        401
 /* valid values for OCI_ATTR_HA_SOURCE */
 #define OCI_HA_SOURCE_INSTANCE            0 
 #define OCI_HA_SOURCE_DATABASE            1
@@ -2217,32 +1855,15 @@ extern "C" {
 #define OCI_HA_SOURCE_ASM_INSTANCE        5
 #define OCI_HA_SOURCE_SERVICE_PRECONNECT  6
 
-#define OCI_ATTR_HA_STATUS        402
-#define OCI_HA_STATUS_DOWN          0 /* valid values for OCI_ATTR_HA_STATUS */
-#define OCI_HA_STATUS_UP            1
-
-#define OCI_ATTR_HA_SRVFIRST      403
-
-#define OCI_ATTR_HA_SRVNEXT       404
-/* ------------------------- Server Handle Attributes -----------------------*/
-
-#define OCI_ATTR_TAF_ENABLED      405
-
-/* Extra notification attributes */
-#define OCI_ATTR_NFY_FLAGS        406 
-
-#define OCI_ATTR_MSG_DELIVERY_MODE 407        /* msg delivery mode */
-#define OCI_ATTR_DB_CHARSET_ID     416       /* database charset ID */
-#define OCI_ATTR_DB_NCHARSET_ID    417       /* database ncharset ID */
-#define OCI_ATTR_RESERVED_25       418                           /* reserved */
-
-#define OCI_ATTR_FLOW_CONTROL_TIMEOUT       423  /* AQ: flow control timeout */
 /*---------------------------------------------------------------------------*/
 /* ------------------DirPathAPI attribute Section----------------------------*/
-/* All DirPathAPI attributes are in this section of the file.  Existing      */
-/* attributes prior to this section being created are assigned values < 2000 */
-/* Add new DirPathAPI attributes to this section and their assigned value    */
-/* should be whatever the last entry is + 1.                                 */
+/* Old DirPathAPI attributes are in this section of the file. */
+
+/* ATTRIBUTE NUMBERS ARE GLOBAL
+ *
+ * DO NOT ADD NEW ATTRIBUTES HERE -- ADD WHERE IT SAYS
+ * "new attributes must be added just before this block" (UPPERCASED, unquoted)
+ */
 
 /*------------- Supported Values for Direct Path Stream Version -------------*/
 #define OCI_DIRPATH_STREAM_VERSION_1        100
@@ -2323,14 +1944,22 @@ extern "C" {
 
 #define OCI_ATTR_DIRPATH_LOCK_WAIT          359    /* wait for lock in dpapi */
 
+
+/* ATTRIBUTE NUMBERS ARE GLOBAL
+ *
+ * DO NOT ADD NEW ATTRIBUTES HERE -- ADD WHERE IT SAYS
+ * "new attributes must be added just before this block" (UPPERCASED, unquoted)
+ */
+
+/*------ Attribute to determine last column successfully converted ----------*/
+#define OCI_ATTR_CURRENT_ERRCOL            2003      /* current error column */
+
+
 #define OCI_ATTR_DIRPATH_RESERVED_9        2000                  /* reserved */
 
 /*------ Attribute for 10iR2 for column encryption for Direct Path API ------*/
 #define OCI_ATTR_DIRPATH_RESERVED_10       2001                  /* reserved */
 #define OCI_ATTR_DIRPATH_RESERVED_11       2002                  /* reserved */
-
-/*------ Attribute to determine last column successfully converted ----------*/
-#define OCI_ATTR_CURRENT_ERRCOL            2003      /* current error column */
 
   /*--Attributes for 11gR1 for multiple subtype support in Direct Path API - */
 #define OCI_ATTR_DIRPATH_SUBTYPE_INDEX     2004  /* sbtyp indx for attribute */
@@ -2365,10 +1994,1088 @@ extern "C" {
 
 #define OCI_ATTR_DIRPATH_RESERVED_22       2016                  /* reserved */
 
-/* Add DirPathAPI attributes above.  Next value to be assigned is 2017      */
+/*--Attribute to use caller's transaction rather than starting on in kpodpp  */
+#define OCI_ATTR_DIRPATH_USE_ACTIVE_TRANS  2017                  /* reserved */
+
+/*--Attribute  for recnum column                                             */
+#define OCI_ATTR_DIRPATH_RESERVED_23       2018                  /* reserved */
+
+/*--Attribute  for long varchar columns                                      */
+#define OCI_ATTR_DIRPATH_RESERVED_24       2019                  /* reserved */
+
+/*--Attribute for reject replacement chars                                   */
+#define OCI_ATTR_DIRPATH_REJECT_ROWS_REPCHR 2020
+
+/*--Attribute for CLOB xmltype dumpfile format                               */
+#define OCI_ATTR_DIRPATH_RESERVED_25       2021                  /* reserved */
+
+/*--Attribute for PGA spill limit                                            */
+#define OCI_ATTR_DIRPATH_PGA_LIM           2022
+
+/*--Atribute for number of passes to load partitions                         */
+#define OCI_ATTR_DIRPATH_SPILL_PASSES      2023
+
+/*--Attribute for direct path flags                                          */
+#define OCI_ATTR_DIRPATH_FLAGS             2024
+
+/* Assign new public flag to next higher bit in the 11 low order bits. e.g.
+ * define OCI_ATTR_DIRPATH_FLAGS_VLDT      0x00000001
+ * define OCI_ATTR_DIRPATH_FLAGS_<second>  0x00000002
+ * define OCI_ATTR_DIRPATH_FLAGS_<third>   0x00000004
+ */
+#define OCI_ATTR_DIRPATH_FLAGS_VLDT        0x00000001 /* validate table data */
+#define OCI_ATTR_DIRPATH_FLAGS_TRUNCCOL    0x00000004 /* truncate char data to
+                                                                  fit column */
+
+#define OCI_ATTR_DIRPATH_FLAGS_RESERVED    0xFFFFF800      /* Reserved flags */
+#define OCI_ATTR_DIRPATH_FLAGS_MASK        0x000007FF   /* Public flags mask */
+
+/*--Attribute for direct path compress of unload buffers                     */
+#define OCI_ATTR_DIRPATH_RESERVED_26       2025
+
+/*--Attribute for direct path reset stream conversion                        */
+#define OCI_ATTR_DIRPATH_RESERVED_27       2026
+
+/*--Attribute for direct path reset of kla parsing                          */
+#define OCI_ATTR_DIRPATH_RESERVED_28       2027
+
+/*--Attribute for direct path column level null on errors                   */
+#define OCI_ATTR_DIRPATH_RESERVED_29       2028
+
+/*--Attribute for direct path column array convert                          */
+#define OCI_ATTR_DIRPATH_RESERVED_30       2029
+
+/*--Attribute for direct path metadata changed                              */
+#define OCI_ATTR_DIRPATH_RESERVED_31       2030
+
+/* ATTRIBUTE NUMBERS ARE GLOBAL
+ *
+ * DO NOT ADD NEW ATTRIBUTES HERE -- ADD WHERE IT SAYS
+ * "new attributes must be added just before this block" (UPPERCASED, unquoted)
+ */
 
 
 /* ------------------End of DirPathAPI attribute Section --------------------*/
+/*---------------------------------------------------------------------------*/
+
+
+
+  
+/*---------------------------------------------------------------------------*/
+
+/*=============================Attribute Types===============================*/
+/* 
+   Note: All attributes are global.  New attibutes should be added to the end
+   of the list. Before you add an attribute see if an existing one can be 
+   used for your handle. Note: this does not mean reuse an existing number;
+   it means use an attribute name from another handle for your handle.
+
+   If you see any holes please use the holes first. However, be very
+   careful, as this file is not fully ordered.
+ 
+*/
+/*===========================================================================*/
+
+
+#define OCI_ATTR_FNCODE  1                          /* the OCI function code */
+#define OCI_ATTR_OBJECT   2 /* is the environment initialized in object mode */
+#define OCI_ATTR_NONBLOCKING_MODE  3                    /* non blocking mode */
+#define OCI_ATTR_SQLCODE  4                                  /* the SQL verb */
+#define OCI_ATTR_ENV  5                            /* the environment handle */
+#define OCI_ATTR_SERVER 6                               /* the server handle */
+#define OCI_ATTR_SESSION 7                        /* the user session handle */
+#define OCI_ATTR_TRANS   8                         /* the transaction handle */
+#define OCI_ATTR_ROW_COUNT   9                  /* the rows processed so far */
+#define OCI_ATTR_SQLFNCODE 10               /* the SQL verb of the statement */
+#define OCI_ATTR_PREFETCH_ROWS  11    /* sets the number of rows to prefetch */
+#define OCI_ATTR_NESTED_PREFETCH_ROWS 12 /* the prefetch rows of nested table*/
+#define OCI_ATTR_PREFETCH_MEMORY 13         /* memory limit for rows fetched */
+#define OCI_ATTR_NESTED_PREFETCH_MEMORY 14   /* memory limit for nested rows */
+#define OCI_ATTR_CHAR_COUNT  15 
+                    /* this specifies the bind and define size in characters */
+#define OCI_ATTR_PDSCL   16                          /* packed decimal scale */
+#define OCI_ATTR_FSPRECISION OCI_ATTR_PDSCL   
+                                          /* fs prec for datetime data types */
+#define OCI_ATTR_PDPRC   17                         /* packed decimal format */
+#define OCI_ATTR_LFPRECISION OCI_ATTR_PDPRC 
+                                          /* fs prec for datetime data types */
+#define OCI_ATTR_PARAM_COUNT 18       /* number of column in the select list */
+#define OCI_ATTR_ROWID   19                                     /* the rowid */
+#define OCI_ATTR_CHARSET  20                      /* the character set value */
+#define OCI_ATTR_NCHAR   21                                    /* NCHAR type */
+#define OCI_ATTR_USERNAME 22                           /* username attribute */
+#define OCI_ATTR_PASSWORD 23                           /* password attribute */
+#define OCI_ATTR_STMT_TYPE   24                            /* statement type */
+#define OCI_ATTR_INTERNAL_NAME   25             /* user friendly global name */
+#define OCI_ATTR_EXTERNAL_NAME   26      /* the internal name for global txn */
+#define OCI_ATTR_XID     27           /* XOPEN defined global transaction id */
+#define OCI_ATTR_TRANS_LOCK 28                                            /* */
+#define OCI_ATTR_TRANS_NAME 29    /* string to identify a global transaction */
+#define OCI_ATTR_HEAPALLOC 30                /* memory allocated on the heap */
+#define OCI_ATTR_CHARSET_ID 31                           /* Character Set ID */
+#define OCI_ATTR_ENV_CHARSET_ID   OCI_ATTR_CHARSET_ID   /* charset id in env */
+#define OCI_ATTR_CHARSET_FORM 32                       /* Character Set Form */
+#define OCI_ATTR_MAXDATA_SIZE 33       /* Maximumsize of data on the server  */
+#define OCI_ATTR_CACHE_OPT_SIZE 34              /* object cache optimal size */
+#define OCI_ATTR_CACHE_MAX_SIZE 35   /* object cache maximum size percentage */
+#define OCI_ATTR_PINOPTION 36             /* object cache default pin option */
+#define OCI_ATTR_ALLOC_DURATION 37
+                                 /* object cache default allocation duration */
+#define OCI_ATTR_PIN_DURATION 38        /* object cache default pin duration */
+#define OCI_ATTR_FDO          39       /* Format Descriptor object attribute */
+#define OCI_ATTR_POSTPROCESSING_CALLBACK 40
+                                         /* Callback to process outbind data */
+#define OCI_ATTR_POSTPROCESSING_CONTEXT 41
+                                 /* Callback context to process outbind data */
+#define OCI_ATTR_ROWS_RETURNED 42
+               /* Number of rows returned in current iter - for Bind handles */
+#define OCI_ATTR_FOCBK        43              /* Failover Callback attribute */
+#define OCI_ATTR_IN_V8_MODE   44 /* is the server/service context in V8 mode */
+#define OCI_ATTR_LOBEMPTY     45                              /* empty lob ? */
+#define OCI_ATTR_SESSLANG     46                  /* session language handle */
+
+#define OCI_ATTR_VISIBILITY             47                     /* visibility */
+#define OCI_ATTR_RELATIVE_MSGID         48            /* relative message id */
+#define OCI_ATTR_SEQUENCE_DEVIATION     49             /* sequence deviation */
+
+#define OCI_ATTR_CONSUMER_NAME          50                  /* consumer name */
+/* complex object retrieval parameter attributes */
+#define OCI_ATTR_COMPLEXOBJECTCOMP_TYPE         50 
+#define OCI_ATTR_DEQ_MODE               51                   /* dequeue mode */
+#define OCI_ATTR_COMPLEXOBJECTCOMP_TYPE_LEVEL   51
+#define OCI_ATTR_NAVIGATION             52                     /* navigation */
+#define OCI_ATTR_COMPLEXOBJECT_LEVEL            52
+#define OCI_ATTR_WAIT                   53                           /* wait */
+#define OCI_ATTR_COMPLEXOBJECT_COLL_OUTOFLINE   53
+#define OCI_ATTR_DEQ_MSGID              54             /* dequeue message id */
+
+#define OCI_ATTR_PRIORITY               55                       /* priority */
+#define OCI_ATTR_DELAY                  56                          /* delay */
+#define OCI_ATTR_EXPIRATION             57                     /* expiration */
+#define OCI_ATTR_CORRELATION            58                 /* correlation id */
+#define OCI_ATTR_ATTEMPTS               59                  /* # of attempts */
+#define OCI_ATTR_RECIPIENT_LIST         60                 /* recipient list */
+#define OCI_ATTR_EXCEPTION_QUEUE        61           /* exception queue name */
+#define OCI_ATTR_ENQ_TIME               62 /* enqueue time (only OCIAttrGet) */
+#define OCI_ATTR_MSG_STATE              63/* message state (only OCIAttrGet) */
+                                                   /* NOTE: 64-66 used below */
+#define OCI_ATTR_AGENT_NAME             64                     /* agent name */
+#define OCI_ATTR_AGENT_ADDRESS          65                  /* agent address */
+#define OCI_ATTR_AGENT_PROTOCOL         66                 /* agent protocol */
+#define OCI_ATTR_USER_PROPERTY          67                  /* user property */
+#define OCI_ATTR_SENDER_ID              68                      /* sender id */
+#define OCI_ATTR_ORIGINAL_MSGID         69            /* original message id */
+
+#define OCI_ATTR_QUEUE_NAME             70                     /* queue name */
+#define OCI_ATTR_NFY_MSGID              71                     /* message id */
+#define OCI_ATTR_MSG_PROP               72             /* message properties */
+
+#define OCI_ATTR_NUM_DML_ERRORS         73       /* num of errs in array DML */
+#define OCI_ATTR_DML_ROW_OFFSET         74        /* row offset in the array */
+
+#define OCI_ATTR_DATEFORMAT             75     /* default date format string */
+#define OCI_ATTR_BUF_ADDR               76                 /* buffer address */
+#define OCI_ATTR_BUF_SIZE               77                    /* buffer size */
+
+/* For values 78 - 80, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_NUM_ROWS               81 /* number of rows in column array */
+                                  /* NOTE that OCI_ATTR_NUM_COLS is a column
+                                   * array attribute too.
+                                   */
+#define OCI_ATTR_COL_COUNT              82        /* columns of column array
+                                                     processed so far.       */
+#define OCI_ATTR_STREAM_OFFSET          83  /* str off of last row processed */
+#define OCI_ATTR_SHARED_HEAPALLOC       84    /* Shared Heap Allocation Size */
+
+#define OCI_ATTR_SERVER_GROUP           85              /* server group name */
+
+#define OCI_ATTR_MIGSESSION             86   /* migratable session attribute */
+
+#define OCI_ATTR_NOCACHE                87                 /* Temporary LOBs */
+
+#define OCI_ATTR_MEMPOOL_SIZE           88                      /* Pool Size */
+#define OCI_ATTR_MEMPOOL_INSTNAME       89                  /* Instance name */
+#define OCI_ATTR_MEMPOOL_APPNAME        90               /* Application name */
+#define OCI_ATTR_MEMPOOL_HOMENAME       91            /* Home Directory name */
+#define OCI_ATTR_MEMPOOL_MODEL          92     /* Pool Model (proc,thrd,both)*/
+#define OCI_ATTR_MODES                  93                          /* Modes */
+
+#define OCI_ATTR_SUBSCR_NAME            94           /* name of subscription */
+#define OCI_ATTR_SUBSCR_CALLBACK        95            /* associated callback */
+#define OCI_ATTR_SUBSCR_CTX             96    /* associated callback context */
+#define OCI_ATTR_SUBSCR_PAYLOAD         97             /* associated payload */
+#define OCI_ATTR_SUBSCR_NAMESPACE       98           /* associated namespace */
+
+#define OCI_ATTR_PROXY_CREDENTIALS      99         /* Proxy user credentials */
+#define OCI_ATTR_INITIAL_CLIENT_ROLES  100       /* Initial client role list */
+
+/* Only Columns */
+#define OCI_ATTR_DISP_NAME      100                      /* the display name */
+
+#define OCI_ATTR_UNK              101                   /* unknown attribute */
+#define OCI_ATTR_ENCC_SIZE      101                   /* encrypted data size */
+#define OCI_ATTR_NUM_COLS         102                   /* number of columns */
+#define OCI_ATTR_COL_ENC        102                 /* column is encrypted ? */
+#define OCI_ATTR_LIST_COLUMNS     103        /* parameter of the column list */
+#define OCI_ATTR_COL_ENC_SALT   103          /* is encrypted column salted ? */
+#define OCI_ATTR_RDBA             104           /* DBA of the segment header */
+#define OCI_ATTR_COL_PROPERTIES 104          /* column properties */
+#define OCI_ATTR_CLUSTERED        105      /* whether the table is clustered */
+#define OCI_ATTR_PARTITIONED      106    /* whether the table is partitioned */
+#define OCI_ATTR_INDEX_ONLY       107     /* whether the table is index only */
+#define OCI_ATTR_LIST_ARGUMENTS   108      /* parameter of the argument list */
+#define OCI_ATTR_LIST_SUBPROGRAMS 109    /* parameter of the subprogram list */
+#define OCI_ATTR_REF_TDO          110          /* REF to the type descriptor */
+#define OCI_ATTR_LINK             111              /* the database link name */
+#define OCI_ATTR_MIN              112                       /* minimum value */
+#define OCI_ATTR_MAX              113                       /* maximum value */
+#define OCI_ATTR_INCR             114                     /* increment value */
+#define OCI_ATTR_CACHE            115   /* number of sequence numbers cached */
+#define OCI_ATTR_ORDER            116     /* whether the sequence is ordered */
+#define OCI_ATTR_HW_MARK          117                     /* high-water mark */
+#define OCI_ATTR_TYPE_SCHEMA      118                  /* type's schema name */
+#define OCI_ATTR_TIMESTAMP        119             /* timestamp of the object */
+#define OCI_ATTR_NUM_ATTRS        120                /* number of sttributes */
+#define OCI_ATTR_NUM_PARAMS       121                /* number of parameters */
+#define OCI_ATTR_OBJID            122       /* object id for a table or view */
+#define OCI_ATTR_PTYPE            123           /* type of info described by */
+#define OCI_ATTR_PARAM            124                /* parameter descriptor */
+#define OCI_ATTR_OVERLOAD_ID      125     /* overload ID for funcs and procs */
+#define OCI_ATTR_TABLESPACE       126                    /* table name space */
+#define OCI_ATTR_TDO              127                       /* TDO of a type */
+#define OCI_ATTR_LTYPE            128                           /* list type */
+#define OCI_ATTR_PARSE_ERROR_OFFSET 129                /* Parse Error offset */
+#define OCI_ATTR_IS_TEMPORARY     130          /* whether table is temporary */
+#define OCI_ATTR_IS_TYPED         131              /* whether table is typed */
+#define OCI_ATTR_DURATION         132         /* duration of temporary table */
+#define OCI_ATTR_IS_INVOKER_RIGHTS 133                  /* is invoker rights */
+#define OCI_ATTR_OBJ_NAME         134           /* top level schema obj name */
+#define OCI_ATTR_OBJ_SCHEMA       135                         /* schema name */
+#define OCI_ATTR_OBJ_ID           136          /* top level schema object id */
+#define OCI_ATTR_LIST_PKG_TYPES   137  /* parameter of the package type list */
+
+/* For values 137 - 141, see DirPathAPI attribute section in this file */
+
+
+#define OCI_ATTR_TRANS_TIMEOUT              142       /* transaction timeout */
+#define OCI_ATTR_SERVER_STATUS              143/* state of the server handle */
+#define OCI_ATTR_STATEMENT                  144 /* statement txt in stmt hdl */
+
+/* For value 145, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_DEQCOND                    146         /* dequeue condition */
+#define OCI_ATTR_RESERVED_2                 147                  /* reserved */
+
+  
+#define OCI_ATTR_SUBSCR_RECPT               148 /* recepient of subscription */
+#define OCI_ATTR_SUBSCR_RECPTPROTO          149    /* protocol for recepient */
+
+/* For values 150 - 151, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_LDAP_HOST       153              /* LDAP host to connect to */
+#define OCI_ATTR_LDAP_PORT       154              /* LDAP port to connect to */
+#define OCI_ATTR_BIND_DN         155                              /* bind DN */
+#define OCI_ATTR_LDAP_CRED       156       /* credentials to connect to LDAP */
+#define OCI_ATTR_WALL_LOC        157               /* client wallet location */
+#define OCI_ATTR_LDAP_AUTH       158           /* LDAP authentication method */
+#define OCI_ATTR_LDAP_CTX        159        /* LDAP adminstration context DN */
+#define OCI_ATTR_SERVER_DNS      160      /* list of registration server DNs */
+
+#define OCI_ATTR_DN_COUNT        161             /* the number of server DNs */
+#define OCI_ATTR_SERVER_DN       162                  /* server DN attribute */
+
+#define OCI_ATTR_MAXCHAR_SIZE               163     /* max char size of data */
+
+#define OCI_ATTR_CURRENT_POSITION           164 /* for scrollable result sets*/
+
+/* Added to get attributes for ref cursor to statement handle */
+#define OCI_ATTR_RESERVED_3                 165                  /* reserved */
+#define OCI_ATTR_RESERVED_4                 166                  /* reserved */
+
+/* For value 167, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_DIGEST_ALGO                168          /* digest algorithm */
+#define OCI_ATTR_CERTIFICATE                169               /* certificate */
+#define OCI_ATTR_SIGNATURE_ALGO             170       /* signature algorithm */
+#define OCI_ATTR_CANONICAL_ALGO             171    /* canonicalization algo. */
+#define OCI_ATTR_PRIVATE_KEY                172               /* private key */
+#define OCI_ATTR_DIGEST_VALUE               173              /* digest value */
+#define OCI_ATTR_SIGNATURE_VAL              174           /* signature value */
+#define OCI_ATTR_SIGNATURE                  175                 /* signature */
+
+/* attribute for setting OCI stmt caching size in svchp */
+#define OCI_ATTR_STMTCACHESIZE           176        /* size of the stm cache */
+#define OCI_ATTR_SESSGET_FLAGS           177 /* OCISessionGet returned flags */
+
+/* --------------------------- Connection Pool Attributes ------------------ */
+#define OCI_ATTR_CONN_NOWAIT               178
+#define OCI_ATTR_CONN_BUSY_COUNT            179
+#define OCI_ATTR_CONN_OPEN_COUNT            180
+#define OCI_ATTR_CONN_TIMEOUT               181
+#define OCI_ATTR_STMT_STATE                 182
+#define OCI_ATTR_CONN_MIN                   183
+#define OCI_ATTR_CONN_MAX                   184
+#define OCI_ATTR_CONN_INCR                  185
+
+/* For value 187, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_NUM_OPEN_STMTS             188     /* open stmts in session */
+#define OCI_ATTR_RESERVED_189               189
+#define OCI_ATTR_DESCRIBE_NATIVE            OCI_ATTR_RESERVED_189
+
+#define OCI_ATTR_BIND_COUNT                 190   /* number of bind postions */
+#define OCI_ATTR_HANDLE_POSITION            191 /* pos of bind/define handle */
+#define OCI_ATTR_RESERVED_5                 192                 /* reserverd */
+#define OCI_ATTR_SERVER_BUSY                193 /* call in progress on server*/
+
+/* For value 194, see DirPathAPI attribute section in this file */
+
+/* notification presentation for recipient */
+#define OCI_ATTR_SUBSCR_RECPTPRES           195
+#define OCI_ATTR_TRANSFORMATION             196 /* AQ message transformation */
+
+#define OCI_ATTR_ROWS_FETCHED               197 /* rows fetched in last call */
+
+/* --------------------------- Snapshot attributes ------------------------- */
+#define OCI_ATTR_SCN_BASE                   198             /* snapshot base */
+#define OCI_ATTR_SCN_WRAP                   199             /* snapshot wrap */
+
+/* --------------------------- Miscellanous attributes --------------------- */
+#define OCI_ATTR_RESERVED_6                 200                  /* reserved */
+#define OCI_ATTR_READONLY_TXN               201           /* txn is readonly */
+#define OCI_ATTR_RESERVED_7                 202                  /* reserved */
+#define OCI_ATTR_ERRONEOUS_COLUMN           203 /* position of erroneous col */
+#define OCI_ATTR_RESERVED_8                 204                  /* reserved */
+#define OCI_ATTR_ASM_VOL_SPRT               205     /* ASM volume supported? */
+
+/* For value 206, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_INST_TYPE                  207      /* oracle instance type */
+#define OCI_ATTR_SPOOL_STMTCACHESIZE        208   /*Stmt cache size of pool  */
+#define OCI_ATTR_ENV_UTF16                  209     /* is env in utf16 mode? */
+
+/*Only Stored Procs */
+#define OCI_ATTR_RESERVED_9                 210                  /* reserved */
+#define OCI_ATTR_OVERLOAD                  210/* is this position overloaded */
+#define OCI_ATTR_RESERVED_10                211                  /* reserved */
+#define OCI_ATTR_LEVEL                     211 /* level for structured types */
+#define OCI_ATTR_HAS_DEFAULT               212        /* has a default value */
+#define OCI_ATTR_IOMODE                    213              /* in, out inout */
+
+/* For values 212 and 213, see ALSO DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_RESERVED_12                214                  /* reserved */
+#define OCI_ATTR_RADIX                     214            /* returns a radix */
+#define OCI_ATTR_RESERVED_13                215                  /* reserved */
+#define OCI_ATTR_NUM_ARGS                  215  /* total number of arguments */
+#define OCI_ATTR_IS_EXTERNAL                216 /* whether table is external */
+#define OCI_ATTR_TYPECODE                  216       /* object or collection */
+
+
+/* -------------------------- Statement Handle Attributes ------------------ */
+
+#define OCI_ATTR_RESERVED_15                217                  /* reserved */
+#define OCI_ATTR_COLLECTION_TYPECODE       217     /* varray or nested table */
+#define OCI_ATTR_STMT_IS_RETURNING          218 /* stmt has returning clause */
+#define OCI_ATTR_VERSION                   218      /* user assigned version */
+#define OCI_ATTR_RESERVED_16                219                  /* reserved */
+#define OCI_ATTR_IS_INCOMPLETE_TYPE        219 /* is this an incomplete type */
+#define OCI_ATTR_RESERVED_17                220                  /* reserved */
+#define OCI_ATTR_IS_SYSTEM_TYPE            220              /* a system type */
+#define OCI_ATTR_RESERVED_18                221                  /* reserved */
+#define OCI_ATTR_IS_PREDEFINED_TYPE        221          /* a predefined type */
+
+/* --------------------------- session attributes ---------------------------*/
+#define OCI_ATTR_RESERVED_19                222                  /* reserved */
+#define OCI_ATTR_IS_TRANSIENT_TYPE         222           /* a transient type */
+#define OCI_ATTR_RESERVED_20                223                  /* reserved */
+#define OCI_ATTR_IS_SYSTEM_GENERATED_TYPE  223      /* system generated type */
+#define OCI_ATTR_CURRENT_SCHEMA             224            /* Current Schema */
+#define OCI_ATTR_HAS_NESTED_TABLE          224 /* contains nested table attr */
+
+/* ------------------------- notification subscription ----------------------*/
+#define OCI_ATTR_SUBSCR_QOSFLAGS            225                 /* QOS flags */
+#define OCI_ATTR_HAS_LOB                   225        /* has a lob attribute */
+#define OCI_ATTR_SUBSCR_PAYLOADCBK          226          /* Payload callback */
+#define OCI_ATTR_HAS_FILE                  226       /* has a file attribute */
+#define OCI_ATTR_SUBSCR_TIMEOUT             227                   /* Timeout */
+#define OCI_ATTR_COLLECTION_ELEMENT        227 /* has a collection attribute */
+#define OCI_ATTR_SUBSCR_NAMESPACE_CTX       228         /* Namespace context */
+#define OCI_ATTR_NUM_TYPE_ATTRS            228  /* number of attribute types */
+#define OCI_ATTR_SUBSCR_CQ_QOSFLAGS         229
+                              /* change notification (CQ) specific QOS flags */
+#define OCI_ATTR_LIST_TYPE_ATTRS           229    /* list of type attributes */
+#define OCI_ATTR_SUBSCR_CQ_REGID            230
+                                      /* change notification registration id */
+#define OCI_ATTR_NUM_TYPE_METHODS          230     /* number of type methods */
+#define OCI_ATTR_SUBSCR_NTFN_GROUPING_CLASS 231       /* ntfn grouping class */
+#define OCI_ATTR_LIST_TYPE_METHODS         231       /* list of type methods */
+#define OCI_ATTR_SUBSCR_NTFN_GROUPING_VALUE 232       /* ntfn grouping value */
+#define OCI_ATTR_MAP_METHOD                232         /* map method of type */
+#define OCI_ATTR_SUBSCR_NTFN_GROUPING_TYPE  233        /* ntfn grouping type */
+#define OCI_ATTR_ORDER_METHOD              233       /* order method of type */
+#define OCI_ATTR_SUBSCR_NTFN_GROUPING_START_TIME   234/* ntfn grp start time */
+#define OCI_ATTR_NUM_ELEMS                        234  /* number of elements */
+#define OCI_ATTR_SUBSCR_NTFN_GROUPING_REPEAT_COUNT 235 /* ntfn grp rep count */
+#define OCI_ATTR_ENCAPSULATION                    235 /* encapsulation level */
+#define OCI_ATTR_AQ_NTFN_GROUPING_MSGID_ARRAY      236 /* aq grp msgid array */
+#define OCI_ATTR_IS_SELFISH                       236      /* method selfish */
+#define OCI_ATTR_AQ_NTFN_GROUPING_COUNT            237  /* ntfns recd in grp */
+#define OCI_ATTR_IS_VIRTUAL                       237             /* virtual */
+#define OCI_ATTR_IS_INLINE                 238                     /* inline */
+#define OCI_ATTR_IS_CONSTANT               239                   /* constant */
+#define OCI_ATTR_HAS_RESULT                240                 /* has result */
+#define OCI_ATTR_IS_CONSTRUCTOR            241                /* constructor */
+#define OCI_ATTR_IS_DESTRUCTOR             242                 /* destructor */
+#define OCI_ATTR_IS_OPERATOR               243                   /* operator */
+#define OCI_ATTR_IS_MAP                    244               /* a map method */
+#define OCI_ATTR_IS_ORDER                  245               /* order method */
+#define OCI_ATTR_IS_RNDS                   246  /* read no data state method */
+#define OCI_ATTR_IS_RNPS                   247      /* read no process state */
+#define OCI_ATTR_IS_WNDS                   248 /* write no data state method */
+#define OCI_ATTR_IS_WNPS                   249     /* write no process state */
+
+#define OCI_ATTR_DESC_PUBLIC               250              /* public object */
+
+/* Object Cache Enhancements : attributes for User Constructed Instances     */
+#define OCI_ATTR_CACHE_CLIENT_CONTEXT      251
+#define OCI_ATTR_UCI_CONSTRUCT             252
+#define OCI_ATTR_UCI_DESTRUCT              253
+#define OCI_ATTR_UCI_COPY                  254
+#define OCI_ATTR_UCI_PICKLE                255
+#define OCI_ATTR_UCI_UNPICKLE              256
+#define OCI_ATTR_UCI_REFRESH               257
+
+/* for type inheritance */
+#define OCI_ATTR_IS_SUBTYPE                258
+#define OCI_ATTR_SUPERTYPE_SCHEMA_NAME     259
+#define OCI_ATTR_SUPERTYPE_NAME            260
+
+/* for schemas */
+#define OCI_ATTR_LIST_OBJECTS              261  /* list of objects in schema */
+
+/* for database */
+#define OCI_ATTR_NCHARSET_ID               262                /* char set id */
+#define OCI_ATTR_ENV_NCHARSET_ID  OCI_ATTR_NCHARSET_ID /* ncharset id in env */
+#define OCI_ATTR_LIST_SCHEMAS              263            /* list of schemas */
+#define OCI_ATTR_MAX_PROC_LEN              264       /* max procedure length */
+#define OCI_ATTR_MAX_COLUMN_LEN            265     /* max column name length */
+#define OCI_ATTR_CURSOR_COMMIT_BEHAVIOR    266     /* cursor commit behavior */
+#define OCI_ATTR_MAX_CATALOG_NAMELEN       267         /* catalog namelength */
+#define OCI_ATTR_CATALOG_LOCATION          268           /* catalog location */
+#define OCI_ATTR_SAVEPOINT_SUPPORT         269          /* savepoint support */
+#define OCI_ATTR_NOWAIT_SUPPORT            270             /* nowait support */
+#define OCI_ATTR_AUTOCOMMIT_DDL            271             /* autocommit DDL */
+#define OCI_ATTR_LOCKING_MODE              272               /* locking mode */
+
+/* for externally initialized context */
+#define OCI_ATTR_APPCTX_SIZE               273 /* count of context to be init*/
+#define OCI_ATTR_APPCTX_LIST               274 /* count of context to be init*/
+#define OCI_ATTR_APPCTX_NAME               275 /* name  of context to be init*/
+#define OCI_ATTR_APPCTX_ATTR               276 /* attr  of context to be init*/
+#define OCI_ATTR_APPCTX_VALUE              277 /* value of context to be init*/
+
+/* for client id propagation */
+#define OCI_ATTR_CLIENT_IDENTIFIER         278   /* value of client id to set*/
+
+/* for inheritance - part 2 */
+#define OCI_ATTR_IS_FINAL_TYPE             279            /* is final type ? */
+#define OCI_ATTR_IS_INSTANTIABLE_TYPE      280     /* is instantiable type ? */
+#define OCI_ATTR_IS_FINAL_METHOD           281          /* is final method ? */
+#define OCI_ATTR_IS_INSTANTIABLE_METHOD    282   /* is instantiable method ? */
+#define OCI_ATTR_IS_OVERRIDING_METHOD      283     /* is overriding method ? */
+
+#define OCI_ATTR_DESC_SYNBASE              284   /* Describe the base object */
+
+
+#define OCI_ATTR_CHAR_USED                 285      /* char length semantics */
+#define OCI_ATTR_CHAR_SIZE                 286                /* char length */
+
+/* SQLJ support */
+#define OCI_ATTR_IS_JAVA_TYPE              287 /* is java implemented type ? */
+
+#define OCI_ATTR_EDITION                   288                /* ORA_EDITION */
+
+/* N-Tier support */
+#define OCI_ATTR_DISTINGUISHED_NAME        300        /* use DN as user name */
+
+#define OCI_ATTR_BIND_ROWCBK               301          /* bind row callback */
+#define OCI_ATTR_KERBEROS_TICKET          301    /* Kerberos ticket as cred. */
+#define OCI_ATTR_BIND_ROWCTX               302  /* ctx for bind row callback */
+#define OCI_ATTR_ORA_DEBUG_JDWP           302    /* ORA_DEBUG_JDWP attribute */
+#define OCI_ATTR_SKIP_BUFFER               303   /* skip buffer in array ops */
+#define OCI_ATTR_RESERVED_14              303                    /* reserved */
+
+#define OCI_ATTR_CQ_QUERYID               304
+#define OCI_ATTR_EVTCBK                    304                /* ha callback */
+#define OCI_ATTR_EVTCTX                    305        /* ctx for ha callback */
+
+/* ------------------ User memory attributes (all handles) ----------------- */
+#define OCI_ATTR_USER_MEMORY               306     /* pointer to user memory */
+
+/* For values 303 - 307, see ALSO DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_ACCESS_BANNER             307              /* access banner */
+#define OCI_ATTR_AUDIT_BANNER              308               /* audit banner */
+#define OCI_ATTR_SPOOL_TIMEOUT              308           /* session timeout */
+#define OCI_ATTR_SPOOL_GETMODE              309          /* session get mode */
+#define OCI_ATTR_SPOOL_BUSY_COUNT           310        /* busy session count */
+#define OCI_ATTR_SPOOL_OPEN_COUNT           311        /* open session count */
+#define OCI_ATTR_SPOOL_MIN                  312         /* min session count */
+#define OCI_ATTR_SPOOL_MAX                  313         /* max session count */
+#define OCI_ATTR_SPOOL_INCR                 314   /* session increment count */
+
+/*---------------------------- For XML Types ------------------------------- */
+/* For table, view and column */
+#define OCI_ATTR_IS_XMLTYPE          315         /* Is the type an XML type? */
+#define OCI_ATTR_XMLSCHEMA_NAME      316               /* Name of XML Schema */
+#define OCI_ATTR_XMLELEMENT_NAME     317              /* Name of XML Element */
+#define OCI_ATTR_XMLSQLTYPSCH_NAME   318    /* SQL type's schema for XML Ele */
+#define OCI_ATTR_XMLSQLTYPE_NAME     319     /* Name of SQL type for XML Ele */
+#define OCI_ATTR_XMLTYPE_STORED_OBJ  320       /* XML type stored as object? */
+
+
+/*---------------------------- For Subtypes ------------------------------- */
+/* For type */
+#define OCI_ATTR_HAS_SUBTYPES        321                    /* Has subtypes? */
+#define OCI_ATTR_NUM_SUBTYPES        322               /* Number of subtypes */
+#define OCI_ATTR_LIST_SUBTYPES       323                 /* List of subtypes */
+
+
+/* XML flag */
+#define OCI_ATTR_XML_HRCHY_ENABLED   324               /* hierarchy enabled? */
+
+/* Method flag */
+#define OCI_ATTR_IS_OVERRIDDEN_METHOD 325           /* Method is overridden? */
+
+
+/* For values 326 - 335, see DirPathAPI attribute section in this file */
+
+/*------------- Attributes for 10i Distributed Objects ----------------------*/
+#define OCI_ATTR_OBJ_SUBS                   336 /* obj col/tab substitutable */
+
+/* For values 337 - 338, see DirPathAPI attribute section in this file */
+
+/*---------- Attributes for 10i XADFIELD (NLS language, territory -----------*/
+#define OCI_ATTR_XADFIELD_RESERVED_1        339                  /* reserved */
+#define OCI_ATTR_XADFIELD_RESERVED_2        340                  /* reserved */
+
+/*------------- Kerberos Secure Client Identifier ---------------------------*/
+#define OCI_ATTR_KERBEROS_CID               341 /* Kerberos db service ticket*/
+
+/*------------------------ Attributes for Rules objects ---------------------*/
+#define OCI_ATTR_CONDITION                  342            /* rule condition */
+#define OCI_ATTR_COMMENT                    343                   /* comment */
+#define OCI_ATTR_VALUE                      344             /* Anydata value */
+#define OCI_ATTR_EVAL_CONTEXT_OWNER         345        /* eval context owner */
+#define OCI_ATTR_EVAL_CONTEXT_NAME          346         /* eval context name */
+#define OCI_ATTR_EVALUATION_FUNCTION        347        /* eval function name */
+#define OCI_ATTR_VAR_TYPE                   348             /* variable type */
+#define OCI_ATTR_VAR_VALUE_FUNCTION         349   /* variable value function */
+
+#define OCI_ATTR_XSTREAM_ACK_INTERVAL       350      /* XStream ack interval */
+#define OCI_ATTR_VAR_METHOD_FUNCTION         350 /* variable method function */
+#define OCI_ATTR_XSTREAM_IDLE_TIMEOUT       351      /* XStream idle timeout */
+#define OCI_ATTR_ACTION_CONTEXT              351           /* action context */
+#define OCI_ATTR_LIST_TABLE_ALIASES         352     /* list of table aliases */
+#define OCI_ATTR_LIST_VARIABLE_TYPES        353    /* list of variable types */
+#define OCI_ATTR_TABLE_NAME                 356                /* table name */
+
+/* For values 357 - 359, see DirPathAPI attribute section in this file */
+
+#define OCI_ATTR_MESSAGE_CSCN               360              /* message cscn */
+#define OCI_ATTR_MESSAGE_DSCN               361              /* message dscn */
+
+/*--------------------- Audit Session ID ------------------------------------*/
+#define OCI_ATTR_AUDIT_SESSION_ID           362          /* Audit session ID */
+
+/*--------------------- Kerberos TGT Keys -----------------------------------*/
+#define OCI_ATTR_KERBEROS_KEY               363  /* n-tier Kerberos cred key */
+#define OCI_ATTR_KERBEROS_CID_KEY           364    /* SCID Kerberos cred key */
+
+
+#define OCI_ATTR_TRANSACTION_NO             365         /* AQ enq txn number */
+
+/*----------------------- Attributes for End To End Tracing -----------------*/
+#define OCI_ATTR_MODULE                     366        /* module for tracing */
+#define OCI_ATTR_ACTION                     367        /* action for tracing */
+#define OCI_ATTR_CLIENT_INFO                368               /* client info */
+#define OCI_ATTR_COLLECT_CALL_TIME          369         /* collect call time */
+#define OCI_ATTR_CALL_TIME                  370         /* extract call time */
+#define OCI_ATTR_ECONTEXT_ID                371      /* execution-id context */
+#define OCI_ATTR_ECONTEXT_SEQ               372  /*execution-id sequence num */
+
+/*------------------------------ Session attributes -------------------------*/
+#define OCI_ATTR_SESSION_STATE              373             /* session state */
+#define OCI_SESSION_STATELESS  1                             /* valid states */
+#define OCI_SESSION_STATEFUL   2
+#define OCI_ATTR_SESSION_STATETYPE          374        /* session state type */
+#define OCI_SESSION_STATELESS_DEF  0                    /* valid state types */
+#define OCI_SESSION_STATELESS_CAL  1
+#define OCI_SESSION_STATELESS_TXN  2
+#define OCI_SESSION_STATELESS_APP  3
+#define OCI_ATTR_SESSION_STATE_CLEARED      376     /* session state cleared */
+#define OCI_ATTR_SESSION_MIGRATED           377       /* did session migrate */
+#define OCI_ATTR_SESSION_PRESERVE_STATE     388    /* preserve session state */
+
+/* -------------------------- Admin Handle Attributes ---------------------- */
+#define OCI_ATTR_ADMIN_PFILE                389    /* client-side param file */
+
+#define OCI_ATTR_SUBSCR_PORTNO     390                  /* port no to listen */
+#define OCI_ATTR_HOSTNAME         390                /* SYS_CONTEXT hostname */
+#define OCI_ATTR_DBNAME           391                  /* SYS_CONTEXT dbname */
+#define OCI_ATTR_INSTNAME         392           /* SYS_CONTEXT instance name */
+#define OCI_ATTR_SERVICENAME      393            /* SYS_CONTEXT service name */
+#define OCI_ATTR_INSTSTARTTIME    394      /* v$instance instance start time */
+#define OCI_ATTR_HA_TIMESTAMP     395                          /* event time */
+#define OCI_ATTR_RESERVED_22      396                            /* reserved */
+#define OCI_ATTR_RESERVED_23      397                            /* reserved */
+#define OCI_ATTR_RESERVED_24      398                            /* reserved */
+#define OCI_ATTR_DBDOMAIN         399                           /* db domain */
+#define OCI_ATTR_EVENTTYPE        400                          /* event type */
+
+#define OCI_ATTR_HA_SOURCE        401
+
+#define OCI_ATTR_CHNF_TABLENAMES   401          /* out: array of table names */
+#define OCI_ATTR_CHNF_ROWIDS      402     /* in: rowids needed */ 
+#define OCI_ATTR_HA_STATUS         402
+# define OCI_HA_STATUS_DOWN          0/* valid values for OCI_ATTR_HA_STATUS */
+# define OCI_HA_STATUS_UP            1
+#define OCI_ATTR_CHNF_OPERATIONS   403  /* in: notification operation filter */
+#define OCI_ATTR_HA_SRVFIRST      403
+#define OCI_ATTR_CHNF_CHANGELAG    404      /* txn lag between notifications */
+#define OCI_ATTR_HA_SRVNEXT       404
+#define OCI_ATTR_CHDES_DBNAME     405                     /* source database */
+#define OCI_ATTR_TAF_ENABLED      405
+#define OCI_ATTR_CHDES_NFYTYPE     406            /* notification type flags */
+#define OCI_ATTR_NFY_FLAGS        406 
+#define OCI_ATTR_CHDES_XID                407     /* XID  of the transaction */
+#define OCI_ATTR_MSG_DELIVERY_MODE       407            /* msg delivery mode */
+#define OCI_ATTR_CHDES_TABLE_CHANGES     408/* array of table chg descriptors*/
+
+#define OCI_ATTR_CHDES_TABLE_NAME        409    /* table name */
+#define OCI_ATTR_CHDES_TABLE_OPFLAGS     410    /* table operation flags */
+#define OCI_ATTR_CHDES_TABLE_ROW_CHANGES 411   /* array of changed rows   */
+#define OCI_ATTR_CHDES_ROW_ROWID         412   /* rowid of changed row    */
+#define OCI_ATTR_CHDES_ROW_OPFLAGS       413   /* row operation flags     */
+
+#define OCI_ATTR_CHNF_REGHANDLE          414   /* IN: subscription handle  */
+#define OCI_ATTR_RESERVED_21              415                    /* reserved */
+#define OCI_ATTR_NETWORK_FILE_DESC       415   /* network file descriptor */
+
+#define OCI_ATTR_PROXY_CLIENT            416/* client nam 4 single sess proxy */
+#define OCI_ATTR_DB_CHARSET_ID            416         /* database charset ID */
+
+#define OCI_ATTR_TABLE_ENC         417/* does table have any encrypt columns */
+#define OCI_ATTR_DB_NCHARSET_ID     417              /* database ncharset ID */
+#define OCI_ATTR_TABLE_ENC_ALG     418         /* Table encryption Algorithm */
+#define OCI_ATTR_RESERVED_25        418                          /* reserved */
+#define OCI_ATTR_TABLE_ENC_ALG_ID  419 /* Internal Id of encryption Algorithm*/
+#define OCI_ATTR_STMTCACHE_CBKCTX  420             /* opaque context on stmt */
+#define OCI_ATTR_STMTCACHE_CBK     421          /* callback fn for stmtcache */
+#define OCI_ATTR_CQDES_OPERATION     422
+#define OCI_ATTR_RESERVED_26          422      
+#define OCI_ATTR_XMLTYPE_BINARY_XML  422       /* XML type stored as binary? */
+#define OCI_ATTR_CQDES_TABLE_CHANGES  423
+#define OCI_ATTR_FLOW_CONTROL_TIMEOUT  423       /* AQ: flow control timeout */
+#define OCI_ATTR_CQDES_QUERYID        424
+#define OCI_ATTR_DRIVER_NAME           424                    /* Driver Name */
+#define OCI_ATTR_ENV_NLS_LANGUAGE     424 
+#define OCI_ATTR_CHDES_QUERIES        425              /* Top level change desc
+                                                          array of queries */
+#define OCI_ATTR_CONNECTION_CLASS      425
+#define OCI_ATTR_RESERVED_27          425                        /* reserved */
+#define OCI_ATTR_ENV_NLS_TERRITORY     425 
+#define OCI_ATTR_PURITY               426
+#define OCI_ATTR_RESERVED_28          426                       /* reserved */
+#define OCI_ATTR_RESERVED_29          427                        /* reserved */
+#define OCI_ATTR_RESERVED_30          428                        /* reserved */
+#define OCI_ATTR_RESERVED_31          429                        /* reserved */
+#define OCI_ATTR_RESERVED_32          430                        /* reserved */
+
+/* ----------- Reserve internal attributes for workload replay  ------------ */
+#define OCI_ATTR_RESERVED_33               433
+#define OCI_ATTR_RESERVED_34               434
+
+/* -------- Attributes for Network Session Time Out--------------------------*/
+#define OCI_ATTR_SEND_TIMEOUT               435           /* NS send timeout */
+#define OCI_ATTR_RECEIVE_TIMEOUT            436        /* NS receive timeout */
+
+#define OCI_ATTR_RESERVED_35                437
+
+/*--------- Attributes related to LOB prefetch------------------------------ */
+#define OCI_ATTR_DEFAULT_LOBPREFETCH_SIZE     438   /* default prefetch size */
+#define OCI_ATTR_LOBPREFETCH_SIZE             439           /* prefetch size */
+#define OCI_ATTR_LOBPREFETCH_LENGTH           440 /* prefetch length & chunk */
+
+/*--------- Attributes related to LOB Deduplicate Regions ------------------ */
+#define OCI_ATTR_LOB_REGION_PRIMARY       442         /* Primary LOB Locator */
+#define OCI_ATTR_LOB_REGION_PRIMOFF       443     /* Offset into Primary LOB */ 
+#define OCI_ATTR_RESERVED_36              444
+#define OCI_ATTR_LOB_REGION_OFFSET        445               /* Region Offset */
+#define OCI_ATTR_LOB_REGION_LENGTH        446   /* Region Length Bytes/Chars */
+#define OCI_ATTR_LOB_REGION_MIME          447            /* Region mime type */
+
+/*--------------------Attribute to fetch ROWID ------------------------------*/
+#define OCI_ATTR_FETCH_ROWID              448
+
+/* server attribute */
+#define OCI_ATTR_RESERVED_37              449
+
+/*-------------------Attributes for OCI column security-----------------------*/
+#define OCI_ATTR_NO_COLUMN_AUTH_WARNING   450
+#define OCI_ATTR_XDS_POLICY_STATUS        451
+
+/* --------------- ip address attribute in environment handle -------------- */
+#define OCI_ATTR_SUBSCR_IPADDR         452       /* ip address to listen on  */
+
+#define OCI_ATTR_RESERVED_40           453  
+#define OCI_ATTR_RESERVED_41           454
+#define OCI_ATTR_RESERVED_42           455
+#define OCI_ATTR_RESERVED_43           456
+
+/* statement attribute */
+#define OCI_ATTR_UB8_ROW_COUNT         457         /* ub8 value of row count */
+
+/* ------------- round trip callback attributes in the process  handle ----- */
+#define OCI_ATTR_RESERVED_458          458                       /* reserved */
+#define OCI_ATTR_RESERVED_459          459                       /* reserved */
+
+#define OCI_ATTR_SPOOL_AUTH               460  /* Auth handle on pool handle */
+#define OCI_ATTR_SHOW_INVISIBLE_COLUMNS    460  /* invisible columns support */
+#define OCI_ATTR_INVISIBLE_COL             461  /* invisible columns support */
+
+/* support at most once transaction semantics */
+#define OCI_ATTR_LTXID                     462     /* logical transaction id */
+
+#define OCI_ATTR_LAST_LOGON_TIME_UTC       463 /* Last Successful Logon Time */
+#define OCI_ATTR_IMPLICIT_RESULT_COUNT      463
+
+#define OCI_ATTR_RESERVED_464              464
+#define OCI_ATTR_RESERVED_465              465
+#define OCI_ATTR_TRANSACTIONAL_TAF         466
+#define OCI_ATTR_RESERVED_467              467
+
+/* SQL translation profile session attribute */
+#define OCI_ATTR_SQL_TRANSLATION_PROFILE   468
+
+/* Per Iteration array DML rowcount attribute */
+#define OCI_ATTR_DML_ROW_COUNT_ARRAY       469
+#define OCI_ATTR_RESERVED_470              470
+
+/* session handle attribute */
+#define OCI_ATTR_MAX_OPEN_CURSORS          471
+
+/* Can application failover and recover from this error? 
+ * e.g. ORA-03113 is recoverable while ORA-942 (table or view does not exist)
+ * is not.
+ */
+#define OCI_ATTR_ERROR_IS_RECOVERABLE      472
+
+/* ONS specific private attribute  */
+#define OCI_ATTR_RESERVED_473              473 
+
+/* Attribute to check if ILM Write Access Tracking is enabled or not */
+#define OCI_ATTR_ILM_TRACK_WRITE           474
+
+/* Notification subscription failure callback and context */
+#define OCI_ATTR_SUBSCR_FAILURE_CBK        477
+#define OCI_ATTR_SUBSCR_FAILURE_CTX        478
+
+/* AQ JMS properties attributes */
+#define OCI_ATTR_AQJMS_HEADER_PROP     479
+#define OCI_ATTR_AQJMS_USER_PROP       480
+#define OCI_ATTR_AQJMS_PROPERTIES      481
+#define OCI_ATTR_AQJMS_MSG_TYPE        482
+
+/* A SQL translation profile with FOREIGN_SQL_SYNTAX attribute is set in the
+ * database session.
+ */
+#define OCI_ATTR_TRANS_PROFILE_FOREIGN     483
+
+/* is a transaction active on the session? */
+#define OCI_ATTR_TRANSACTION_IN_PROGRESS   484
+
+/* add attribute for DBOP: DataBase OPeration */
+#define OCI_ATTR_DBOP                      485
+
+/* FAN-HA private attribute */
+#define OCI_ATTR_RESERVED_486              486
+
+/* reserved */
+#define OCI_ATTR_RESERVED_487              487
+
+#define OCI_ATTR_RESERVED_488              488
+
+#define OCI_ATTR_VARTYPE_MAXLEN_COMPAT     489
+
+/* Max Lifetime for session */
+#define OCI_ATTR_SPOOL_MAX_LIFETIME_SESSION 490
+
+#define OCI_ATTR_RESERVED_491              491
+
+#define OCI_ATTR_RESERVED_492              492
+
+#define OCI_ATTR_AUTOTUNING_ENABLED     OCI_ATTR_RESERVED_492
+/* Bit Mask indicating which feature is being auto tuned */
+#define OCI_AUTOTUNED_STMT_CACHE    0x00000001
+                       /* OCI statement caching feature is being auto tuned */
+
+#define OCI_ATTR_RESERVED_493              493                   /* reserved */
+
+#define OCI_ATTR_ITERS_PROCESSED           494
+
+#define OCI_ATTR_BREAK_ON_NET_TIMEOUT      495           /* Break on timeout */
+
+#define OCI_ATTR_SHARDING_KEY              496  
+           /* Sharding Key (OCIShardingKey *) attribute of OCIAuth/OCISvcCtx */
+#define OCI_ATTR_SUPER_SHARDING_KEY        497
+     /* Super Sharding Key (OCIShardingKey *) attribute of OCIAuth/OCISvcCtx */
+#define OCI_ATTR_SHARDING_KEY_B64          498 
+               /* Base64 Sharding Key: read only attribute of OCIShardingKey */ 
+#define OCI_ATTR_COLLATION_ID              499               /* Collation ID */
+
+#define OCI_ATTR_MAX_IDENTIFIER_LEN        500      /* max identifier length */
+
+#define OCI_ATTR_FIXUP_CALLBACK            501
+                                             /* session state fixup callback */
+ 
+#define OCI_ATTR_VIRTUAL_COL               502
+
+#define OCI_ATTR_RESERVED_503              503                   /* reserved */
+
+#define OCI_ATTR_SQL_ID                    504        /* SQL ID in text form */
+
+#define OCI_ATTR_SHARD_HAS_WRITABLECHUNK   505 
+
+#define OCI_ATTR_SPOOL_WAIT_TIMEOUT        506
+
+#define OCI_ATTR_RESERVED_507              507  
+
+#define OCI_ATTR_FO_TYPE                   508             /* see OCI_FO_xxx */
+
+/* HCS Hierarchy and Analytic View Column Attributes */
+#define OCI_ATTR_OLAP_ROLE                 509  /* hier / analytic view role */
+#define OCI_ATTR_DIMENSION_NAME            510     /* analytic view dim name */
+#define OCI_ATTR_HIERARCHY_NAME            511    /* analytic view hier name */
+
+#define OCI_ATTR_RESERVED_512              512                   /* reserved */
+#define OCI_ATTR_RESERVED_513              513                   /* reserved */
+
+/*------ Attributes for DirPathAPI default support 12.2 ---------------------*/
+#define OCI_ATTR_DIRPATH_DEFAULTS           513    /* how to handle defaults */
+/* Evaluate once, unless a sequence is involved, then evaluate every row.
+ * Error if unsupported default value seen. This is the default. */
+#define OCI_DIRPATH_DEFAULTS_DEFAULT                                 0
+/* Evaluate once, at the start of the load. Error if unsupported default
+ * value seen. */
+#define OCI_DIRPATH_DEFAULTS_EVALUATE_ONCE                           1
+/* Evaluate every row. Error if unsupported default value seen */
+#define OCI_DIRPATH_DEFAULTS_EVALUATE_EVERY_ROW                      2
+/* Ignore all defaults (load NULLs) */
+#define OCI_DIRPATH_DEFAULTS_IGNORE                                  3
+/* Ignore unsuppored defaults (load NULLS) , evaluate supported once */
+#define OCI_DIRPATH_DEFAULTS_IGNORE_UNSUPPORTED_EVALUATE_ONCE        4
+/* Ignore unsuppored defaults (load NULLS), evaluate supported every row */
+#define OCI_DIRPATH_DEFAULTS_IGNORE_UNSUPPORTED_EVALUATE_EVERY_ROW   5
+
+#define OCI_ATTR_DIRPATH_DEF_EXP_CACHE_SIZE 514   /* default expr cache size */
+
+#define OCI_ATTR_RESERVED_515              515 
+#define OCI_ATTR_RESERVED_516              516
+
+/*------ Attributes for client to server charset conversion ratio -----------*/
+#define OCI_ATTR_MAX_CHARSET_RATIO              517
+#define OCI_ATTR_MAX_NCHARSET_RATIO             518
+
+#define OCI_ATTR_RESERVED_519              519
+
+#define OCI_ATTR_LOB_REMOTE                520               /* remote lob ? */
+#define OCI_ATTR_RESERVED_521              521
+#define OCI_ATTR_RESERVED_522              522
+#define OCI_ATTR_RESERVED_523              523
+#define OCI_ATTR_PDBNAME                   524                   /* PDB name */
+
+#define OCI_ATTR_RESERVED_524              524
+#define OCI_ATTR_RESERVED_525              525
+#define OCI_ATTR_RESERVED_526              526
+#define OCI_ATTR_RESERVED_527              527
+#define OCI_ATTR_RESERVED_528              528
+#define OCI_ATTR_RESERVED_529              529
+#define OCI_ATTR_RESERVED_530              530
+
+#define OCI_ATTR_CALL_TIMEOUT              531
+/*------------------- Not persisteble types ---------------------------------*/
+#define OCI_ATTR_IS_NOT_PERSISTABLE_TYPE   532 /* is  not persistable type   */
+
+#define OCI_ATTR_RESERVED_533              533                   /* reserved */
+
+#define OCI_ATTR_JSON_COL                  534   /* col holding JSON */
+
+/*
+ * OCI SODA attributes
+ */
+/* OCI SODA collection and metadata atributes */
+#define  OCI_ATTR_SODA_COLL_NAME                535
+#define  OCI_ATTR_SODA_DESCRIPTOR               536
+#define  OCI_ATTR_SODA_SCHEMA                   537
+#define  OCI_ATTR_SODA_TABLE_NAME               538
+#define  OCI_ATTR_SODA_VIEW_NAME                539
+#define  OCI_ATTR_SODA_TABLESPACE               540
+#define  OCI_ATTR_SODA_STORAGE_INIT_SIZE        541
+#define  OCI_ATTR_SODA_STORAGE_INC_PCT          542
+#define  OCI_ATTR_SODA_KEY_COL_NAME             543
+#define  OCI_ATTR_SODA_KEY_SQL_TYPE             544
+#define  OCI_ATTR_SODA_KEY_MAX_LEN              545
+#define  OCI_ATTR_SODA_KEY_ASSIGN_METHOD        546
+#define  OCI_ATTR_SODA_KEY_SEQ_NAME             547
+#define  OCI_ATTR_SODA_CTNT_COL_NAME            548
+#define  OCI_ATTR_SODA_CTNT_SQL_TYPE            549
+#define  OCI_ATTR_SODA_CTNT_MAX_LEN             550
+#define  OCI_ATTR_SODA_CTNT_VALIDATION          551
+#define  OCI_ATTR_SODA_CTNT_COMPRESS            552
+#define  OCI_ATTR_SODA_CTNT_CACHE               553
+#define  OCI_ATTR_SODA_CTNT_ENCRYPT             554
+#define  OCI_ATTR_SODA_CTNT_TABLESPACE          555
+#define  OCI_ATTR_SODA_VERSION_COL_NAME         556
+#define  OCI_ATTR_SODA_VERSION_METHOD           557
+#define  OCI_ATTR_SODA_MODTIME_COL_NAME         558
+#define  OCI_ATTR_SODA_MODTIME_INDEX            559
+#define  OCI_ATTR_SODA_CRTIME_COL_NAME          560
+#define  OCI_ATTR_SODA_MTYPE_COL_NAME           561
+#define  OCI_ATTR_SODA_READONLY                 562
+
+/* OCI SODA Document attributes */
+#define  OCI_ATTR_SODA_KEY                       563   
+#define  OCI_ATTR_SODA_LASTMOD_TIMESTAMP         564
+#define  OCI_ATTR_SODA_CREATE_TIMESTAMP          565
+#define  OCI_ATTR_SODA_VERSION                   566
+#define  OCI_ATTR_SODA_CONTENT                   567
+#define  OCI_ATTR_SODA_JSON_CHARSET_ID           568
+#define  OCI_ATTR_SODA_DETECT_JSON_ENC           569
+#define  OCI_ATTR_SODA_MEDIA_TYPE                571
+
+/* OCI SODA Content Column's JSON storage format */
+#define  OCI_ATTR_SODA_CTNT_FORMAT              572
+
+/* 573 - 575 are free and be used in future if necessary */
+
+/* OCI SODA Operation Options attributes */
+#define  OCI_ATTR_SODA_FILTER                   576
+#define  OCI_ATTR_SODA_SKIP                     577           
+#define  OCI_ATTR_SODA_LIMIT                    578
+
+
+#define  OCI_ATTR_SPOOL_MAX_USE_SESSION             580
+#define  OCI_ATTR_RESERVED_581                      581
+#define  OCI_ATTR_RESERVED_582                      582
+#define  OCI_ATTR_RESERVED_583                      583
+#define  OCI_ATTR_RESERVED_584                      584
+
+#define OCI_ATTR_RESERVED_586                   586
+#define OCI_ATTR_RESERVED_587                   587
+#define OCI_ATTR_RESERVED_588                   588  
+#define OCI_ATTR_RESERVED_589                   589  
+
+#define OCI_ATTR_RESERVED_590                   590
+#define OCI_ATTR_LOB_TYPE                       591
+#define OCI_ATTR_RESERVED_592                   592
+
+/* OCI SODA Output Options attributes */
+#define OCI_ATTR_SODA_DOC_COUNT                 593
+
+/* Other attributes */ 
+#define OCI_ATTR_RESERVED_595                   595
+#define OCI_ATTR_RESERVED_596                   596
+#define OCI_ATTR_RESERVED_597                   597
+#define OCI_ATTR_RESERVED_598                   598
+#define OCI_ATTR_RESERVED_599                   599
+#define OCI_ATTR_RESERVED_600                   600
+
+#define OCI_ATTR_SPOOL_MAX_PER_SHARD            602
+#define OCI_ATTR_RESERVED_603                   603
+#define OCI_ATTR_RESERVED_604                   604
+#define OCI_ATTR_RESERVED_605                   605
+#define OCI_ATTR_RESERVED_606                   606
+#define OCI_ATTR_RESERVED_607                   607
+#define OCI_ATTR_RESERVED_608                   608
+#define OCI_ATTR_RESERVED_609                   609
+#define OCI_ATTR_RESERVED_611                   611
+
+/* OCI JSON formats */
+#define  OCI_JSON_FORMAT_JSON    0
+#define  OCI_JSON_FORMAT_OSON    1
+
+/* OCI SODA MODE TYPES */
+ 
+/* OCI_DEFAULT can be passed as a valid SODA mode. 
+ * It has no effect, i.e. it is a no-op
+ */
+#define OCI_SODA_ATOMIC_COMMIT                  0x00000001
+
+/* OCISodaCollCreate specific modes */
+#define OCI_SODA_COLL_CREATE_MAP                0x00010000
+                                             /* Create collection in MAP mode */
+
+/* OCISodaIndexDrop specific modes */
+#define OCI_SODA_INDEX_DROP_FORCE               0x00010000
+                                              /* Drop domain index with FORCE */
+
+/* OCI SODA Document flags */
+#define OCI_SODA_DETECT_JSON_ENC       0x00000001 /* Detect the JSON encoding */
+#define OCI_SODA_AS_STORED             0x00000002
+                                         /* Retrieve as stored in BLOB column */
+#define OCI_SODA_AS_AL32UTF8           0x00000004        /* Retrieve as UTF-8 */
+
+/* The following are possilble values to be set for key validation */
+#define  OCI_SODA_KEY_METHOD_UUID       1
+#define  OCI_SODA_KEY_METHOD_GUID       2
+#define  OCI_SODA_KEY_METHOD_SEQUENCE   3
+#define  OCI_SODA_KEY_METHOD_CLIENT     4
+
+/* The following are the possible values for content validation methods */
+#define  OCI_SODA_JSON_VALIDATION_STRICT  1
+#define  OCI_SODA_JSON_VALIDATION_LAX     2 
+#define  OCI_SODA_JSON_VALIDATION_STD     3
+
+/* Possible values for LOB compression mechanism */
+#define  OCI_SODA_LOB_COMPRESS_NONE    1
+#define  OCI_SODA_LOB_COMPRESS_HIGH    2
+#define  OCI_SODA_LOB_COMPRESS_MEDIUM  3
+#define  OCI_SODA_LOB_COMPRESS_LOW     4
+
+/* Possible values for LOB encryption mechanism */
+#define  OCI_SODA_LOB_ENCRYPT_NONE      1
+#define  OCI_SODA_LOB_ENCRYPT_3DES168   2
+#define  OCI_SODA_LOB_ENCRYPT_AES128    3
+#define  OCI_SODA_LOB_ENCRYPT_AES192    4
+#define  OCI_SODA_LOB_ENCRYPT_AES256    5
+
+/* Possible methods for version generation */
+#define  OCI_SODA_VERSION_UUID           1
+#define  OCI_SODA_VERSION_TIMESTAMP      2
+#define  OCI_SODA_VERSION_MD5            3
+#define  OCI_SODA_VERSION_SHA256         4
+#define  OCI_SODA_VERSION_SEQUENTIAL     5
+#define  OCI_SODA_VERSION_NONE           6
+
+/*--Attribute for direct path NUMBER_FORMAT                                 */
+#define OCI_ATTR_DIRPATH_RESERVED_32       2031
+
+/*--Attribute for direct path NUMBER_FORMAT string                          */
+#define OCI_ATTR_DIRPATH_RESERVED_33       2032
+
+/*---------------------------------------------------------------------------*/
+/*
+ * NEW ATTRIBUTES MUST BE ADDED JUST BEFORE THIS BLOCK
+ *
+ * PLEASE DO NOT PLACE ATTRIBUTE *VALUES* HERE; PLACE THEM ELSEWHERE IN THE FILE
+ *  (i.e. OCI_<attrname>_<valuename>; e.g. OCI_EVENT_STARTUP); 
+ * 
+ * (just *below* here is fine for the *values*, with
+ *  sufficient white space for this notice to stand out)
+ */
 /*---------------------------------------------------------------------------*/
 
 
@@ -2402,6 +3109,9 @@ extern "C" {
 #define OCI_INSTANCE_TYPE_UNKNOWN  0
 #define OCI_INSTANCE_TYPE_RDBMS    1
 #define OCI_INSTANCE_TYPE_OSM      2
+#define OCI_INSTANCE_TYPE_PROXY    3
+#define OCI_INSTANCE_TYPE_IOS      4
+
 
 /* ---------------- ASM Volume Device Support attribute values --------------*/
 #define OCI_ASM_VOLUME_UNSUPPORTED 0
@@ -2410,13 +3120,20 @@ extern "C" {
 /*---------------------------------------------------------------------------*/
 
 /*---------------------------OCIPasswordChange-------------------------------*/
-#define OCI_AUTH         0x08        /* Change the password but do not login */
+#define OCI_AUTH         0x00000008  /* Change the password but do not login */
+#define OCI_CPW_SYSDBA   0x00000010      /* Password change with SYSDBA auth */
+#define OCI_CPW_SYSOPER  0x00000020     /* Password change with SYSOPER auth */
+#define OCI_CPW_SYSASM   0x00800040      /* Password change with SYSASM auth */
+#define OCI_CPW_SYSBKP   0x00000080   /* Password change with SYSBACKUP auth */
+#define OCI_CPW_SYSDGD   0x00000100       /* Password change with SYSDG auth */
+#define OCI_CPW_SYSKMT   0x00000200       /* Password change with SYSKM auth */
 
 
 /*------------------------Other Constants------------------------------------*/
 #define OCI_MAX_FNS   100                     /* max number of OCI Functions */
 #define OCI_SQLSTATE_SIZE 5  
 #define OCI_ERROR_MAXMSG_SIZE   1024         /* max size of an error message */
+#define OCI_ERROR_MAXMSG_SIZE2  3072 /* new len max size of an error message */
 #define OCI_LOBMAXSIZE MINUB4MAXVAL                 /* maximum lob data size */
 #define OCI_ROWID_LEN             23
 #define OCI_LOB_CONTENTTYPE_MAXSIZE 128  /* max size of securefile contenttype */
@@ -2440,7 +3157,14 @@ extern "C" {
 #define OCI_FO_SESSION        0x00000002
 #define OCI_FO_SELECT         0x00000004
 #define OCI_FO_TXNAL          0x00000008
+#define OCI_FO_AUTO           0x00000020
 /*---------------------------------------------------------------------------*/
+
+/*--------------------- OCI_ATTR_VARTYPE_MAXLEN_COMPAT values ---------------*/
+#define OCI_ATTR_MAXLEN_COMPAT_STANDARD 1
+#define OCI_ATTR_MAXLEN_COMPAT_EXTENDED 2
+/*---------------------------------------------------------------------------*/
+
 
 /*-----------------------Function Codes--------------------------------------*/
 #define OCI_FNCODE_INITIALIZE     1                         /* OCIInitialize */
@@ -2475,8 +3199,10 @@ extern "C" {
 #define OCI_FNCODE_TRANSCOMMIT  35                         /* OCITransCommit */
                                                                 /* 36 unused */
 #define OCI_FNCODE_ERRORGET   37                              /* OCIErrorGet */
-#define OCI_FNCODE_LOBOPENFILE  38                         /* OCILobFileOpen */
-#define OCI_FNCODE_LOBCLOSEFILE  39                       /* OCILobFileClose */
+#define OCI_FNCODE_LOBFILEOPEN  38                         /* OCILobFileOpen */
+#define OCI_FNCODE_LOBOPENFILE  38                      /* for compatibility */
+#define OCI_FNCODE_LOBFILECLOSE  39                       /* OCILobFileClose */
+#define OCI_FNCODE_LOBCLOSEFILE  39                     /* for compatibility */
                                              /* 40 was LOBCREATEFILE, unused */
                                          /* 41 was OCILobFileDelete, unused  */
 #define OCI_FNCODE_LOBCOPY  42                                 /* OCILobCopy */
@@ -2492,7 +3218,7 @@ extern "C" {
 
 #define OCI_FNCODE_KERBATTRSET 52                          /* OCIKerbAttrSet */
 
-/* unused 53 */
+#define OCI_FNCODE_SERVERRELEASE 53                      /* OCIServerRelease */
 
 #define OCI_FNCODE_ATTRGET 54                                  /* OCIAttrGet */
 #define OCI_FNCODE_ATTRSET 55                                  /* OCIAttrSet */
@@ -2513,7 +3239,7 @@ extern "C" {
 #define OCI_FNCODE_LOBISINIT  70                      /* OCILobLocatorIsInit */
 
 #define OCI_FNCODE_LOBENABLEBUFFERING  71           /* OCILobEnableBuffering */
-#define OCI_FNCODE_LOBCHARSETID  72                       /* OCILobCharSetID */
+#define OCI_FNCODE_LOBCHARSETID  72                       /* OCILobCharSetId */
 #define OCI_FNCODE_LOBCHARSETFORM  73                   /* OCILobCharSetForm */
 #define OCI_FNCODE_LOBFILESETNAME  74                   /* OCILobFileSetName */
 #define OCI_FNCODE_LOBFILEGETNAME  75                   /* OCILobFileGetName */
@@ -2539,7 +3265,7 @@ extern "C" {
 #define OCI_FNCODE_SVCCTXTOLDA  93                         /* OCISvcCtxToLda */
 #define OCI_FNCODE_LOBLOCATORASSIGN 94                /* OCILobLocatorAssign */
 
-#define OCI_FNCODE_UBINDBYNAME 95
+                                                     /* 95 unused, available */
 
 #define OCI_FNCODE_AQLISTEN  96                               /* OCIAQListen */
 
@@ -2579,19 +3305,78 @@ extern "C" {
 #define OCI_FNCODE_AQRESETREPLAY      126            /* OCIAQResetReplayInfo */
 #define OCI_FNCODE_ARRAYDESCRIPTORALLOC 127        /*OCIArrayDescriptorAlloc */
 #define OCI_FNCODE_ARRAYDESCRIPTORFREE  128       /* OCIArrayDescriptorFree  */
-#define OCI_FNCODE_LOBGETOPT        129                /* OCILobGetCptions */
-#define OCI_FNCODE_LOBSETOPT        130                /* OCILobSetCptions */
-#define OCI_FNCODE_LOBFRAGINS       131           /* OCILobFragementInsert */
-#define OCI_FNCODE_LOBFRAGDEL       132           /* OCILobFragementDelete */
-#define OCI_FNCODE_LOBFRAGMOV       133             /* OCILobFragementMove */
-#define OCI_FNCODE_LOBFRAGREP       134          /* OCILobFragementReplace */
+#define OCI_FNCODE_LOBGETOPT        129                  /* OCILobGetOptions */
+#define OCI_FNCODE_LOBSETOPT        130                  /* OCILobSetOptions */
+#define OCI_FNCODE_LOBFRAGINS       131              /* OCILobFragmentInsert */
+#define OCI_FNCODE_LOBFRAGDEL       132              /* OCILobFragmentDelete */
+#define OCI_FNCODE_LOBFRAGMOV       133                /* OCILobFragmentMove */
+#define OCI_FNCODE_LOBFRAGREP       134             /* OCILobFragmentReplace */
 #define OCI_FNCODE_LOBGETDEDUPLICATEREGIONS 135/* OCILobGetDeduplicateRegions */
-#define OCI_FNCODE_APPCTXSET        136        /* OCIAppCtxSet */
-#define OCI_FNCODE_APPCTXCLEARALL   137         /* OCIAppCtxClearAll */
+#define OCI_FNCODE_APPCTXSET        136                      /* OCIAppCtxSet */
+#define OCI_FNCODE_APPCTXCLEARALL   137                 /* OCIAppCtxClearAll */
 
 #define OCI_FNCODE_LOBGETCONTENTTYPE 138             /* OCILobGetContentType */
 #define OCI_FNCODE_LOBSETCONTENTTYPE 139             /* OCILobSetContentType */
-#define OCI_FNCODE_MAXFCN            139        /* maximum OCI function code */
+#define OCI_FNCODE_DEFINEBYPOS2      140                  /* OCIDefineByPos2 */
+#define OCI_FNCODE_BINDBYPOS2        141                    /* OCIBindByPos2 */
+#define OCI_FNCODE_BINDBYNAME2       142                   /* OCIBindByName2 */
+#define OCI_FNCODE_STMTGETNEXTRESULT 143             /* OCIStmtGetNextResult */
+#define OCI_FNCODE_AQENQ2            144                        /* OCIAQEnq2 */
+#define OCI_FNCODE_AQDEQ2            145                        /* OCIAQDeq2 */
+#define OCI_FNCODE_TYPEBYNAME          146                  /* OCITypeByName */
+#define OCI_FNCODE_TYPEBYFULLNAME      147              /* OCITypeByFullName */
+#define OCI_FNCODE_TYPEBYREF           148                   /* OCITypeByRef */
+#define OCI_FNCODE_TYPEARRAYBYNAME     149             /* OCITypeArrayByName */
+#define OCI_FNCODE_TYPEARRAYBYFULLNAME 150         /* OCITypeArrayByFullName */
+#define OCI_FNCODE_TYPEARRAYBYREF      151              /* OCITypeArrayByRef */
+#define OCI_FNCODE_LOBGETCHUNKSIZE     152             /* OCILobGetChunkSize */
+#define OCI_FNCODE_LOBWRITEAPPEND      153              /* OCILobWriteAppend */
+#define OCI_FNCODE_LOBWRITEAPPEND2     154             /* OCILobWriteAppend2 */
+#define OCI_FNCODE_RESERVED_155        155     /* reserved OCI function code */
+#define OCI_FNCODE_SODACOLLCREATE      156              /* OCISodaCollCreate */
+#define OCI_FNCODE_SODAMETADATABUILD   157           /* OCISodaMetadataBuild */
+#define OCI_FNCODE_SODACOLLCREATEWITHMETADATA 158 /* OCISodaCollCreateWithMetadata */
+#define OCI_FNCODE_SODACOLLOPEN        159                /* OCISodaCollOpen */
+#define OCI_FNCODE_SODADOCCREATE       160               /* OCISodaDocCreate */
+#define OCI_FNCODE_SODADOCCREATEWITHKEY 161       /* OCISodaDocCreateWithKey */
+#define OCI_FNCODE_SODADOCCREATEWITHKEYANDMTYPE 162 /* OCISodaDocCreateWithKeyAndMType */
+#define OCI_FNCODE_SODAINSERT              163              /* OCISodaInsert */
+#define OCI_FNCODE_SODABULKINSERT          164          /* OCISodaBulkInsert */
+#define OCI_FNCODE_SODAINSERTANDGET        165        /* OCISodaInsertAndGet */
+#define OCI_FNCODE_SODABULKINSERTANDGET    166    /* OCISodaBulkInsertAndGet */
+#define OCI_FNCODE_SODAINSERTWITHCTNT      167      /* OCISodaInsertWithCtnt */
+#define OCI_FNCODE_SODAINSERTANDGETWITHCTNT 168 /* OCISodaInsertAndGetWithCtnt */
+#define OCI_FNCODE_SODABULKINSERTWITHCTNT 169   /* OCISodaBulkInsertWithCtnt */
+#define OCI_FNCODE_SODABULKINSERTANDGETWITHCTNT 170 /* OCISodaBulkInsertAndGetWithCtnt */
+#define OCI_FNCODE_SODASAVE              171                  /* OCISodaSave */
+#define OCI_FNCODE_SODASAVEANDGET        172            /* OCISodaSaveAndGet */
+#define OCI_FNCODE_SODASAVEWITHCTNT      173          /* OCISodaSaveWithCtnt */
+#define OCI_FNCODE_SODASAVEANDGETWITHCTNT 174   /* OCISodaSaveAndGetWithCtnt */
+#define OCI_FNCODE_SODAFIND              175                  /* OCISodaFind */
+#define OCI_FNCODE_SODAFINDONE           176               /* OCISodaFindOne */
+#define OCI_FNCODE_SODADOCGETNEXT        177            /* OCISodaDocGetNext */
+#define OCI_FNCODE_SODAFINDONEWITHKEY    178        /* OCISodaFindOneWithKey */
+#define OCI_FNCODE_SODACOLLLIST          179              /* OCISodaCollList */
+#define OCI_FNCODE_SODADOCCOUNT          180              /* OCISodaDocCount */
+#define OCI_FNCODE_SODADOCCOUNTWITHFILTER 181   /* OCISodaDocCountWithFilter */
+#define OCI_FNCODE_SODAREPLONE           182               /* OCISodaReplOne */
+#define OCI_FNCODE_SODAREPLONEANDGET     183         /* OCISodaReplOneAndGet */
+#define OCI_FNCODE_SODAREPLONEWITHCTNT   184       /* OCISodaReplOneWithCtnt */
+#define OCI_FNCODE_SODAREPLONEANDGETWITHCTNT 185 /* OCISodaReplOneAndGetWithCtnt */
+#define OCI_FNCODE_SODAREPLONEWITHKEY     186       /* OCISodaReplOneWithKey */
+#define OCI_FNCODE_SODAREPLONEANDGETWITHKEY 187 /* OCISodaReplOneAndGetWithKey */
+#define OCI_FNCODE_SODAREMOVE             188               /* OCISodaRemove */
+#define OCI_FNCODE_SODAREMOVEONEWITHKEY   189     /* OCISodaRemoveOneWithKey */
+#define OCI_FNCODE_SODACOLLDROP           190             /* OCISodaCollDrop */
+#define OCI_FNCODE_SODAINDEXCREATE        191          /* OCISodaIndexCreate */
+#define OCI_FNCODE_SODAINDEXDROP          192            /* OCISodaIndexDrop */
+#define OCI_FNCODE_SODADATAGUIDEGET       193         /* OCISodaDataGuideGet */
+#define OCI_FNCODE_SODACOLLGETNEXT        194          /* OCISodaCollGetNext */
+#define OCI_FNCODE_SERVERRELEASE2         195           /* OCIServerRelease2 */
+#define OCI_FNCODE_SODAOPERKEYSSET        196          /* OCISodaOperKeysSet */
+#define OCI_FNCODE_RESERVED_197           197  /* reserved OCI function code */
+#define OCI_FNCODE_RESERVED_198           198  /* reserved OCI function code */
+#define OCI_FNCODE_MAXFCN                 198   /* maximum OCI function code */
 
 /*---------------Statement Cache callback modes-----------------------------*/
 #define OCI_CBK_STMTCACHE_STMTPURGE  0x01
@@ -2634,7 +3419,10 @@ typedef struct OCIInterval OCIInterval;           /* OCI Interval descriptor */
 
 typedef struct OCIUcb           OCIUcb;      /* OCI User Callback descriptor */
 typedef struct OCIServerDNs     OCIServerDNs;    /* OCI server DN descriptor */
-
+typedef struct OCIShardingKey   OCIShardingKey;
+                                              /* OCI Sharding Key Descriptor */
+typedef struct OCIShardInst     OCIShardInst;
+                                            /* OCI Shard Instance Descriptor */
 /*-------------------------- AQ Descriptors ---------------------------------*/
 typedef struct OCIAQEnqOptions    OCIAQEnqOptions; /* AQ Enqueue Options hdl */
 typedef struct OCIAQDeqOptions    OCIAQDeqOptions; /* AQ Dequeue Options hdl */
@@ -2644,6 +3432,7 @@ typedef struct OCIAQNfyDescriptor OCIAQNfyDescriptor;   /* AQ Nfy descriptor */
 typedef struct OCIAQSignature     OCIAQSignature;            /* AQ Siganture */
 typedef struct OCIAQListenOpts    OCIAQListenOpts;      /* AQ listen options */
 typedef struct OCIAQLisMsgProps   OCIAQLisMsgProps;   /* AQ listen msg props */
+typedef struct OCIAQJmsgProperties OCIAQJmsgProperties; /* AQ JMS Properties */
 
 /*---------------------------------------------------------------------------*/
  
@@ -2651,6 +3440,20 @@ typedef struct OCIAQLisMsgProps   OCIAQLisMsgProps;   /* AQ listen msg props */
 typedef struct OCILobLocator OCIClobLocator;    /* OCI Character LOB Locator */
 typedef struct OCILobLocator OCIBlobLocator;       /* OCI Binary LOB Locator */
 typedef struct OCILobLocator OCIBFileLocator; /* OCI Binary LOB File Locator */
+/*---------------------------------------------------------------------------*/
+/* OCI SODA typedefs */
+typedef struct OCISodaColl OCISodaColl;        /* OCI SODA collection handle */
+typedef struct OCISodaDoc OCISodaDoc;            /* OCI SODA document handle */
+typedef struct OCISodaDocCursor OCISodaDocCursor;/* OCI SODA document cursor */
+typedef struct OCISodaOperationOptions OCISodaOperationOptions; 
+                                                  /*OCI SODA document cursor */
+typedef struct OCISodaOutputOptions OCISodaOutputOptions; 
+                                                    /* OCI SODA output optns */
+typedef struct OCISodaMetadata OCISodaMetadata; 
+                                         /* OCI SODA metadata of a collection*/
+typedef struct OCISodaCollCursor OCISodaCollCursor;
+                                               /* OCI SODA collection cursor */
+
 /*---------------------------------------------------------------------------*/
 
 /* Undefined value for tz in interval types*/
@@ -2768,7 +3571,8 @@ typedef enum OCILobMode OCILobMode;
 #define  OCI_STMT_ALTER   7                               /* alter statement */
 #define  OCI_STMT_BEGIN   8                   /* begin ... (pl/sql statement)*/
 #define  OCI_STMT_DECLARE 9                /* declare .. (pl/sql statement ) */
-#define  OCI_STMT_CALL    10                      /* corresponds to kpu call */
+#define  OCI_STMT_CALL     10                              /* call statement */
+#define  OCI_STMT_MERGE    16                             /* merge statement */
 /*---------------------------------------------------------------------------*/
 
 /*--------------------------- OCI Parameter Types ---------------------------*/
@@ -2797,6 +3601,8 @@ typedef enum OCILobMode OCILobMode;
 #define OCI_PTYPE_TABLE_ALIAS         22                      /* table alias */
 #define OCI_PTYPE_VARIABLE_TYPE       23                    /* variable type */
 #define OCI_PTYPE_NAME_VALUE          24                  /* name value pair */
+#define OCI_PTYPE_HIERARCHY           25                        /* hierarchy */
+#define OCI_PTYPE_ANALYTIC_VIEW       26                    /* analytic view */
 
 /*---------------------------------------------------------------------------*/
 
@@ -2816,6 +3622,7 @@ typedef enum OCILobMode OCILobMode;
 #define OCI_LTYPE_TABLE_ALIAS   12                       /* table alias list */
 #define OCI_LTYPE_VARIABLE_TYPE 13                     /* variable type list */
 #define OCI_LTYPE_NAME_VALUE    14                        /* name value list */
+#define OCI_LTYPE_PACKAGE_TYPE  15                      /* package type list */
 
 /*---------------------------------------------------------------------------*/
 
@@ -2965,10 +3772,6 @@ typedef ub4            OCIWchar;
 #define OCI_DBSHUTDOWN_ABORT              4 /* Terminate and don't roll back */
 #define OCI_DBSHUTDOWN_FINAL              5              /* Orderly shutdown */
 
-/*------------------------- Version information -----------------------------*/
-#define OCI_MAJOR_VERSION  11                       /* Major release version */
-#define OCI_MINOR_VERSION  2                        /* Minor release version */
-
 /*---------------------- OCIIOV structure definitions -----------------------*/
 struct OCIIOV
 {
@@ -2977,6 +3780,60 @@ struct OCIIOV
 };
 typedef struct OCIIOV OCIIOV;
 
+/*-----------------Macros to get the various version number components------ */
+/* Note: These macros are intended to be used in conjunction with the encoded 
+ * database version number returned by OCIServerRelease2() to extract each of 
+ * the 5 digits of the database version.
+ *
+ * These macros are named according to the new release naming scheme started 
+ * with 18.1. The 5 digits extracted from the version number are: 
+ * - feature release 
+ * - release update
+ * - release update revision
+ * - increment
+ * - extension
+ *
+ * Even though the naming is based on the new convention, for convenience, 
+ * the same macros can be used to extract the corresponding 5 digits of the 
+ * database version from an encoded version number returned by 
+ * OCIServerRelease() from a pre 18.1 database (which used a different encoding 
+ * scheme). In that case though, the digits correspond to the following:
+ * - version number
+ * - release number
+ * - update number
+ * - porting release number
+ * - porting update number
+ */
+
+#define OCI_SERVER_RELEASE_REL(v) ((sword)(((v) >> 24) & 0x000000FF))
+                                                      /* old: version number */
+                                                     /* new: feature release */
+#define OCI_SERVER_RELEASE_REL_UPD(v)\
+  ((OCI_SERVER_RELEASE_REL(v) < 19)? \
+   ((sword)(((v) >> 20) & 0x0000000F)):\
+   ((sword)(((v) >> 16) & 0x000000FF)))               /* old: release number */
+                                                      /* new: release update */
+
+#define OCI_SERVER_RELEASE_REL_UPD_REV(v)\
+  ((OCI_SERVER_RELEASE_REL(v) < 19)? \
+   ((sword)(((v) >> 12) & 0x000000FF)):\
+   ((sword)(((v) >> 12) & 0x0000000F)))
+                                                       /* old: update number */
+                                             /* new: release update revision */
+
+#define OCI_SERVER_RELEASE_REL_UPD_INC(v)\
+  ((OCI_SERVER_RELEASE_REL(v) < 19)? \
+   ((sword)(((v) >> 8) & 0x0000000F)):\
+   ((sword)(((v) >> 4) & 0x0000000FF)))
+                                              /* old: porting release number */
+                                            /* new: release update increment */
+
+#define OCI_SERVER_RELEASE_EXT(v)\
+  ((OCI_SERVER_RELEASE_REL(v) < 19)? \
+   ((sword)(((v) >> 0) & 0x000000FF)):\
+   ((sword)(((v) >> 0) & 0x0000000F)))    
+                                               /* old: porting update number */
+                                                           /* new: extension */
 /*--------------------------------------------------------------------------- 
                      PRIVATE TYPES AND CONSTANTS 
   ---------------------------------------------------------------------------*/

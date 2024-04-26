@@ -1,4 +1,5 @@
-/* Copyright (c) 1996, 2008, Oracle. All rights reserved.  */
+/* Copyright (c) 1996, 2018, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
@@ -115,6 +116,9 @@
     OCIParamGet
     OCIParamGet
     OCIPasswordChange
+    OCIRequestBegin
+    OCIRequestEnd
+    OCIRequestDisableReplay
     OCIReset
     OCIResultSetToStmt
     OCIServerAttach
@@ -217,6 +221,9 @@
     OCIAttrSet
     OCIUserCallbackRegister
     OCIUserCallbackGet
+    OCIShardingKeyColumnAdd
+    OCIShardingKeyReset
+    OCIShardInstancesGet
     OCISharedLibInit
     OCIFileExists
     OCIFileGetLength
@@ -526,6 +533,51 @@
     OCIInitEventHandle
     OCIStmtBindByPos
     OCIStmtBindByName
+    OCIShardingKeyColumnAdd
+    OCIShardingKeyReset
+    OCIShardInstancesGet
+    OCISodaCollCreate
+    OCISodaMetadataBuild
+    OCISodaCollCreateWithMetadata
+    OCISodaCollOpen
+    OCISodaDocCreate
+    OCISodaDocCreateWithKey
+    OCISodaDocCreateWithKeyAndMType
+    OCISodaInsert
+    OCISodaBulkInsert
+    OCISodaInsertAndGet
+    OCISodaBulkInsertAndGet
+    OCISodaInsertWithCtnt
+    OCISodaInsertAndGetWithCtnt
+    OCISodaBulkInsertWithCtnt
+    OCISodaBulkInsertAndGetWithCtnt
+    OCISodaSave
+    OCISodaSaveAndGet
+    OCISodaSaveWithCtnt
+    OCISodaSaveAndGetWithCtnt
+    OCISodaOperKeysSet
+    OCISodaFind
+    OCISodaFindOne
+    OCISodaDocGetNext
+    OCISodaFindOneWithKey
+    OCISodaCollList
+    OCISodaDocCount
+    OCISodaDocCountWithFilter 
+    OCISodaReplOne
+    OCISodaReplOneAndGet
+    OCISodaReplOneWithCtnt
+    OCISodaReplOneAndGetWithCtnt
+    OCISodaReplOneWithKey
+    OCISodaReplOneAndGetWithKey
+    OCISodaRemove
+    OCISodaRemoveOneWithKey
+    OCISodaDocCursorClose
+    OCISodaDocClose
+    OCISodaCollClose
+    OCISodaCollDrop
+    OCISodaIndexCreate
+    OCISodaIndexDrop
+    OCISodaDataGuideGet
 
    PRIVATE FUNCTION(S)
 
@@ -534,6 +586,40 @@
    NOTES
 
    MODIFIED   (MM/DD/YY)
+   vjitta      05/02/18 - Bug 27954232: Fix OCISodaBulkInsertAndGet
+                          arraylen parameter type to ub4
+   samys       03/22/18 - Adding isDropped variable to DropIndex API
+   samys       01/29/18 - Bug 27444045: Enable IndexCreate, IndexDrop and
+                          DataGuide APIs.
+   sriksure    12/01/17 - Project 74694: SODA enhancements -
+                          Add OCISodaOperKeysSet()
+   prramakr    09/13/17 - Bug 26831390: Add OCIServerRelease2() 
+   suhgarg     09/06/17 - Changed OCIClientVersion()
+   sriksure    05/31/17 - Bug 26138602: Change the type of SODA content to
+                          void* from oratext*
+   vjitta      05/16/17 - Bug 26089218: adding status parameter to
+                          OCISodaCollDrop API, other name changes for SODA
+   vjitta      04/24/17 - Bug 25906775: Adding mode parameter to SODA API.
+                          Removing SODA handle close API
+   vjitta      04/13/17 - Bug 25506531: List collection.
+   vjitta      03/20/17 - Bug 25505506: review comments addressed.
+   sriksure    03/18/17 - Bug 25537639: Make number of rows ub8 type
+   vjitta      02/16/17 - bug 25508124,25458600 SODA name changes
+                          and refactoring
+   vjitta      12/16/16 - Project: 68452 - Add public functions for SODA OCI
+   ssubrama    12/06/16 - bug 20473441 OCIAQEnq2 and OCIAQDeq2
+   kkverma     02/19/15 - proj 56337: OCI Sharding
+   nikeda      07/19/14 - support OCIRequest calls for OCI-based drivers
+   ssubrama    11/02/11 - bug 13505135 OCIAQEnq2 and OCIAQDeq2 private
+   ssubrama    10/31/11 - fix lint issues with OCIAQDeq2
+   ssubrama    09/12/11 - streaming support for OCIAQEnq2 and OCIAQDeq2
+   amadan      09/12/11 - add OCIAQEnq2 OCIAQDeq2
+   rtati       09/12/11 - proj 34391: add OCISubscriptionFailure
+   rpang       06/02/11 - add OCITranslatedErrorGet
+   shiyer      04/09/11 - #36904: add OCIStmtGetNextResult
+   slari       03/24/11 - OCIRoundTripCallback
+   rpingte     11/29/10 - remove OCIStmtBindByPos/OCIStmtBindByName
+   jstewart    11/15/10 - 32K VARCHAR support
    slynn       03/18/08 - OCILobSet/SetContenttype->OCILobGet/SetContentType
    amullick    02/11/08 - add OCILobGet/SetContenttype APIs
    schoi       02/27/07 - OCILobGet/SetOptions API change
@@ -5675,6 +5761,85 @@ Related Functions
 OCISessionBegin()
 
 
+OCIRequestBegin()
+Name
+OCI Begin a database request
+Purpose
+This call starts a database request, a unit of work often used to service a
+web request that may consist of one or more transactions.  When using 
+OCI Session Pool, a call to OCISessionGet() implicitly starts a database 
+request.
+
+Syntax
+sword OCIRequestBegin ( OCISvcCtx     *svchp,
+                        OCIError      *errhp,
+                        ub4            mode);
+Comments
+
+Parameters
+svchp (IN/OUT) - a handle to a service context. The service context handle 
+                 must be initialized and have a session handle associcated
+                 with it.
+errhp (IN/OUT) - an error handle which can be passed to OCIErrorGet() for 
+                 diagnostic information in the event of an error.
+mode  (IN)     - pass as OCI_DEFAULT.
+
+Related Functions
+OCIRequestEnd() 
+OCIRequestDisableReplay
+
+  
+OCIRequestEnd()
+Name
+OCI End a database request
+Purpose
+This call terminates a database request.  When using OCI Session Pool, a 
+call to OCISessionRelease() implicitly ends a database request. 
+Syntax
+sword OCIRequestEnd ( OCISvcCtx     *svchp,
+                      OCIError      *errhp,
+                      ub4            mode);
+Comments
+
+Parameters
+svchp (IN/OUT) - a handle to a service context. The service context handle 
+                 must be initialized and have a session handle associated
+                 with it.
+errhp (IN/OUT) - an error handle which can be passed to OCIErrorGet() for 
+                 diagnostic information in the event of an error.
+mode  (IN)     - pass as OCI_DEFAULT.
+
+Related Functions
+OCIRequestBegin() 
+OCIRequestDisableReplay
+
+
+OCIRequestDisableReplay()
+Name
+OCI Disable AC Replay for a session
+database 
+Purpose
+This call disables AC/Replay for a seession for the duration of the current
+database request.
+Syntax
+sword OCIRequestDisableReplay ( OCISvcCtx     *svchp,
+                                OCIError      *errhp,
+                                ub4            mode);
+Comments
+
+Parameters
+svchp (IN/OUT) - a handle to a service context. The service context handle 
+                 must be initialized and have a session handle associated
+                 with it.
+errhp (IN/OUT) - an error handle which can be passed to OCIErrorGet() for 
+                 diagnostic information in the event of an error.
+mode  (IN)     - pass as OCI_DEFAULT.
+
+Related Functions
+OCIRequestBegin() 
+OCIRequestEnd()
+
+
 ----------------------------------OCIReset------------------------------------
 
 
@@ -6058,6 +6223,39 @@ when a transaction is detached for migration. This mode is the default
 mode when connected to a V7 server. 
 Related Functions
 OCIStmtPrepare()
+
+sword OCIStmtGetNextResult (OCIStmt *stmthp,
+                            OCIError *errhp,
+                            void **result,
+                            ub4  *rtype,
+                            ub4 mode)
+PARAMETERS
+  stmthp   - (IN) executed statement handle
+  errhp    - (IN) error handle
+  result   - (OUT) the next implicit
+                   Result from the executed PL/SQL statement
+  rtype       - (OUT) the type of the implicit result
+  mode     - (IN) OCI_DEFAULT for now
+
+DESCRIPTION
+  Returns the implicit results from a executed PL/SQL statement
+  handle. Each call to OCIStmtGetNextResult () retrieves a single
+  implicit Result in the order in which they were returned from
+  the PL/SQL procedure/block. If no more Results are available, 
+  then OCI_NO_DATA is returned. If rtype is OCI_RESULT_TYPE_SELECT, then
+  the returned result can be cast as an OCI statement handle.
+  The OCI statement handles for implicit result-sets 
+  are allocated by OCI. Applications can do normal OCI define
+  and fetch calls to fetch rows from the implicit result-sets. The
+  returned OCI statement handle cannot be freed explicitly. All implicit
+  result-sets are automatically closed and freed when the top-level 
+  statement handle is freed or released.
+RETURN
+  OCI_ERROR
+  OCI_SUCCESS
+  OCI_NO_DATA  when all implicit ResultSets have been retrieved from
+               the top-level Statement handle
+
 
 
 
@@ -7051,6 +7249,42 @@ typedef sb4 (*OCICallbackAQEnqStreaming)(void  *ctxp, void  **payload,
 typedef sb4 (*OCICallbackAQDeq)(void  *ctxp, void  **payload, 
                                 void  **payload_ind);
 
+/*
+ * Funtions Name :  OCICallbackAQWrite
+ * Description   : This is the callback provided by the user using new
+ *                 OCIAQEnq2() call. This callback streams the message payload
+ *                 to the server
+ * Input Parameters : ctxp  (IN) -> user context
+ *                    bufpp (IN) -> buffer containing the data
+ *                    lenp  (IN) -> length of the data 
+ *                    piece (IN) -> what piece is this OCI_FIRST_PIECE
+ *                                  OCI_NEXT_PIECE, OCI_LAST_PIECE or
+ *                                  OCI_ONE_PIECE.
+ */
+   
+typedef sb4 (*OCICallbackAQWrite)(void  *ctxp, void **bufpp, ub8 *lenp,
+                                  ub1 *piece);
+
+/*
+ * Funtions Name :  OCICallbackAQRead
+ * Description   : This is the callback provided by the user using new
+ *                 OCIAQDeq2() call. The callback receives streaming payload
+ *                 from the server and calls OCICallbackAQRead as many times
+ *                 as needed till all the streaming data is read by the client.
+ *                 Each time the buffer with the payload is returned back to
+ *                 OCICallbackAQRead. When the client wishes to end the 
+ *                 call, null buffer is sent.
+ * Parameters    : ctxp  (IN) -> user context
+ *                 bufpp (IN/OUT) -> buffer containing the data
+ *                 buflp (IN/OUT) -> length of the user provided buffer
+ *                 lenp  (IN/OUT) -> length of the data , this can be
+ *                               smaller than the buffer                   
+ *                 piece (IN/OUT) -> is this the end of the stream
+ */                         
+typedef sb4 (*OCICallbackAQRead)(void  *ctxp, void  **bufp, oraub8 *bufl,
+                                 oraub8 *lenp, ub4 piece);
+                                
+
 /*--------------------------Failover Callback Structure ---------------------*/
 typedef sb4 (*OCICallbackFailover)(void  *svcctx, void  *envctx,
                                    void  *fo_ctx, ub4 fo_type,
@@ -7069,6 +7303,11 @@ typedef sword (*OCICallbackStmtCache)(void *ctx, OCIStmt *stmt, ub4 mode);
 
 /*--------------------------HA Callback Structure ---------------------*/
 typedef void (*OCIEventCallback)(void  *evtctx, OCIEvent *eventhp);
+
+
+/*------------------------- Round Trip Callback Structure --------------------*/
+typedef sword (*OCIRoundTripCallback)(void  *rtctx, OCISvcCtx *svch,
+                                      OCISession *userh);
 
 
 /*****************************************************************************
@@ -7153,6 +7392,13 @@ sword   OCIPasswordChange   (OCISvcCtx *svchp, OCIError *errhp,
                              const OraText *npasswd, ub4 npasswd_len, 
                              ub4 mode);
 
+sword   OCIRequestBegin   (OCISvcCtx *svchp, OCIError *errhp, ub4 mode); 
+
+sword   OCIRequestEnd   (OCISvcCtx *svchp, OCIError *errhp, ub4 mode);
+
+sword   OCIRequestDisableReplay   (OCISvcCtx *svchp, OCIError *errhp, 
+                                   ub4 mode);
+
 sword   OCIStmtPrepare   (OCIStmt *stmtp, OCIError *errhp, const OraText *stmt,
                           ub4 stmt_len, ub4 language, ub4 mode);
 
@@ -7168,10 +7414,21 @@ sword   OCIBindByPos  (OCIStmt *stmtp, OCIBind **bindp, OCIError *errhp,
                        ub2 dty, void  *indp, ub2 *alenp, ub2 *rcodep,
                        ub4 maxarr_len, ub4 *curelep, ub4 mode);
 
+sword   OCIBindByPos2 (OCIStmt *stmtp, OCIBind **bindp, OCIError *errhp,
+                       ub4 position, void  *valuep, sb8 value_sz,
+                       ub2 dty, void  *indp, ub4 *alenp, ub2 *rcodep,
+                       ub4 maxarr_len, ub4 *curelep, ub4 mode);
+
 sword   OCIBindByName   (OCIStmt *stmtp, OCIBind **bindp, OCIError *errhp,
                          const OraText *placeholder, sb4 placeh_len, 
                          void  *valuep, sb4 value_sz, ub2 dty, 
                          void  *indp, ub2 *alenp, ub2 *rcodep, 
+                         ub4 maxarr_len, ub4 *curelep, ub4 mode);
+
+sword   OCIBindByName2  (OCIStmt *stmtp, OCIBind **bindp, OCIError *errhp,
+                         const OraText *placeholder, sb4 placeh_len, 
+                         void  *valuep, sb8 value_sz, ub2 dty, 
+                         void  *indp, ub4 *alenp, ub2 *rcodep, 
                          ub4 maxarr_len, ub4 *curelep, ub4 mode);
 
 sword   OCIBindObject  (OCIBind *bindp, OCIError *errhp, const OCIType *type, 
@@ -7199,9 +7456,19 @@ sword   OCIStmtExecute  (OCISvcCtx *svchp, OCIStmt *stmtp, OCIError *errhp,
                          ub4 iters, ub4 rowoff, const OCISnapshot *snap_in, 
                          OCISnapshot *snap_out, ub4 mode);
 
+/*------------------------Implicit Result Interface-------------------------*/
+sword OCIStmtGetNextResult(OCIStmt *stmthp, OCIError *errhp,
+                           void **result, ub4 *rtype,
+                           ub4 mode);
+/*------------------------End Implicit Result-------------------------------*/
+
 sword   OCIDefineByPos  (OCIStmt *stmtp, OCIDefine **defnp, OCIError *errhp,
                          ub4 position, void  *valuep, sb4 value_sz, ub2 dty,
                          void  *indp, ub2 *rlenp, ub2 *rcodep, ub4 mode);
+
+sword   OCIDefineByPos2 (OCIStmt *stmtp, OCIDefine **defnp, OCIError *errhp,
+                         ub4 position, void  *valuep, sb8 value_sz, ub2 dty,
+                         void  *indp, ub4 *rlenp, ub2 *rcodep, ub4 mode);
 
 sword   OCIDefineObject  (OCIDefine *defnp, OCIError *errhp, 
                           const OCIType *type, void  **pgvpp, 
@@ -7415,6 +7682,9 @@ sword   OCIServerVersion  (void  *hndlp, OCIError *errhp, OraText *bufp,
 sword   OCIServerRelease  (void  *hndlp, OCIError *errhp, OraText *bufp,
                            ub4 bufsz,
                            ub1 hndltype, ub4 *version);
+sword   OCIServerRelease2  (void  *hndlp, OCIError *errhp, OraText *bufp,
+                            ub4 bufsz,
+                            ub1 hndltype, ub4 *versionp, ub4 mode);
 
 sword   OCIAttrGet (const void  *trgthndlp, ub4 trghndltyp, 
                     void  *attributep, ub4 *sizep, ub4 attrtype, 
@@ -7885,6 +8155,18 @@ sword OCIAQGetReplayInfo(OCISvcCtx *svchp, OCIError *errhp,
 sword OCIAQResetReplayInfo(OCISvcCtx *svchp, OCIError *errhp,
                            OraText *queue_name, OCIAQAgent *sender,
                            ub4 replay_attribute); 
+
+sword OCIAQEnq2(OCISvcCtx *svchp, OCIError *errhp, OraText *queue_name,
+                OCIAQEnqOptions *enqopt, OCIAQMsgProperties *msgprop,
+                OCIType *payload_tdo, void  **payload, void  **payload_ind,
+                OCIRaw **msgid, void  *ctxp, OCICallbackAQWrite enqcbfp,
+                ub4 flags);
+               
+sword OCIAQDeq2(OCISvcCtx *svchp, OCIError *errhp, OraText *queue_name,
+                OCIAQDeqOptions *deqopt, OCIAQMsgProperties *msgprop,
+                OCIType *payload_tdo, void  **payload, void  **payload_ind,
+                OCIRaw **msgid, void  *ctxp, OCICallbackAQRead enqcbfp,
+                ub4 flags);
 
 sword OCIExtractInit(void  *hndl, OCIError *err);
 
@@ -10863,21 +11145,24 @@ typedef ub4 (*OCISubscriptionNotify)(void  *ctx, OCISubscription *subscrhp,
                                      void  *pay, ub4 payl, 
                                      void  *desc, ub4 mode);
 
+typedef ub4 (*OCISubscriptionFailure)(void  *ctx, OCISubscription *subscrhp,
+                                      void  *desc, OCIError *errhp);
+
 sword OCISubscriptionRegister(OCISvcCtx *svchp, OCISubscription **subscrhpp, 
                               ub2 count, OCIError *errhp, ub4 mode);
 
 
 sword OCISubscriptionPost(OCISvcCtx *svchp, OCISubscription **subscrhpp, 
-                              ub2 count, OCIError *errhp, ub4 mode);
+                          ub2 count, OCIError *errhp, ub4 mode);
 
 sword OCISubscriptionUnRegister(OCISvcCtx *svchp, OCISubscription *subscrhp, 
-                              OCIError *errhp, ub4 mode);
+                                OCIError *errhp, ub4 mode);
 
 sword OCISubscriptionDisable(OCISubscription *subscrhp, 
-                           OCIError *errhp, ub4 mode);
+                             OCIError *errhp, ub4 mode);
 
 sword OCISubscriptionEnable(OCISubscription *subscrhp, 
-                          OCIError *errhp, ub4 mode);
+                            OCIError *errhp, ub4 mode);
 
 /*------------------- End OCI Publish/Subscribe Interfaces ------------------*/
 
@@ -10887,21 +11172,21 @@ sword OCIDateTimeGetTime(void  *hndl, OCIError *err, OCIDateTime *datetime,
                          ub1 *hr, ub1 *mm, ub1 *ss, ub4 *fsec);
 
 sword OCIDateTimeGetDate(void  *hndl, OCIError *err,  const OCIDateTime *date, 
-                 sb2 *yr, ub1 *mnth, ub1 *dy );
+                         sb2 *yr, ub1 *mnth, ub1 *dy );
 
 sword OCIDateTimeGetTimeZoneOffset(void  *hndl,OCIError *err,
                                    const OCIDateTime *datetime,
                                    sb1 *hr,sb1 *mm);
 
 sword OCIDateTimeConstruct(void   *hndl,OCIError *err,OCIDateTime *datetime,
-               sb2 yr,ub1 mnth,ub1 dy,ub1 hr,ub1 mm,ub1 ss,ub4 fsec,
-               OraText  *timezone,size_t timezone_length);
+                           sb2 yr,ub1 mnth,ub1 dy,ub1 hr,ub1 mm,ub1 ss,ub4 fsec,
+                           OraText  *timezone,size_t timezone_length);
 
 sword OCIDateTimeSysTimeStamp(void  *hndl, OCIError *err, 
                               OCIDateTime *sys_date );
 
 sword OCIDateTimeAssign(void  *hndl, OCIError *err, const OCIDateTime *from, 
-                       OCIDateTime *to);
+                        OCIDateTime *to);
 
 sword OCIDateTimeToText(void  *hndl, OCIError *err, const OCIDateTime *date, 
                         const OraText *fmt, ub1 fmt_length, ub1 fsprec, 
@@ -10937,19 +11222,19 @@ sword OCIIntervalAdd(void  *hndl, OCIError *err, OCIInterval *addend1,
                         OCIInterval *addend2, OCIInterval *result );
 
 sword OCIIntervalMultiply(void  *hndl, OCIError *err, const OCIInterval *inter,
-                        OCINumber *nfactor, OCIInterval *result );
+                          OCINumber *nfactor, OCIInterval *result );
 
 sword OCIIntervalDivide(void  *hndl, OCIError *err, OCIInterval *dividend, 
-                OCINumber *divisor, OCIInterval *result );
+                        OCINumber *divisor, OCIInterval *result );
 
 sword OCIIntervalCompare(void  *hndl, OCIError *err, OCIInterval *inter1, 
-                        OCIInterval *inter2, sword *result );
+                         OCIInterval *inter2, sword *result );
 
 sword OCIIntervalFromNumber(void  *hndl, OCIError *err, OCIInterval *inter, 
-                        OCINumber *number);
+                            OCINumber *number);
 
 sword OCIIntervalFromText( void  *hndl, OCIError *err, const OraText *inpstr, 
-                size_t str_len, OCIInterval *result );
+                           size_t str_len, OCIInterval *result );
 
 sword OCIIntervalToText( void  *hndl, OCIError *err, const OCIInterval *inter,
                          ub1 lfprec, ub1 fsprec, 
@@ -11080,13 +11365,13 @@ sword OCIDBShutdown(OCISvcCtx     *svchp,
 
 /*------------------ End Database Startup/Shutdown prototypes ---------------*/
 
-/*----------------------- OCIClientVersion ------------------------------*/
-void OCIClientVersion(sword *major_version,
-                      sword *minor_version,
-                      sword *update_num,
-                      sword *patch_num,
-                      sword *port_update_num);
-/*----------------------- End OCIClientVersion --------------------------*/
+/*----------------------- OCIClientVersion ----------------------------------*/
+void OCIClientVersion(sword *featureRelease,
+                      sword *releaseUpdate,
+                      sword *releaseUpdateRevision,
+                      sword *increment,
+                      sword *ext);
+/*----------------------- End OCIClientVersion -----------------------------*/
 
 /*----------------------- HA Event prototypes ------------------------------*/
 
@@ -11097,26 +11382,381 @@ sword OCIInitEventHandle(OCIError *errhp,
 
 /*----------------------- End HA Event prototypes --------------------------*/
 
+/*------------------- SQL Translation prototypes ---------------------------*/
+
+sword OCITranslatedErrorGet(OCISvcCtx *svchp,
+                            void      *hndlp, 
+                            ub4        recordno,
+                            OraText   *sqlstate,
+                            ub4        sqlstatesiz,
+                            sb4       *errcodep, 
+                            ub4        type);
+
+/*----------------- End SQL Translation prototypes -------------------------*/
+
+/*---------------------------- Sharding Prototypes -------------------------*/
+
+sword OCIShardingKeyColumnAdd(OCIShardingKey *shardingKey, OCIError *errhp,
+                              void* col, ub4 colLen, ub2 colType, ub4 mode);
+
+sword OCIShardingKeyReset(OCIShardingKey *shardingKey, OCIError *errhp,
+                          ub4 mode);
+
+sword OCIShardInstancesGet(void             **shTopoCtx,
+                           OCIError          *errhp,
+                           const OraText     *connstr,
+                           ub4                connstrl,
+                           OCIShardingKey    *shardingKey,
+                           OCIShardingKey    *superShardingKey,
+                           OCIShardInst    ***shardInsts,
+                           ub4               *numShardInsts,
+                           ub4                mode);
+
+/*------------------------ End Sharding Prototypes -------------------------*/
+
+/*----------------------- OCI SODA Prototypes -----------------------------*/
+sword OCISodaCollCreate(OCISvcCtx       *svchp,
+                        const oratext   *collname,
+                        ub4              collnamelen,
+                        OCISodaColl    **collection,
+                        OCIError        *errhp,
+                        ub4              mode);
+
+sword OCISodaMetadataBuild(OCISvcCtx             *svchp,
+                           const OCISodaMetadata *mdatahp,
+                           OraText               *metadata,
+                           ub4                   *metadatalen,
+                           OCIError              *errhp,
+                           ub4                    mode);
+
+sword OCISodaCollCreateWithMetadata(OCISvcCtx      *svchp,
+                                    const OraText  *collname,
+                                    ub4             collnamelen,
+                                    OraText        *metadata,
+                                    ub4             metadatalen,
+                                    OCISodaColl   **collection,
+                                    OCIError       *errhp,
+                                    ub4             mode);
+
+sword OCISodaCollOpen(OCISvcCtx      *svchp,
+                      const OraText  *collname,
+                      ub4             collnamelen,
+                      OCISodaColl   **coll,
+                      OCIError       *errhp,
+                      ub4             mode);
+
+sword OCISodaDocCreate (OCIEnv            *envhp,
+                        const void        *content,
+                        ub4                contentLength,
+                        ub4                docFlags,
+                        OCISodaDoc       **document,
+                        OCIError          *errhp,
+                        ub4                mode);
+
+sword OCISodaDocCreateWithKey(OCIEnv        *envhp,
+                              const void    *content,
+                              ub4            contentLength,
+                              const OraText *key,
+                              ub4            keylen,
+                              ub4            docFlags,
+                              OCISodaDoc   **document,
+                              OCIError      *errhp,
+                              ub4            mode);
+
+sword OCISodaDocCreateWithKeyAndMType(OCIEnv              *envhp,
+                                      const void          *content,
+                                      ub4                  contentLength,
+                                      const OraText       *key,
+                                      ub4                  keylen,
+                                      const OraText       *mediaType,
+                                      ub4                  mediaTypeLength,
+                                      ub4                  docFlags,
+                                      OCISodaDoc         **document,
+                                      OCIError            *errhp,
+                                      ub4                  mode);
+
+sword OCISodaInsert(OCISvcCtx   *svchp,
+                    OCISodaColl *collection,
+                    OCISodaDoc  *document,
+                    OCIError    *errhp,
+                    ub4          mode);
+
+sword OCISodaBulkInsert(OCISvcCtx            *svchp,
+                        OCISodaColl          *collection,
+                        OCISodaDoc          **documentarray,
+                        ub4                   arraylen,
+                        OCISodaOutputOptions *opoptns,
+                        OCIError             *errhp,
+                        ub4                   mode);
+
+sword OCISodaInsertAndGet(OCISvcCtx      *svchp,
+                          OCISodaColl    *collection,
+                          OCISodaDoc    **document,
+                          OCIError       *errhp,
+                          ub4             mode);
+
+sword OCISodaBulkInsertAndGet(OCISvcCtx            *svchp,
+                              OCISodaColl          *collection,
+                              OCISodaDoc          **documentarray,
+                              ub4                   arraylen,
+                              OCISodaOutputOptions *opoptns,
+                              OCIError             *errhp,
+                              ub4                   mode);
+
+sword OCISodaInsertWithCtnt(OCISvcCtx           *svchp,
+                            OCISodaColl         *collection,
+                            const OraText       *key,
+                            ub4                  keyLength,
+                            const void          *content,
+                            ub4                  contentLength,
+                            ub4                  docFlags,
+                            OCIError            *errhp,
+                            ub4                  mode);
+
+sword OCISodaInsertAndGetWithCtnt(OCISvcCtx        *svchp,
+                                  OCISodaColl      *collection,
+                                  const OraText    *key,
+                                  ub4               keyLength,
+                                  const void       *content,
+                                  ub4               contentLength,
+                                  ub4               docFlags,
+                                  OCISodaDoc      **document,
+                                  OCIError         *errhp,
+                                  ub4               mode);
+
+sword OCISodaBulkInsertWithCtnt(OCISvcCtx            *svchp,
+                                OCISodaColl          *collection,
+                                void                **contentStrings,
+                                ub4                  *contentStringLengths,
+                                OraText             **keys,
+                                ub4                  *keyLengths,
+                                ub4                   arrayLength,
+                                ub4                   docFlags,
+                                OCISodaOutputOptions *opoptns,
+                                OCIError             *errhp,
+                                ub4                   mode);
+
+sword OCISodaBulkInsertAndGetWithCtnt (OCISvcCtx       *svchp,
+                                       OCISodaColl     *collection,
+                                       void           **contentStrings,
+                                       ub4             *contentStringLengths,
+                                       OraText        **keys,
+                                       ub4             *keyLengths,
+                                       ub4              arrayLength,
+                                       ub4              docFlags,
+                                       OCISodaDoc     **documents,
+                                       OCISodaOutputOptions *opoptns,
+                                       OCIError        *errhp,
+                                       ub4              mode);
+
+sword OCISodaSave (OCISvcCtx   *svchp,
+                   OCISodaColl *collection,
+                   OCISodaDoc  *document,
+                   OCIError    *errhp,
+                   ub4          mode);
+
+sword OCISodaSaveAndGet(OCISvcCtx      *svchp,
+                        OCISodaColl    *collection,
+                        OCISodaDoc    **document,
+                        OCIError       *errhp,
+                        ub4             mode);
+
+sword OCISodaSaveWithCtnt (OCISvcCtx     *svchp, 
+                           OCISodaColl   *collection, 
+                           const OraText *key, 
+                           ub4            keylength, 
+                           const void    *content,
+                           ub4            contentlen,
+                           ub4            docFlags,
+                           OCIError      *errhp, 
+                           ub4            mode);
+
+sword OCISodaSaveAndGetWithCtnt (OCISvcCtx      *svchp, 
+                                 OCISodaColl    *collection, 
+                                 const OraText  *key, 
+                                 ub4             keylength, 
+                                 const void     *content, 
+                                 ub4             contentlen, 
+                                 ub4             docFlags,
+                                 OCISodaDoc    **document,
+                                 OCIError       *errhp,
+                                 ub4             mode);
+
+sword OCISodaOperKeysSet (const OCISodaOperationOptions    *operhp,
+                          OraText                         **keysArray,
+                          ub4                              *lengthsArray,
+                          ub4                               count,
+                          OCIError                         *errhp,
+                          ub4                               mode);
+
+sword OCISodaFind (OCISvcCtx                     *svchp, 
+                   const OCISodaColl             *coll, 
+                   const OCISodaOperationOptions *findOptions,
+                   ub4                            docFlags, 
+                   OCISodaDocCursor             **cursor,
+                   OCIError                      *errhp,
+                   ub4                            mode);
+
+sword OCISodaFindOne (OCISvcCtx                     *svchp, 
+                      const OCISodaColl             *coll, 
+                      const OCISodaOperationOptions *findOptions, 
+                      ub4                            docFlags,
+                      OCISodaDoc                   **doc,
+                      OCIError                      *errhp,
+                      ub4                            mode);
+
+sword OCISodaDocGetNext(OCISvcCtx              *svchp,
+                        const OCISodaDocCursor *cursor,
+                        OCISodaDoc            **doc,
+                        OCIError               *errhp,
+                        ub4                     mode);
+
+sword OCISodaFindOneWithKey(OCISvcCtx         *svchp,
+                            const OCISodaColl *coll,
+                            const OraText     *key,
+                            ub4                keylen,
+                            ub4                docFlags,
+                            OCISodaDoc       **doc,
+                            OCIError          *errhp,
+                            ub4                mode);
+
+
+sword OCISodaCollList(OCISvcCtx          *svchp,
+                      const OraText      *startname,
+                      ub4                 stnamelen,
+                      OCISodaCollCursor **cur,
+                      OCIError           *errhp,
+                      ub4                 mode);
+
+sword OCISodaCollGetNext(OCISvcCtx                *svchp,
+                         const OCISodaCollCursor  *cur,
+                         OCISodaColl             **coll,
+                         OCIError                 *errhp,
+                         ub4                       mode);
+
+sword OCISodaDocCount(OCISvcCtx                     *svchp,
+                      const OCISodaColl             *coll,
+                      const OCISodaOperationOptions *optns,
+                      ub8                           *numdocs,
+                      OCIError                      *errhp,
+                      ub4                            mode);
+
+sword OCISodaDocCountWithFilter (OCISvcCtx         *svchp, 
+                                 const OCISodaColl *coll, 
+                                 const OraText     *filterSpec, 
+                                 ub4                filterSpecLen,
+                                 ub8               *numdocs,
+                                 OCIError          *errhp,
+                                 ub4                mode);
+
+sword OCISodaReplOne(OCISvcCtx                      *svchp,
+                     const OCISodaColl              *coll,
+                     const OCISodaOperationOptions  *optns,
+                     OCISodaDoc                     *document,
+                     boolean                        *isReplaced,
+                     OCIError                       *errhp,
+                     ub4                             mode);
+
+sword OCISodaReplOneAndGet(OCISvcCtx                      *svchp,
+                           const OCISodaColl              *coll,
+                           const OCISodaOperationOptions  *optns,
+                           OCISodaDoc                    **document,
+                           boolean                        *isReplaced,
+                           OCIError                       *errhp,
+                           ub4                             mode);
+
+sword OCISodaReplOneWithCtnt(OCISvcCtx                     *svchp,
+                             const OCISodaColl             *coll,
+                             const OCISodaOperationOptions *optns,
+                             const void                    *content,
+                             ub4                            contentLength,
+                             ub4                            docFlags,
+                             boolean                       *isReplaced,
+                             OCIError                      *errhp,
+                             ub4                            mode);
+
+sword OCISodaReplOneAndGetWithCtnt(OCISvcCtx                       *svchp,
+                                   const OCISodaColl               *coll,
+                                   const OCISodaOperationOptions   *optns,
+                                   const void                      *content,
+                                   ub4                              contentLen,
+                                   ub4                              docFlags,
+                                   OCISodaDoc                     **document,
+                                   boolean                         *isReplaced,
+                                   OCIError                        *errhp,
+                                   ub4                              mode);
+
+
+sword OCISodaReplOneWithKey (OCISvcCtx           *svchp,
+                             const OCISodaColl   *coll,
+                             const OraText       *key,
+                             ub4                  keylength,
+                             OCISodaDoc          *document,
+                             boolean             *isReplaced,
+                             OCIError            *errhp,
+                             ub4                  mode);
+
+sword OCISodaReplOneAndGetWithKey(OCISvcCtx          *svchp,
+                                  const OCISodaColl  *coll,
+                                  const OraText      *key,
+                                  ub4                 keylength,
+                                  OCISodaDoc        **document,
+                                  boolean            *isReplaced,
+                                  OCIError           *errhp,
+                                  ub4                 mode);
+
+
+sword  OCISodaRemove(OCISvcCtx                       *svchp,
+                     const OCISodaColl               *coll,
+                     const OCISodaOperationOptions   *optns,
+                     ub8                             *removeCount,
+                     OCIError                        *errhp,
+                     ub4                              mode);
+                     
+
+sword OCISodaRemoveOneWithKey(OCISvcCtx          *svchp,
+                              const OCISodaColl  *coll,
+                              const OraText      *key,
+                              ub4                 keylength,
+                              boolean            *isRemoved,
+                              OCIError           *errhp,
+                              ub4                 mode);
+
+
+
+sword OCISodaCollDrop(OCISvcCtx   *svchp,
+                      OCISodaColl *coll,
+                      boolean     *isDropped,
+                      OCIError    *errhp,
+                      ub4          mode);
+
+
+sword OCISodaIndexCreate(OCISvcCtx         *svchp,
+                         const OCISodaColl *coll,
+                         const OraText     *indexspec,
+                         ub4                speclen,
+                         OCIError          *errhp,
+                         ub4                mode);
+
+sword OCISodaIndexDrop(OCISvcCtx   *svchp,
+                       OraText     *indexname,
+                       ub4          indexnamelen,
+                       boolean     *isDropped,
+                       OCIError    *errhp,
+                       ub4          mode);
+
+sword OCISodaDataGuideGet(OCISvcCtx           *svchp, 
+                           const OCISodaColl  *collection, 
+                           ub4                 docFlags,
+                           OCISodaDoc        **doc,
+                           OCIError           *errhp,
+                           ub4                 mode);
+
+
+/*--------------------- End OCI SODA Prototypes --------------------------*/
+
 /*---------------------------------------------------------------------------
                           PRIVATE FUNCTIONS
-  ---------------------------------------------------------------------------*/
+----------------------------------------------------------------------------*/
 
-            /* the following functions are depracated and should not be used */
-#ifdef NEVER
-sword   OCIStmtBindByPos  (OCIStmt *stmtp, OCIBind *bindp, OCIError *errhp,
-                  ub4 position, void  *valuep, sb4 value_sz,
-                  ub2 dty, void  *indp, ub2 *alenp, ub2 *rcodep,
-                  ub4 maxarr_len, ub4 *curelep, ub4 mode);
-
-
-sword   OCIStmtBindByName  (OCIStmt *stmtp, OCIBind *bindp, OCIError *errhp,
-                  const OraText *placeholder, sb4 placeh_len, void  *valuep, 
-                  sb4 value_sz, ub2 dty, void  *indp, ub2 *alenp, 
-                  ub2 *rcodep, ub4 maxarr_len, ub4 *curelep, ub4 mode);
-
-sword   ocidefn  (OCIStmt *stmtp, OCIDefine *defnp, OCIError *errhp,
-                  ub4 position, void  *valuep, sb4 value_sz, ub2 dty,
-                  void  *indp, ub2 *rlenp, ub2 *rcodep, ub4 mode);
-#endif /* NEVER */
-
-#endif                                                       /* OCIAP_ORACLE */
+#endif                                                      /* OCIAP_ORACLE */

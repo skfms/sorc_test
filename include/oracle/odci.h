@@ -2,8 +2,8 @@
  * 
  */
 
-/* Copyright (c) 1998, 2010, Oracle and/or its affiliates. 
-All rights reserved. */
+/* Copyright (c) 1998, 2018, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
@@ -40,6 +40,36 @@ All rights reserved. */
        these do make the similar change in catodci.sql.
 
    MODIFIED   (MM/DD/YY)
+   rphillip    11/27/18 - XbranchMerge rphillip_bug-28449437_main from main
+   rphillip    03/21/18 - Bug 27254684 Add ODCI_EXTTABLE_OPEN_FLAGS_OLD_CA
+   jstenois    07/25/17 - 26527267: track xt queries that reference no cols
+   rodfuent    07/13/17 - RTI 20418540: Add mutable fields to trusted types
+   timedina    01/04/17 - Bug 25261796: allow Spatial's index in sharded tables
+   rodfuent    10/18/16 - bug 21692960: Trusted callout types
+   mwjohnso    09/14/16 - Bug 24307258: add ODCI_EXTTABLE_OPEN_FLAGS_VALIDATE
+   cochang     04/29/16 - Bug 22627249: add ODCIExtTableClose Flag
+   mjjones     03/21/16 - Bug 22950991: forward port Predicate PushDown txns
+                          mjjones_bigdatasql_ppd 
+                          mjjones_bug-22486603 
+                          mjjones_bug-22519704 
+                          mjjones_bug-22761713 
+                          mjjones_lrg-18956213 
+   cochang     03/15/15 - Proj 47082: Partitioned external table partition
+                          pruning
+   sdoraisw    01/28/15 - proj 47082:add ODCIExtTableInfo.AccessParmMod
+   echong      12/05/14 - local domain index support on composite partitioned
+                          tables
+   acolunga    10/16/14 - bug 19354925: add ODCI_INDEX_NAMED_PARTS
+   echong      06/30/14 - support domain index on ref-partitioned tables
+   dpotapov    01/12/16 - Add internal table flag
+   abrumm      05/12/14 - LRG 10020665: add ODCI_EXTTABLE_OPEN_FLAGS_SILENT
+   evoss       04/08/14 - fix public rdbms dependencies
+   abrumm      03/20/14 - ExaDoop/BigSQL: add new ODCI_EXTTABLE_FETCH flags
+   evoss       03/22/14 - lint
+   abrumm      03/04/14 - ExaDoop/BigSQL: add new ODCI_EXTTABLE_OPEN flags
+   dpotapov    03/06/14 - xtss merge
+   echong      08/26/13 - add event flag for row migration
+   spsundar    09/29/11 - add a new flag ODCI_USER_PARAM_STR
    yhu         02/03/10 - add a new flag ODCI_INDEX_UGI
    spsundar    09/13/07 - 
    yhu         06/02/06 - add callproperty for statistics 
@@ -98,6 +128,7 @@ All rights reserved. */
 #endif
 #ifndef ODCI_ORACLE
 # define ODCI_ORACLE
+# define ODCI_ORACLE_DEFINED
 
 /*---------------------------------------------------------------------------*/
 /*                         SHORT NAMES SUPPORT SECTION                       */
@@ -255,6 +286,11 @@ All rights reserved. */
 #define ODCI_INDEX_FUNCTION_IDX  0x0100
 #define ODCI_INDEX_LIST_PARTN    0x0200
 #define ODCI_INDEX_UGI           0x0400
+#define ODCI_INDEX_REF_PARTN     0x0800
+#define ODCI_INDEX_NAMED_PARTS   0x1000
+#define ODCI_INDEX_COMP_PARTN    0x2000
+#define ODCI_INDEX_SUB_PARTN     0x4000
+#define ODCI_INDEX_SHARD_TABLE   0x8000
 
 /* Constants for ODCIIndexInfo.IndexParaDegree */
 #define ODCI_INDEX_DEFAULT_DEGREE 32767
@@ -262,6 +298,10 @@ All rights reserved. */
 /* Constants for ODCIEnv.EnvFlags */
 #define ODCI_DEBUGGING_ON        0x01
 #define ODCI_NODATA              0x02
+#define ODCI_USER_PARAM_STR      0x04
+#define ODCI_ROWMIG              0x08
+#define ODCI_IKEYCHG             0x10
+#define ODCI_SHARD_COORDINATOR   0x20
 
 /* Constants for ODCIEnv.CallProperty */
 #define ODCI_CALL_NONE           0
@@ -285,6 +325,8 @@ All rights reserved. */
     /* AccessParmClob, AccessParmBlob discriminator */
 #define ODCI_EXTTABLE_INFO_FLAG_ACCESS_PARM_CLOB 0x00000004
 #define ODCI_EXTTABLE_INFO_FLAG_ACCESS_PARM_BLOB 0x00000008
+    /* set if no columns values are referenced */
+#define ODCI_EXTTABLE_INFO_FLAG_NO_REF_COL       0x00000010
 
 /* Constants for ODCIExtTableInfo.IntraSourceConcurrency */
 #define ODCI_TRUE  1
@@ -293,11 +335,76 @@ All rights reserved. */
 /* Constants (bit definitions) for ODCIExtTable{Open,Fetch,Populate,Close}
  * Flag argument.
  */
-#define ODCI_EXTTABLE_OPEN_FLAGS_QC     0x00000001  /* caller is Query Coord */
-#define ODCI_EXTTABLE_OPEN_FLAGS_SHADOW 0x00000002  /* caller is shadow proc */
-#define ODCI_EXTTABLE_OPEN_FLAGS_SLAVE  0x00000004  /* caller is slave  proc */
+/* ------------------------- ODCIExtTableOpen Flags ------------------------ */
+                                              /* Query Coordinator Mode call */
+#define ODCI_EXTTABLE_OPEN_FLAGS_QC              0x00000001
 
+                                                         /* Shadow Mode call */
+#define ODCI_EXTTABLE_OPEN_FLAGS_SHADOW          0x00000002 
+
+                                                         /* Slave  Mode call */
+#define ODCI_EXTTABLE_OPEN_FLAGS_SLAVE           0x00000004
+
+                                          /* GET GRANULES from access driver */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_GRANULES    0x00000008
+
+                                                /* GET Access Driver ConTeXt */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_AD_CTX      0x00000010
+
+                                                /* SET Access Driver ConTeXt */
+#define ODCI_EXTTABLE_OPEN_FLAGS_SET_AD_CTX      0x00000020
+
+                                                      /* GET Storage Objects */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_STGOBJ      0x00000040
+
+                                         /* GET Storage Object Sizes (bytes) */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_STGOBJ_SIZE 0x00000080
+
+                               /* GET Oracle column types from access driver */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_COLS        0x00000100
+
+                               /* GET Native column types from access driver */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_NATIVE_COLS 0x00000200
+
+                                /* GET partition metadata from access driver */
+#define ODCI_EXTTABLE_OPEN_FLAGS_GET_PARTITIONS  0x00000400
+
+               /* access driver should be "silent" (don't write to log file) */
+#define ODCI_EXTTABLE_OPEN_FLAGS_SILENT          0x00000800
+
+                                     /* SET absolute partition number vector */
+#define ODCI_EXTTABLE_OPEN_FLAGS_SET_APNUM_VEC   0x00001000
+
+                                               /* Partitioned external table */
+#define ODCI_EXTTABLE_OPEN_FLAGS_PET             0x00002000
+
+                                                      /* validate table data */
+#define ODCI_EXTTABLE_OPEN_FLAGS_VALIDATE        0x00004000
+                                              /* use old column array format */
+#define ODCI_EXTTABLE_OPEN_FLAGS_OLD_CA          0x00008000
+                  /* internal external table, =ODCI_EXTTABLE_FETCH_FLAGS_INT */
+#define ODCI_EXTTABLE_OPEN_FLAGS_INT             0x80000000
+
+/* ------------------------ ODCIExtTableFetch Flags ------------------------ */
+/* ODCI_EXTTABLE_FETCH_FLAGS_EOS is an OUT parameter FROM the
+ * Access Driver to indicate that end-of-stream has been reached.
+ */
 #define ODCI_EXTTABLE_FETCH_FLAGS_EOS   0x00000001 /* end-of-stream on fetch */
+
+/* ODCI_EXTTABLE_FETCH_OPAQUE_GRAN is an IN parameter TO the
+ * Access Driver to indicate that the RDBMS is suppling opaque granules.
+ */
+#define ODCI_EXTTABLE_FETCH_OPAQUE_GRAN 0x00000002   /* opaque granule given */
+
+/* ODCI_EXTTABLE_FETCH_BIND_DOC is an IN parameter TO the
+ * Access Driver to indicate that the RDBMS is supplying xadbinddoc XML document
+ */
+#define ODCI_EXTTABLE_FETCH_BIND_DOC    0x00000004          /* binddoc given */
+#define ODCI_EXTTABLE_FETCH_FLAGS_INT ODCI_EXTTABLE_OPEN_FLAGS_INT
+
+/* ------------------------ ODCIExtTableClose Flags ------------------------ */
+#define ODCI_EXTTABLE_CLOSE_FLAGS_ERR   0x00000001
+                                     /* rowsource close with error signalled */
 
 /* Constants for Flags argument to ODCIAggregateTerminate */
 #define ODCI_AGGREGATE_REUSE_CTX  1
@@ -309,6 +416,7 @@ All rights reserved. */
 #define ODCI_COMP_UPDATED_COL      0x0008
 #define ODCI_COMP_RENAMED_COL      0x0010
 #define ODCI_COMP_RENAMED_TOPADT   0x0020
+#define ODCI_COMP_REFERENCED_COL   0x0040
 
 /* Constants for ODCIOrderByInfo.ExprType */
 #define ODCI_COLUMN_EXPR   1
@@ -331,8 +439,6 @@ All rights reserved. */
  */
 
 typedef OCIRef   ODCIColInfo_ref;
-typedef OCIArray ODCIColInfoList;
-typedef OCIArray ODCIColInfoList2;
 typedef OCIRef   ODCIIndexInfo_ref;
 typedef OCIRef   ODCIPredInfo_ref;
 typedef OCIArray ODCIRidList;
@@ -343,12 +449,10 @@ typedef OCIRef   ODCIQueryInfo_ref;
 typedef OCIRef   ODCIFuncInfo_ref;
 typedef OCIRef   ODCICost_ref;
 typedef OCIRef   ODCIArgDesc_ref;
-typedef OCIArray ODCIArgDescList;
 typedef OCIRef   ODCIStatsOptions_ref;
 typedef OCIRef   ODCIPartInfo_ref;
 typedef OCIRef   ODCIEnv_ref;
 typedef OCIRef   ODCIExtTableInfo_ref;             /* external table support */
-typedef OCIArray ODCIGranuleList;                  /* external table support */
 typedef OCIRef   ODCIExtTableQCInfo_ref;           /* external table support */
 typedef OCIRef   ODCIFuncCallInfo_ref;
 typedef OCIArray ODCINumberList;
@@ -360,37 +464,191 @@ typedef OCIArray ODCIOrderByInfoList;
 typedef OCIRef   ODCIFilterInfo_ref;
 typedef OCIRef   ODCIOrderByInfo_ref;
 typedef OCIRef   ODCICompQueryInfo_ref;
+typedef OCIArray ODCIColInfoList;
+typedef OCIArray ODCIColInfoList2;
+typedef OCIArray ODCIArgDescList;
+typedef OCIArray ODCIGranuleList;
  
-struct ODCIColInfo
-{
-   OCIString* TableSchema;
-   OCIString* TableName;
-   OCIString* ColName;
-   OCIString* ColTypName;
-   OCIString* ColTypSchema;
-   OCIString* TablePartition;
-   OCINumber  ColFlags;
-   OCINumber  ColOrderPos;
-   OCINumber  TablePartitionIden;
-   OCINumber  TablePartitionTotal;
-};
-typedef struct ODCIColInfo ODCIColInfo;
- 
-struct ODCIColInfo_ind
-{
-   OCIInd atomic;
-   OCIInd TableSchema;
-   OCIInd TableName;
-   OCIInd ColName;
-   OCIInd ColTypName;
-   OCIInd ColTypSchema;
-   OCIInd TablePartition;
-   OCIInd ColFlags;
-   OCIInd ColOrderPos;
-   OCIInd TablePartitionIden;
-   OCIInd TablePartitionTotal;
-};
-typedef struct ODCIColInfo_ind ODCIColInfo_ind;
+#endif /* ODCI_ORACLE */
+
+#ifndef ODCI_KUTYXTT
+#  define ODCI_KUTYXTT
+
+#  ifndef KOL3_KUTYXTT
+#   ifdef K3_ORACLE
+#    include <kol3.h>
+#   endif
+#  endif
+
+/*---------- External Tables ----------*/
+
+/* Begin structure */
+
+#ifndef ODCI_KUTY_BS
+#  define ODCI_KUTY_BS(s) struct s {
+#endif 
+
+/* End structure */
+
+#ifndef ODCI_KUTY_ES
+#  define ODCI_KUTY_ES(s) }; typedef struct s s;
+#endif
+
+/* Scalar attr */
+
+#ifndef ODCI_KUTY_SA
+#  define ODCI_KUTY_SA( t, m, s ) t m;
+#endif
+
+/* Pointer attr */
+
+#ifndef ODCI_KUTY_PA
+#  define ODCI_KUTY_PA( t, m, s ) t *m;
+#endif
+
+/* large attr by value */
+#ifndef ODCI_KUTY_LA
+#  define ODCI_KUTY_LA( t, m, s ) t *m;
+#endif
+
+/* array attr */
+#ifndef ODCI_KUTY_AA
+#  define ODCI_KUTY_AA( t, m, s, e ) t *m;
+#endif
+
+ODCI_KUTY_BS( ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, TableSchema,         ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, TableName,           ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, ColName,             ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, ColTypName,          ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, ColTypSchema,        ODCIColInfo )
+  ODCI_KUTY_PA( OCIString, TablePartition,      ODCIColInfo )
+  ODCI_KUTY_SA( OCINumber, ColFlags,            ODCIColInfo )
+  ODCI_KUTY_SA( OCINumber, ColOrderPos,         ODCIColInfo )
+  ODCI_KUTY_SA( OCINumber, TablePartitionIden,  ODCIColInfo )
+  ODCI_KUTY_SA( OCINumber, TablePartitionTotal, ODCIColInfo )
+ODCI_KUTY_ES( ODCIColInfo )
+
+ODCI_KUTY_BS( ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, atomic,              ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, TableSchema,         ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, TableName,           ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, ColName,             ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, ColTypName,          ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, ColTypSchema,        ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, TablePartition,      ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, ColFlags,            ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, ColOrderPos,         ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, TablePartitionIden,  ODCIColInfo_ind )
+  ODCI_KUTY_SA( OCIInd, TablePartitionTotal, ODCIColInfo_ind )
+ODCI_KUTY_ES( ODCIColInfo_ind )
+
+ODCI_KUTY_BS( ODCIArgDesc )
+  ODCI_KUTY_SA( OCINumber, ArgType,             ODCIArgDesc )
+  ODCI_KUTY_PA( OCIString, TableName,           ODCIArgDesc )
+  ODCI_KUTY_PA( OCIString, TableSchema,         ODCIArgDesc )
+  ODCI_KUTY_PA( OCIString, ColName,             ODCIArgDesc )
+  ODCI_KUTY_PA( OCIString, TablePartitionLower, ODCIArgDesc )
+  ODCI_KUTY_PA( OCIString, TablePartitionUpper, ODCIArgDesc )
+  ODCI_KUTY_SA( OCINumber, Cardinality,         ODCIArgDesc )
+ODCI_KUTY_ES( ODCIArgDesc )
+
+ODCI_KUTY_BS( ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, atomic,              ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, ArgType,             ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, TableName,           ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, TableSchema,         ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, ColName,             ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, TablePartitionLower, ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, TablePartitionUpper, ODCIArgDesc_ind )
+  ODCI_KUTY_SA( OCIInd, Cardinality,         ODCIArgDesc_ind )
+ODCI_KUTY_ES( ODCIArgDesc_ind )
+
+ODCI_KUTY_BS( ODCIExtTableInfo )
+
+   ODCI_KUTY_PA( OCIString,       TableSchema,      ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIString,       TableName,        ODCIExtTableInfo )
+   ODCI_KUTY_AA( ODCIColInfoList, RefCols,          ODCIExtTableInfo, ODCIColInfo )
+   ODCI_KUTY_LA( OCIClobLocator,  AccessParmClob,   ODCIExtTableInfo )
+   ODCI_KUTY_LA( OCIBlobLocator,  AccessParmBlob,   ODCIExtTableInfo )
+   ODCI_KUTY_AA( ODCIArgDescList, Locations,        ODCIExtTableInfo, ODCIArgDesc )
+   ODCI_KUTY_AA( ODCIArgDescList, Directories,      ODCIExtTableInfo, ODCIArgDesc )
+   ODCI_KUTY_PA( OCIString,       DefaultDirectory, ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIString,       DriverType,       ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       OpCode,           ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       AgentNum,         ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       GranuleSize,      ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       Flag,             ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       SamplePercent,    ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       MaxDoP,           ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIRaw,          SharedBuf,        ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIString,       MTableName,       ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIString,       MTableSchema,     ODCIExtTableInfo )
+   ODCI_KUTY_SA( OCINumber,       TableObjNo,       ODCIExtTableInfo )
+   ODCI_KUTY_PA( OCIString,       AccessParmMod,    ODCIExtTableInfo )
+
+ODCI_KUTY_ES( ODCIExtTableInfo )
+
+ODCI_KUTY_BS( ODCIExtTableInfo_ind )
+
+   ODCI_KUTY_SA( OCIInd, _atomic,          ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, TableSchema,      ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, TableName,        ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, RefCols,          ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, AccessParmClob,   ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, AccessParmBlob,   ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, Locations,        ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, Directories,      ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, DefaultDirectory, ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, DriverType,       ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, OpCode,           ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, AgentNum,         ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, GranuleSize,      ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, Flag,             ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, SamplePercent,    ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, MaxDoP,           ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, SharedBuf,        ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, MTableName,       ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, MTableSchema,     ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, TableObjNo,       ODCIExtTableInfo_ind )
+   ODCI_KUTY_SA( OCIInd, AccessParmMod,    ODCIExtTableInfo_ind )
+
+ODCI_KUTY_ES( ODCIExtTableInfo_ind )
+
+/* Proj 47082: GranuleInfo is currently not in use. Granule info is subsumed
+ * by attributes in the xtArgs structure */
+ODCI_KUTY_BS( ODCIExtTableQCInfo )
+
+   ODCI_KUTY_SA( OCINumber,       NumGranules,            ODCIExtTableQCInfo )
+   ODCI_KUTY_SA( OCINumber,       NumLocations,           ODCIExtTableQCInfo )
+   ODCI_KUTY_AA( ODCIGranuleList, GranuleInfo,            ODCIExtTableQCInfo, OCINumber )
+   ODCI_KUTY_SA( OCINumber,       IntraSourceConcurrency, ODCIExtTableQCInfo )
+   ODCI_KUTY_SA( OCINumber,       MaxDoP,                 ODCIExtTableQCInfo )
+   ODCI_KUTY_PA( OCIRaw,          SharedBuf,              ODCIExtTableQCInfo )
+
+ODCI_KUTY_ES( ODCIExtTableQCInfo )
+
+ODCI_KUTY_BS( ODCIExtTableQCInfo_ind )
+
+   ODCI_KUTY_SA( OCIInd, _atomic,                ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, NumGranules,            ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, NumLocations,           ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, GranuleInfo,            ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, IntraSourceConcurrency, ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, MaxDoP,                 ODCIExtTableQCInfo_ind )
+   ODCI_KUTY_SA( OCIInd, SharedBuf,              ODCIExtTableQCInfo_ind )
+
+ODCI_KUTY_ES( ODCIExtTableQCInfo_ind )
+
+#ifdef KUTYXTTE_ORACLE
+KUTYSA( ODCIColInfo_ptr_t )
+KUTYSA( ODCIArgDesc_ptr_t )
+KUTYSA( OCINumber_ptr_t )
+#endif
+
+#endif /* ODCI_KUTYXTT */
+
+#ifdef ODCI_ORACLE_DEFINED
 
 struct ODCIFuncCallInfo
 {
@@ -401,7 +659,57 @@ struct ODCIFuncCallInfo_ind
 {
   struct ODCIColInfo_ind ColInfo;
 };
- 
+
+struct ODCITrustedColInfo
+{
+ oratext*  TableSchema;    /* QX_CINFO_TSCHEMA_POS */
+ oratext*  TableName;      /* QX_CINFO_TNAME_POS */
+ oratext*  ColName;        /* QX_CINFO_CNAME_POS */
+ oratext*  ColTypeName;    /* QX_CINFO_CTYPNAME_POS */
+ oratext*  ColTypeSchema;  /* QX_CINFO_CTYPSCHEMA_POS */
+ oratext*  TablePartition; /* QX_CINFO_TPART_POS */
+ ub1       ColFlags;          /* QX_CINFO_FLAGS_POS */
+ ub2       ColOrderBy;        /* QX_CINFO_ORDERBY_POS */
+ void*     TablePartitionIden;     /* QX_CINFO_TPIDEN_POS */
+ ub4       TablePartitionIdenLen;
+ void*     TablePartitionTotal;      /* QX_CINFO_TPTOTAL_POS */
+ ub4       TablePartitionTotalLen;
+ void*     cTableMut;
+ void*     TableMut;
+};
+typedef struct ODCITrustedColInfo ODCITrustedColInfo;
+
+struct ODCITrustedIndexInfo
+{
+   oratext*               IndexSchema;
+   oratext*               IndexName;
+   ODCITrustedColInfo**   IndexCols;
+   ub4                    NumIndexCols;
+   oratext*               IndexPartition;
+   ub2                    IndexInfoFlags;
+   ub2                    IndexParaDegree;
+   void*                  IndexPartitionIden;
+   ub4                    IndexPartitionIdenLen;
+   void*                  IndexPartitionTotal;
+   ub4                    IndexPartitionTotalLen;
+   void*                  IndexMut;
+};
+typedef struct ODCITrustedIndexInfo ODCITrustedIndexInfo;
+
+struct ODCITrustedUpdateInfo
+{
+  ODCITrustedIndexInfo *iinfo;
+  oratext              *rid;
+  ub4                   ridlen;
+  void                 *oldval;
+  void                 *newval;
+  ub1                   EnvFlags;
+  ub2                   CallProperty;
+  ub4                   DebugLevel;
+  sword                 CursorNum;
+};
+typedef struct ODCITrustedUpdateInfo ODCITrustedUpdateInfo;
+
 struct ODCIIndexInfo
 {
    OCIString*       IndexSchema;
@@ -594,31 +902,6 @@ struct ODCICost_ind
 };
 typedef struct ODCICost_ind ODCICost_ind;
  
-struct ODCIArgDesc
-{
-   OCINumber  ArgType;
-   OCIString* TableName;
-   OCIString* TableSchema;
-   OCIString* ColName;
-   OCIString* TablePartitionLower;
-   OCIString* TablePartitionUpper;
-   OCINumber  Cardinality;
-};
-typedef struct ODCIArgDesc ODCIArgDesc;
- 
-struct ODCIArgDesc_ind
-{
-   OCIInd atomic;
-   OCIInd ArgType;
-   OCIInd TableName;
-   OCIInd TableSchema;
-   OCIInd ColName;
-   OCIInd TablePartitionLower;
-   OCIInd TablePartitionUpper;
-   OCIInd Cardinality;
-};
-typedef struct ODCIArgDesc_ind ODCIArgDesc_ind;
- 
 struct ODCIStatsOptions
 {
    OCINumber Sample;
@@ -674,79 +957,6 @@ struct ODCIPartInfo_ind
 };
 typedef struct ODCIPartInfo_ind ODCIPartInfo_ind;
 
-/*---------- External Tables ----------*/
-struct ODCIExtTableInfo
-{
-   OCIString*       TableSchema;
-   OCIString*       TableName;
-   ODCIColInfoList* RefCols;
-   OCIClobLocator*  AccessParmClob;
-   OCIBlobLocator*  AccessParmBlob;
-   ODCIArgDescList* Locations;
-   ODCIArgDescList* Directories;
-   OCIString*       DefaultDirectory;
-   OCIString*       DriverType;
-   OCINumber        OpCode;
-   OCINumber        AgentNum;
-   OCINumber        GranuleSize;
-   OCINumber        Flag;
-   OCINumber        SamplePercent;
-   OCINumber        MaxDoP;
-   OCIRaw*          SharedBuf;
-   OCIString*       MTableName;
-   OCIString*       MTableSchema;
-   OCINumber        TableObjNo;
-};
-typedef struct ODCIExtTableInfo ODCIExtTableInfo;
-
-struct ODCIExtTableInfo_ind
-{
-   OCIInd _atomic;
-   OCIInd TableSchema;
-   OCIInd TableName;
-   OCIInd RefCols;
-   OCIInd AccessParmClob;
-   OCIInd AccessParmBlob;
-   OCIInd Locations;
-   OCIInd Directories;
-   OCIInd DefaultDirectory;
-   OCIInd DriverType;
-   OCIInd OpCode;
-   OCIInd AgentNum;
-   OCIInd GranuleSize;
-   OCIInd Flag;
-   OCIInd SamplePercent;
-   OCIInd MaxDoP;
-   OCIInd SharedBuf;
-   OCIInd MTableName;
-   OCIInd MTableSchema;
-   OCIInd TableObjNo;
-};
-typedef struct ODCIExtTableInfo_ind ODCIExtTableInfo_ind;
-
-struct ODCIExtTableQCInfo
-{
-   OCINumber        NumGranules;
-   OCINumber        NumLocations;
-   ODCIGranuleList* GranuleInfo;
-   OCINumber        IntraSourceConcurrency;
-   OCINumber        MaxDoP;
-   OCIRaw*          SharedBuf;
-};
-typedef struct ODCIExtTableQCInfo ODCIExtTableQCInfo;
-
-struct ODCIExtTableQCInfo_ind
-{
-   OCIInd _atomic;
-   OCIInd NumGranules;
-   OCIInd NumLocations;
-   OCIInd GranuleInfo;
-   OCIInd IntraSourceConcurrency;
-   OCIInd MaxDoP;
-   OCIInd SharedBuf;
-};
-typedef struct ODCIExtTableQCInfo_ind ODCIExtTableQCInfo_ind;
-
 /*********************************************************/
 /* Table Function Info types (used by ODCITablePrepare)  */
 /*********************************************************/
@@ -798,4 +1008,5 @@ typedef struct ODCITabFuncStats_ind ODCITabFuncStats_ind;
   ---------------------------------------------------------------------------*/
 
 
-#endif                                              /* ODCI_ORACLE */
+#undef ODCI_ORACLE_DEFINED
+#endif                                              /* ODCI_ORACLE_DEFINED */

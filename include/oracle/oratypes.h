@@ -1,6 +1,6 @@
 /* $RCSfile: oratypes.h $ $Date: 20-jul-00.13:44:19 
    ----------------------------------------------------------------------
- Copyright (c) 1982, 2008, Oracle and/or its affiliates. All rights reserved.
+ Copyright (c) 1982, 2017, Oracle and/or its affiliates. All rights reserved.
    ---------------------------------------------------------------------- */
  
 #ifndef ORATYPES
@@ -16,6 +16,11 @@
 #ifndef ORALIMITS
 # include <limits.h>
 # define ORALIMITS
+#endif
+
+#ifndef ORASTDARG
+# include <stdarg.h>
+# define ORASTDARG
 #endif
 
 #ifndef TRUE

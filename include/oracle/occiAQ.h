@@ -1,4 +1,5 @@
-/* Copyright (c) 2002, 2005, Oracle. All rights reserved.  */
+/* Copyright (c) 2002, 2013, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
@@ -36,6 +37,10 @@
 #ifndef OCCICOMMON_ORACLE
 #include <occiCommon.h>
 #endif
+
+#ifdef RAW 
+#undef RAW 
+#endif /* RAW */
 
 namespace oracle {
 namespace occi {

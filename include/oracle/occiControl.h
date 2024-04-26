@@ -1,4 +1,4 @@
-/* Copyright  Oracle Corporation 2000, 2006. All Rights Reserved. */ 
+/* Copyright  Oracle Corporation 2000, 2012. All Rights Reserved. */ 
  
 /* 
    NAME 
@@ -29,7 +29,7 @@
 #ifndef _olint   /* disable olint check */
 
 #ifndef OCCICONTROL_ORACLE
-# define OCCICONTROL_ORACLE
+#define OCCICONTROL_ORACLE
 
 #ifndef OCCICOMMON_ORACLE
 #include <occiCommon.h>
@@ -155,7 +155,8 @@ class MetaData
       ATTR_COL_ENC_SALT = OCI_ATTR_COL_ENC_SALT,
       ATTR_TABLE_ENC = OCI_ATTR_TABLE_ENC,
       ATTR_TABLE_ENC_ALG = OCI_ATTR_TABLE_ENC_ALG,
-      ATTR_TABLE_ENC_ALG_ID = OCI_ATTR_TABLE_ENC_ALG_ID
+      ATTR_TABLE_ENC_ALG_ID = OCI_ATTR_TABLE_ENC_ALG_ID,
+      ATTR_IS_NOT_PERSISTABLE_TYPE = OCI_ATTR_IS_NOT_PERSISTABLE_TYPE
      };
 
      enum ParamType
@@ -203,6 +204,13 @@ class MetaData
           ,LOCK_DELAYED = OCI_LOCK_DELAYED  
          }; 
 
+      enum ColumnAttrId
+      {
+        ATTR_COL_IS_IDENTITY = OCI_ATTR_COL_PROPERTY_IS_IDENTITY,
+        ATTR_COL_IS_GEN_ALWAYS = OCI_ATTR_COL_PROPERTY_IS_GEN_ALWAYS,
+        ATTR_COL_IS_GEN_BY_DEF_ON_NULL =
+             OCI_ATTR_COL_PROPERTY_IS_GEN_BY_DEF_ON_NULL
+      };
       MetaData(const MetaData &omd);
       unsigned int getAttributeCount() const 
       ;
@@ -213,6 +221,8 @@ class MetaData
       int getInt(MetaData::AttrId attrid) const 
       ;
       bool getBoolean(MetaData::AttrId attrid) const 
+      ;
+      bool getBoolean(MetaData::ColumnAttrId colAttrId) const
       ;
       unsigned int getUInt(MetaData::AttrId attrid) const 
       ;
@@ -270,7 +280,8 @@ class MetaData
         ARG_TYPARG_TYPRES_ATTR_COUNT = 20, 
         SCHEMA_ATTR_COUNT = 1,
         DATABASE_ATTR_COUNT = 13,
-        UNK_ATTR_COUNT = 0
+        UNK_ATTR_COUNT = 0,
+        COLUMN_ATTR_COUNT = 3
         };
 
   static const AttrId commonAttrId[COMMON_ATTR_COUNT];
@@ -305,6 +316,7 @@ class MetaData
   static const AttrId databaseAttrId[DATABASE_ATTR_COUNT];
   static const ociAttrType databaseAttrType[DATABASE_ATTR_COUNT];
 
+  static const ColumnAttrId columnAttrId[COLUMN_ATTR_COUNT];
   Ptr<MetaDataImpl> metaDataImplPtr;
   const OCIParam* paramhp;
   const ConnectionImpl* sesn;
@@ -330,6 +342,7 @@ class MetaData
   bool isListTypeAttribute(AttrId attrid,ub1 ptyp) const;
   boolean isInvalidAttrId(AttrId attrid,sb4* pos, 
             boolean* isTypeSpecificAttrPtr) const;
+  boolean isInvalidColumnAttrId(ColumnAttrId colAttrId) const;
   ociAttrType getValidAttrType(sb4 index, boolean isTypeSpecificAttr)
   const;
 
@@ -449,9 +462,11 @@ class Connection
             int (*notifyFn)(Environment *env, Connection *conn, void *ctx,
                       FailOverType foType, FailOverEventType foEvent),
          void *ctx) = 0;
+      virtual Bytes getLTXID() const = 0;
       virtual OCCI_STD_NAMESPACE::string getServerVersion() const =0;
       virtual UString getServerVersionUString() const =0;
       virtual void cancel() =0;
+      virtual OCCI_STD_NAMESPACE::string getServerRelease2() const =0;
 };
 
 class StatelessConnectionPool
@@ -738,7 +753,6 @@ class   Environment
   {
     DEFAULT = OCI_DEFAULT,
     OBJECT = OCI_OBJECT,
-    SHARED = OCI_SHARED,
     NO_USERCALLBACKS = OCI_NO_UCB,
     THREADED_MUTEXED = OCI_THREADED,
     THREADED_UNMUTEXED = OCI_THREADED | OCI_NO_MUTEX,
@@ -775,9 +789,9 @@ class   Environment
 
   static void releaseXAEnvironment(Environment *env);
   
-  static void getClientVersion( int &majorVersion, int &minorVersion, 
-                                int &updateNum, int &patchNum, 
-                                int &portUpdateNum );
+  static void getClientVersion( int &featureRelease, int &releaseUpdate, 
+                                int &releaseUpdateRevision, int &increment, 
+                                int &ext );
 
 
   virtual Connection * createConnection(
@@ -892,6 +906,11 @@ class   Environment
                 const UString &connectionclass, 
                 const Connection::Purity purity) =0;
 
+  virtual OCCI_STD_NAMESPACE::string getNLSLanguage() const =0;
+  virtual OCCI_STD_NAMESPACE::string getNLSTerritory() const =0;
+  virtual void setNLSLanguage(const OCCI_STD_NAMESPACE::string &lang) =0;
+  virtual void setNLSTerritory(const OCCI_STD_NAMESPACE::string &Terr) =0;
+
   private:
 
 };
@@ -948,6 +967,8 @@ class SQLException : public OCCI_STD_NAMESPACE::exception
   virtual OCCI_STD_NAMESPACE::string getNLSMessage(Environment *env) const;
   
   virtual UString getNLSUStringMessage(Environment *env) const;
+
+  virtual bool isRecoverable() const;  
 
  protected:
 
@@ -1074,6 +1095,11 @@ class Statement
                              Type type,
                              sb4 size, ub2 *length, sb2 *ind = NULL,
                              ub2 *rc = NULL) = 0; 
+  
+  virtual void setDataBuffer(unsigned int paramIndex, void *buffer,
+                             Type type,
+                             sb4 size, ub4 *length, sb2 *ind = NULL,
+                             ub2 *rc = NULL) = 0;
 
   virtual void setDataBufferArray(unsigned int paramIndex, void *buffer, 
                                   Type type,
@@ -1081,7 +1107,13 @@ class Statement
                                   sb4 elementSize,
                                   ub2 *elementLength, sb2 *ind = NULL,
                                   ub2 *rc = NULL) = 0;
-
+  
+  virtual void setDataBufferArray(unsigned int paramIndex, void *buffer,
+                                  Type type,
+                                  ub4 arraySize, ub4 *arrayLength,
+                                  sb4 elementSize,
+                                  ub4 *elementLength, sb2 *ind = NULL,
+                                  ub2 *rc = NULL) = 0;
   virtual void setCharSet(unsigned int paramIndex, 
   const OCCI_STD_NAMESPACE::string & charSet) = 0; 
   
@@ -1245,6 +1277,14 @@ class Statement
 
   virtual bool getBatchErrorMode( ) const =0;
 
+  virtual void setRowCountsOption(bool rowCountsOption) = 0 ;
+
+  virtual bool getRowCountsOption() const = 0;
+
+  virtual OCCI_STD_NAMESPACE::vector<oraub8> getDMLRowCounts() const = 0; 
+ 
+  virtual oraub8 getUb8RowCount() const = 0; 
+
 };
 
 
@@ -1328,6 +1368,10 @@ class ResultSet
   
   virtual void setDataBuffer(unsigned int colIndex, void *buffer, Type type,
                              sb4 size = 0, ub2 *length = NULL,
+                             sb2 *ind = NULL, ub2 *rc = NULL) = 0;
+  
+  virtual void setDataBuffer(unsigned int colIndex, void *buffer, Type type,
+                             sb4 size = 0, ub4 *length = NULL,
                              sb2 *ind = NULL, ub2 *rc = NULL) = 0;
 
   virtual void setCharSet(unsigned int colIndex, 

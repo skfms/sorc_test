@@ -1,12 +1,12 @@
-/* Copyright (c) 2006, 2010, Oracle and/or its affiliates. 
-All rights reserved. */
+/* Copyright (c) 2006, 2016, Oracle and/or its affiliates. 
+All rights reserved.*/
  
 /* 
    NAME 
-     ocixstream.h - OCI X-Stream APIs
+     ocixstream.h - OCI XStream APIs
 
    DESCRIPTION 
-     OCI APIs for X-Stream
+     OCI APIs for XStream
 
    RELATED DOCUMENTS 
  
@@ -19,6 +19,29 @@ All rights reserved. */
    NOTES
 
    MODIFIED   (MM/DD/YY)
+   huntran     08/01/16 - Flush wait for sync error handling
+   jathyaga    04/11/16 - Added comment for reserved OCI_ROWLCR flag.
+   thoang      11/13/15 - Add XOut attach flags for local undo and appcont
+   baswamy     07/21/15 - Bug# 21420307: Added comment for reserved 
+                          OCI_ROWLCR flags. 
+   romorale    07/19/14 - BigSCN.
+   huntran     11/07/13 - reserve OCI_ROWLCR flags
+   yurxu       12/12/12 - Bug-16000459: New flag for Object Col
+   huntran     08/15/12 - private column flag
+   vgerard     04/20/12 - comment for private LCR compare column flags
+   elu         03/06/12 - 32k
+   tianli      11/30/11 - add control lcr subcode macro
+   huntran     11/02/11 - attribute name for old owner and old name
+   thoang      12/04/11 - Add OCI_ROWLCR_IS_INFLIGHT_TXN
+   elu         11/30/11 - remove knxinXMLInfoSet
+   vchandar    10/10/11 - Bug 13058458
+   huntran     09/28/11 - make SessionSet apis public
+   tianli      05/13/11 - add pdb fields
+   elu         05/25/11 - remove xml schema
+   elu         04/20/11 - xmlschema
+   elu         03/15/11 - add current_user
+   tianli      03/08/11 - Add OCIXSTREAM_IN_DETACH_RESTART_INBOUND mode
+   tianli      03/03/11 - add control lcr
    thoang      03/10/10 - Add OCIXSTREAM_IN_ATTACH_RESTART_INBOUND mode
    thoang      12/28/09 - Update comments
    elu         01/07/10 - stmt lcr
@@ -60,7 +83,7 @@ All rights reserved. */
    juyuan      05/23/07 - XStream In
    thoang      11/13/06 - Add XStream Out methods
    thoang      11/13/06 - Add LCR getter methods 
-   nshodhan    05/12/06 - streams OCI APIs 
+   nshodhan    05/12/06 - xstream OCI APIs 
    nshodhan    05/12/06 - Creation
 
 */
@@ -97,6 +120,11 @@ extern "C" {
 #define OCI_LCR_ROW_CMD_LOB_ERASE       "LOB ERASE"
 #define OCI_LCR_ROW_CMD_ROLLBACK        "ROLLBACK"
 #define OCI_LCR_ROW_CMD_START_TX        "START_TX"      /* start transaction */
+#define OCI_LCR_ROW_CMD_CTRL_INFO       "CONTROL INFO"        /* contorl lcr */
+
+#define OCI_LCR_CTRLINFO_MEMORY_PRESSURE (32768)
+#define OCI_LCR_CTRLINFO_MISSING_LOGFILE (32769)
+#define OCI_LCR_CTRLINFO_UNSUPPORTED_LCR (32770)
 
 /* LCR Extra Attribute Name -- must match with values defined in knll.h */
 #define OCI_LCR_ATTR_THREAD_NO         "THREAD#"
@@ -109,16 +137,19 @@ extern "C" {
 /* below are non first class LCR field specific */
 #define OCI_LCR_ATTR_EDITION_NAME      "EDITION_NAME"
 #define OCI_LCR_ATTR_MESSAGE_TRACKING_LABEL "MESSAGE_TRACKING_LABEL"
-
-/* the maximum total number of attributes, total of extra attributes
- * plus non first class LCR field.  */
-#define OCI_LCR_MAX_ATTRIBUTES         8
+#define OCI_LCR_ATTR_CURRENT_USER      "CURRENT_USER"
+#define OCI_LCR_ATTR_ROOT_NAME         "ROOT_NAME"
+#define OCI_LCR_ATTR_OLD_OWNER         "OLD_OWNER"
+#define OCI_LCR_ATTR_OLD_ONAME         "OLD_ONAME"
 
 /* Row LCR column value types used in OCILCRRowColumnInfoGet/Set functions. */
 #define OCI_LCR_ROW_COLVAL_OLD         0                      /* OLD columns */
 #define OCI_LCR_ROW_COLVAL_NEW         1                     /*  NEW columns */
 
-/* maximum length for position */
+/* maximum length for position
+ * NOTE: This MUST be consistent with DefaultRowLCRCache.MaxLowWaterMarkLength
+ * in DefaultRowLCRCache.java
+ */
 #define OCI_LCR_MAX_POSITION_LEN        64
 
 /* maximum length for txid */
@@ -127,6 +158,7 @@ extern "C" {
 /* Valid column flags used in OCILCRRowColumnInfoSet, OCILCRRowColumnInfoGet,
  * OCILCRLobInfoSet, OCILCRLobInfoGet, OCIXStreamOutChunkReceive, 
  * OCIXStreamInChunkSend calls.
+ * NOTE: last byte reserved for private OCIP_LCR flags.
  */
 #define OCI_LCR_COLUMN_LOB_DATA     (0x00000001)    /* col contains lob data */
 #define OCI_LCR_COLUMN_LONG_DATA    (0x00000002)    /* col contains long data*/
@@ -142,7 +174,9 @@ extern "C" {
  * column list of an update LCR. 
  */
 #define OCI_LCR_COLUMN_UPDATED      (0x00000200)           /* col is updated */
-
+#define OCI_LCR_COLUMN_32K_DATA     (0x00000400)    /* col contains 32k data */
+#define OCI_LCR_COLUMN_OBJ_XML      (0x00000800)    /* col is UDT, rep as XML*/
+    
 /* Valid bit values for the flag parameter in the following APIS:
  * - OCILCRHeaderGet
  * - OCILCRHeaderSet
@@ -152,6 +186,21 @@ extern "C" {
                                                  /* (0x00000004) is RESERVED */
                                                  /* (0x00000008) is RESERVED */
 #define OCI_ROWLCR_SEQ_LCR          (0x00000010)             /* sequence lcr */
+
+/* LCR belongs to an inflight transaction, i.e., transaction was started
+ * before the outbound server's starting position.
+ */ 
+#define OCI_ROWLCR_IS_INFLIGHT_TXN  (0x00000020)  
+                                                 /* (0x00000040) is RESERVED */
+                                                 /* (0x00000080) is RESERVED */
+                                                 /* (0x00000100) is RESERVED */
+                                                 /* (0x00000200) is RESERVED */
+                                                 /* (0x00000400) is RESERVED */
+                                                 /* (0x00000800) is RESERVED */
+
+/* LCR replayed from application container sync statement. */
+#define OCI_LCR_APPCON_REPLAY       (0x00001000)  
+                                                 /* (0x00002000) is RESERVED */
 
 /* Valid bit values for flag parameter in the following APIs: 
  * - OCIXStreamOutChunkReceive & OCIXStreamOutLCRReceive 
@@ -166,7 +215,18 @@ extern "C" {
 /* Valid mode flag for OCIXStreamInFlush */
                                    /* Synchronous mode for OCIXStreamInFlush */
 #define OCIXSTREAM_IN_FLUSH_WAIT_FOR_COMPLETE  (0x00000001)
+/* internal use */
+#define OCIXSTREAM_IN_FLUSH_RESERVED_1         (0x00000002)
 
+/* SessionSet attributes */
+#define  OCIXSTREAM_SESSION_SET_MAX_PARAM_LEN   128
+#define  OCIXSTREAM_ATTR_ATTACH_TIMEOUT        "ATTACH_TIMEOUT_SECS"
+#define  OCIXSTREAM_ATTR_MAX_ATTACH_RETRIES    "MAX_ATTACH_RETRIES"
+
+/* BigSCN. These flags identify the LCRID position version */
+#define  OCI_LCRID_V1                           1
+#define  OCI_LCRID_V2                           2
+  
 /*---------------------------------------------------------------------------
                      PRIVATE TYPES AND CONSTANTS
   ---------------------------------------------------------------------------*/
@@ -180,13 +240,13 @@ extern "C" {
 NAME
   OCILCRNew - OCI LCR NEW
 DESCRIPTION
-  Create a new Streams LCR for the user specified duration and type
+  Create a new XStream LCR for the user specified duration and type
 PARAMETERS
   svchp        (IN)      - OCI service context
   errhp        (IN)      - OCI Error Handle
   duration     (IN)      - allocation duration for LCR memory
   lcrtype      (IN)      - LCR type (OCI_LCR_XROW / OCI_LCR_XDDL)
-  lcrp         (IN/OUT)  - Streams LCR. (*lcrp must be initialized to null.)
+  lcrp         (IN/OUT)  - XStream LCR. (*lcrp must be initialized to null.)
   mode         (IN)      - mode
 NOTES
   - memory will be based on the duration specified by the user
@@ -205,11 +265,11 @@ sword OCILCRNew(OCISvcCtx    *svchp,
 NAME
   OCILCRFree - OCI LCR FREE
 DESCRIPTION
-  Free Streams LCR specified by the user
+  Free XStream LCR specified by the user
 PARAMETERS
   svchp        (IN)      - OCI service context
   errhp        (IN)      - OCI Error Handle
-  lcrp         (IN/OUT)  - Streams LCR
+  lcrp         (IN/OUT)  - XStream LCR
   mode         (IN)      - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -226,7 +286,7 @@ sword OCILCRFree(OCISvcCtx    *svchp,
 NAME
   OCILCRHeaderSet - OCI LCR Set Header
 DESCRIPTION
-  Initialize elements of Streams LCR's header 
+  Initialize elements of XStream LCR's header 
 PARAMETERS
   svchp                 (IN) - OCI service context
   errhp                 (IN) - OCI Error Handle
@@ -264,7 +324,7 @@ PARAMETERS
   position              (IN) - position for LCR. Must be byte-comparable.
   position_len          (IN) - Length of position. Must be non-zero. 
   flag                  (IN) - LCR flag.
-  lcrp              (IN/OUT) - Streams LCR
+  lcrp              (IN/OUT) - XStream LCR
   mode                  (IN) - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -298,7 +358,7 @@ sword OCILCRHeaderSet(OCISvcCtx   *svchp,
 NAME
   OCILCRHeaderGet - OCI LCR Get Header
 DESCRIPTION
-  Get header information from Streams LCR 
+  Get header information from XStream LCR 
 PARAMETERS
   svchp                  (IN) - OCI service context
   errhp                  (IN) - OCI Error Handle
@@ -357,7 +417,7 @@ PARAMETERS
                                 position is non-null. Must be null if
                                 position is null.
   flag                  (OUT) - LCR flag. Optional.
-  lcrp                   (IN) - Streams LCR
+  lcrp                   (IN) - XStream LCR
   mode                   (IN) - mode (see NOTES)
 NOTES
   - Parameter src_time is optional. If specified the appropriate return 
@@ -436,7 +496,7 @@ PARAMETERS
   column_csid      (IN)    - Pointer to an array of column character set id.
                              The character set id is only required for
                              XMLType column; otherwise, the csid is ignored.
-  row_lcrp         (IN/OUT)- Streams Row LCR pointer
+  row_lcrp         (IN/OUT)- XStream Row LCR pointer
   mode             (IN)    - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -513,7 +573,7 @@ PARAMETERS
                              the size specified by array_size parameter. 
                              The column csid is returned only for XMLType 
                              column. 
-  row_lcrp         (IN)    - Streams Row LCR pointer
+  row_lcrp         (IN)    - XStream Row LCR pointer
   array_size       (IN)    - Size of each of above arrays   
   mode             (IN)    - mode (see NOTES)
 NOTES
@@ -613,7 +673,7 @@ PARAMETERS
   base_table_name_len (IN)- base table name length in bytes without NULL
                             terminator.
   flag               (IN) - DDL LCR flag.
-  ddl_lcrp       (IN/OUT) - Streams Ddl LCR pointer
+  ddl_lcrp       (IN/OUT) - XStream Ddl LCR pointer
   mode              (IN)  - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -694,7 +754,7 @@ PARAMETERS
                                terminator.
   flag                 (OUT) - DDL LCR flag. Optional, data not returned if 
                                NULL.
-  ddl_lcrp             (IN)  - Streams DDL LCR pointer
+  ddl_lcrp             (IN)  - XStream DDL LCR pointer
   mode                 (IN)  - mode (for future extention - not used currently)
 RETURNS
   OCI_SUCCESS or OCI_ERROR.
@@ -745,7 +805,7 @@ PARAMETERS
                             (OCI_IND_NULL/OCI_IND_NOTNULL).
   attr_alensp     (IN)    - Pointer to an array of actual attribute lengths in 
                             bytes.
-  lcrp            (IN/OUT)- Streams (Row/DDL) LCR pointer
+  lcrp            (IN/OUT)- XStream (Row/DDL) LCR pointer
   mode            (IN)    - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -788,7 +848,7 @@ PARAMETERS
                            (OCI_IND_NULL/OCI_IND_NOTNULL).
   attr_alensp    (IN/OUT)- Pointer to an array of actual attribute lengths in 
                            bytes.
-  lcrp           (IN)    - Streams (Row/DDL) LCR pointer
+  lcrp           (IN)    - XStream (Row/DDL) LCR pointer
   array_size     (IN)    - Size of each of above arrays, use at least the size
                            defined by OCI_LCR_MAX_ATTRIBUTES
   mode           (IN)    - mode
@@ -1114,7 +1174,7 @@ PARAMETERS
                            This is the same as the 'new_length' parameter in 
                            OCILobTrim or the 'amtp' parameter in OCILobErase 
                            functions.
-  row_lcrp       (IN)    - Streams Row LCR pointer
+  row_lcrp       (IN)    - XStream Row LCR pointer
   mode           (IN)    - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -1160,7 +1220,7 @@ PARAMETERS
                            This is the same as the 'new_length' parameter in 
                            OCILobTrim or the 'amtp' parameter in OCILobErase 
                            functions.
-  row_lcrp       (IN/OUT)- Streams Row LCR pointer
+  row_lcrp       (IN/OUT)- XStream Row LCR pointer
   mode           (IN)    - mode
 NOTES
   - For now, specify OCI_DEFAULT for mode
@@ -1178,13 +1238,13 @@ sword OCILCRLobInfoSet(OCISvcCtx   *svchp,
                        ub4          mode);
 
 /*---------------------------------------------------------------------------
-                        STREAMS XSTREAM OUT FUNCTIONS
+                        XSTREAM OUT FUNCTIONS
   ---------------------------------------------------------------------------*/
 
 /*------------------------- OCIXStreamOutAttach -----------------------------*/
 /*
    NAME
-       OCIXStreamOutAttach - OCI Attach to XStreams Out
+       OCIXStreamOutAttach - OCI Attach to XStream Out
    DESCRIPTION
        Given the name of the server process, attach to the outbound server.
    PARAMETERS
@@ -1225,6 +1285,12 @@ sword OCIXStreamOutAttach (OCISvcCtx *svchp, OCIError *errhp,
 #define OCIXSTREAM_OUT_ATTACH_RESERVED_1              (0x00000001) 
 /* Application is in charge of freeing the LCRs from the outbound server */ 
 #define OCIXSTREAM_OUT_ATTACH_APP_FREE_LCR            (0x00000002) 
+
+/* Capture app container statements */
+#define OCIXSTREAM_OUT_ATTACH_APP_CONTAINER           (0x00000100) 
+
+/* Request for extended transaction id format */ 
+#define OCIXSTREAM_OUT_ATTACH_EXTENDED_TXID           (0x00000200) 
 
 /*---------------------- OCIXStreamOutProcessedLWMSet ----------------------*/
 /*
@@ -1565,7 +1631,7 @@ sword OCIXStreamOutChunkReceive(OCISvcCtx *svchp, OCIError *errhp,
 sword OCIXStreamOutDetach (OCISvcCtx *svchp, OCIError *errhp, ub4 mode);
 
 /*---------------------------------------------------------------------------
-                        STREAMS XSTREAM IN FUNCTIONS
+                        XSTREAM IN FUNCTIONS
   ---------------------------------------------------------------------------*/
 
 /*------------------------ OCIXStreamInAttach -------------------------------*/
@@ -1873,6 +1939,10 @@ sword OCIXStreamInDetach(
        ub2       *processed_low_position_len,
        ub4        mode);
 
+/*--------- Valid modes for OCIXStreamInDetach -------------*/
+/* Restart inbound server when calling detach. */
+#define OCIXSTREAM_IN_DETACH_RESTART_INBOUND          (0x00000001)
+
 /*--------------------- OCIXStreamInProcessedLWMGet -------------------------*/
 /*
    NAME
@@ -2015,6 +2085,182 @@ sword OCIXStreamInErrorGet(
        ub2        txn_id_bufsize, 
        ub2       *txn_id_len);
 
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCIXStreamOutSessionSet - OCI XStream Out Session Set attribute
+DESCRIPTION
+  Sets session attributes for XStream Out
+PARAMETERS
+  svchp                   (IN) - OCI service context
+  errhp                   (IN) - OCI Error Handle
+  attribute_name          (IN) - Attribute name
+  attribute_name_len      (IN) - Attribute name length
+  attribute_value         (IN) - Attribute value
+  attribute_value_len     (IN) - Attribute value length
+  attribute_dty           (IN) - Attribute dty
+  mode                    (IN) - mode
+RETURNS
+  OCI_SUCCESS if successful, OCI_ERROR otherwise
+NOTES
+------------------------------------------------------------------------------=
+*/
+sword OCIXStreamOutSessionSet(OCISvcCtx   *svchp,
+                              OCIError    *errhp,
+                              oratext     *attribute_name,
+                              ub2          attribute_name_len,
+                              void        *attribute_value,
+                              ub2          attribute_value_len,
+                              ub2          attribute_dty,
+                              ub4          mode);
+
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCIXStreamInSessionSet - OCI XStream In Session Set attribute
+DESCRIPTION
+  Sets session attributes for XStream In
+PARAMETERS
+  svchp                   (IN) - OCI service context
+  errhp                   (IN) - OCI Error Handle
+  attribute_name          (IN) - Attribute name
+  attribute_name_len      (IN) - Attribute name length
+  attribute_value         (IN) - Attribute value
+  attribute_value_len     (IN) - Attribute value length
+  attribute_dty           (IN) - Attribute dty
+  mode                    (IN) - mode
+RETURNS
+  OCI_SUCCESS if successful, OCI_ERROR otherwise
+NOTES
+------------------------------------------------------------------------------=
+*/
+sword OCIXStreamInSessionSet(OCISvcCtx   *svchp,
+                             OCIError    *errhp,
+                             oratext     *attribute_name,
+                             ub2          attribute_name_len,
+                             void        *attribute_value,
+                             ub2          attribute_value_len,
+                             ub2          attribute_dty,
+                             ub4          mode);
+
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCILCRComparePosition
+FUNCTION
+  Will compare two LCRID values. These LCRIDs can have different versions.
+  The provided position must be a valid LCRID for 12.2.
+PARAMETERS
+  svchp             -  (IN) OCI service context.
+  errhp             -  (IN) OCI Error handle.
+  position1         -  (IN) The first position to compare.
+  position1_len     -  (IN) The first position's length. 
+  position2         -  (IN) The second position to compare.
+  position2_len     -  (IN) The second position's length.
+  mode              -  (IN) Mode flags.
+  result            -  (OUT) 0 if both values are equal,
+                             -1 if position1  is less than position2,
+                             1 if position1 is greater than position 2.
+RETURNS
+  OCI_SUCCESS if the conversion succeeds, OCI_ERROR otherwise.
+NOTES
+  Supported modes:
+    0 - Complete byte comparison.
+    2 - Smaller length is smaller value
+------------------------------------------------------------------------------=
+*/
+  sword OCILCRComparePosition(OCISvcCtx  *svchp,
+                              OCIError   *errhp,
+                              ub1        *position1,
+                              ub2         position1_len,
+                              ub1        *position2,
+                              ub2         position2_len,
+                              ub4         mode,
+                              sb2        *result);
+
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCILCRConvertPosition
+FUNCTION
+  Converts an LCRID value to the specified version (1 or 2). The provided LCRID
+  must be valid for 12.2.
+PARAMETERS
+  svchp             -  (IN) OCI service context.
+  errhp             -  (IN) OCI Error handle.
+  in_position       -  (IN) The position to be converted.
+  in_position_len   -  (IN) The length of the position to be converted.
+  out_position      -  (OUT) The converted position's value.
+  out_position_len  -  (OUT) The converted postition's length.
+  to_version        -  (IN) The LCRID version we want to convert to.
+  mode              -  (IN) Mode flags.
+RETURNS
+  OCI_SUCCESS if the conversion succeeds.
+  OCI_SUCCESS if the LCRID is already in the desired version.
+  OCI_ERROR if the conversion fails.
+NOTES
+------------------------------------------------------------------------------=
+*/
+  sword OCILCRConvertPosition(OCISvcCtx  *svchp,
+                              OCIError   *errhp,
+                              ub1        *in_position,
+                              ub2         in_position_len,
+                              ub1        *out_position,
+                              ub2        *out_position_len,
+                              ub1         to_version,
+                              ub4         mode);
+
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCILCRSCNToPosition2
+FUNCTION
+  Converts SCN to position (LCRID), version 1 and version 2 compatible.
+PARAMETERS
+  svchp             -  (IN) OCI service context.
+  errhp             -  (IN) OCI Error handle.
+  position          -  (OUT) The converted position's value.
+  position_len      -  (OUT) The converted position's length.
+  scn               -  (IN) The SCN to be stored in position.
+  version           -  (IN) The converted position's LCRID version.
+  mode              -  (IN) Mode flags.
+RETURNS
+  OCI_SUCCESS if the conversion succeeds, OCI_ERROR otherwise.
+NOTES
+  The given SCN is assumed to be the commit SCN. 
+------------------------------------------------------------------------------=
+*/
+  sword OCILCRSCNToPosition2(OCISvcCtx  *svchp,
+                             OCIError   *errhp,
+                             ub1        *position,
+                             ub2        *position_len,
+                             OCINumber  *scn,
+                             ub1         version,
+                             ub4         mode);
+
+/*
+------------------------------------------------------------------------------=
+NAME
+  OCILCRGetLCRIDVersion
+FUNCTION
+  Determines the LCRID Version of a given position.
+PARAMETERS
+  svchp             -  (IN) OCI service context.
+  errhp             -  (IN) OCI Error handle.
+  position          -  (IN) The position.
+  position_len      -  (IN) The position's length.
+  version           -  (OUT) LCRID version.
+RETURNS
+  OCI_SUCCESS if the LCRID version is valid, OCI_ERROR otherwise.
+NOTES
+------------------------------------------------------------------------------=
+*/
+  sword OCILCRGetLCRIDVersion(OCISvcCtx  *svchp,
+                              OCIError   *errhp,
+                              ub1        *position,
+                              ub2         position_len,
+                              ub1        *version);
+    
 /*---------------------------------------------------------------------------
                           INTERNAL FUNCTIONS
   ---------------------------------------------------------------------------*/
