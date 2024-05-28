@@ -1,0 +1,15 @@
+digraph test_struct {
+    node [shape=plain];
+
+    struct [ label=<
+        <table border="0" cellborder="1" cellspacing="0">
+            <tr  cellpadding="0"><td colspan="8">Byte</td></tr>
+            <tr  cellpadding="0">
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td>
+            </tr>
+            <tr>
+                <td colspan="4">C1</td><td  colspan="2">C2</td><td  colspan="2">C3</td>
+            </tr>
+        </table>
+    >];
+}

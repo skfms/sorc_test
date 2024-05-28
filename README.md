@@ -12,6 +12,8 @@
       └┬ src
         ├─ DB                       # DB
         │  ├─ mysql                    # myqql - c library 소스
+        │  ├─ occi                     # Oracle occi library 소스
+        │  ├─ otl                      # OTL library 소스
         │  └─ pqxx                     # PostgreSQL - libpqxx library 소스
         ├─ JSON                     # JSON
         │  ├─ jsoncpp                  # jsoncpp library 소스

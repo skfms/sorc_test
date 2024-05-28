@@ -1,0 +1,22 @@
+@startuml
+|Main|
+start
+  :SomeClass constructor called;
+  :buildTreeListOpts called;
+if (hasOptions()) then (yes)
+else (no)
+    :require DataLoader;
+    :call getData;
+|#Cyan|DataLoader|
+ :getData;
+if (hasDataInLocalStorage()) then (yes)
+else (no)
+|DataLoader|
+    :XHR fetch options;
+    :callback;
+endif
+|Main|
+endif
+  :finalize;
+stop
+@enduml

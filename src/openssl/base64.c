@@ -1,4 +1,4 @@
-// g++ -o base64 -I/home/leegs/com_vender/openssl/include -L/home/leegs/com_vender/openssl/lib -l crypto base64.c
+// g++ -o base64 base64.c -l crypto
 
 #include <unistd.h>
 #include <stdio.h>
@@ -63,14 +63,13 @@ char *dec_base64
 	return buffer;
 }
 
-
 /*
 int main()
 {
 	const char *p = "Base64 Test ! 34534rgdfsgdfg5546456gdfgdsfg453456654dfgdfgasdfgdasa sefsdfsdaf 44343t ";
 
-	char *enc = base64enc((const unsigned char *)p, strlen(p));
-	char *dec = base64dec((unsigned char *)enc, strlen(enc));
+	char *enc = enc_base64((const unsigned char *)p, strlen(p));
+	char *dec = dec_base64((unsigned char *)enc, strlen(enc));
 	
 	fprintf(stdout,
 		"plant text [%s]\n"
@@ -85,4 +84,3 @@ int main()
 	return 0;
 }
 */
-

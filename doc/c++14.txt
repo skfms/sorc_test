@@ -1,6 +1,29 @@
 C++ 14
 
 #############################
+# Binary
+
+int b = 0b110;			// 6
+int b = 0b1111'1111;	// ' 를 사용해서 자릿수 표시 가능
+
+
+#############################
+# Lambda - auto 사용 가능
+
++++ C++11
+auto intAdd = [] (int a, int b) -> int { return a+b; }
+auto floatAdd = [] (float a, float b) -> float { return a+b; }
+
+int iA = intAdd(10, 20);
+float fA = intAdd(1.1f, 2.2f);
+
++++ C++14
+auto add = [] (auto a, auto b) { return a+b; }
+
+int iA = add(10, 20);
+float fA = add(1.1f, 2.2f);
+
+#############################
 # for
 
 char buf[4] = { 'a', 'b', 'c', 'd' };
@@ -79,6 +102,7 @@ int main()
 
 #############################
 # auto
+
   > 반드시 초기화 필수
   > 가독성을 위해 auto *, auto & 사용
 
