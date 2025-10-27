@@ -1,29 +1,29 @@
 # Test Source
 
-## ±¸¼º
+## êµ¬ì„±
 
-    ¦¡¦¨ sorc_test
-      ¦§¦¡ comm_cpp               # c++ °øÅë ¼Ò½º ¶óÀÌºê·¯¸®
-      ¦§¦¡ doc                    # ¹®¼­
-      ¦§¦¡ include                # c/c++ Header
-      ¦§¦¡ lib                    # c/c++ Library
-      ¦§¦¡ perl                   # Perl Script
-      ¦§¦¡ shell                  # Shell Script
-      ¦¦¦¨ src
-        ¦§¦¡ DB                       # DB
-        ¦¢  ¦§¦¡ mysql                    # myqql - c library ¼Ò½º
-        ¦¢  ¦§¦¡ occi                     # Oracle occi library ¼Ò½º
-        ¦¢  ¦§¦¡ otl                      # OTL library ¼Ò½º
-        ¦¢  ¦¦¦¡ pqxx                     # PostgreSQL - libpqxx library ¼Ò½º
-        ¦§¦¡ JSON                     # JSON
-        ¦¢  ¦§¦¡ jsoncpp                  # jsoncpp library ¼Ò½º
-        ¦¢  ¦¦¦¡ rapidjson                # rapidjson library ¼Ò½º
-        ¦§¦¡ c                        # c ¼Ò½º
-        ¦§¦¡ cpp                      # c++ ¼Ò½º
-        ¦§¦¡ msgque                   # Message Queue ¼Ò½º
-        ¦§¦¡ net                      # ³×Æ®¿öÅ© ¼Ò½º
-        ¦§¦¡ openssl                  # openssl ¼Ò½º
-        ¦¢  ¦¦¦¡ ssl                      # ssl ¼Ò½º
-        ¦§¦¡ random                   # ³­¼ö ¼Ò½º
-        ¦¦¦¡ spdlog                   # spdlog library ¼Ò½º
+    â”€â”¬ sorc_test
+      â”œâ”€ comm_cpp               # c++ ê³µí†µ ì†ŒìŠ¤ ë¼ì´ë¸ŒëŸ¬ë¦¬
+      â”œâ”€ doc                    # ë¬¸ì„œ
+      â”œâ”€ include                # c/c++ Header
+      â”œâ”€ lib                    # c/c++ Library
+      â”œâ”€ perl                   # Perl Script
+      â”œâ”€ shell                  # Shell Script
+      â””â”¬ src
+        â”œâ”€ DB                       # DB
+        â”‚  â”œâ”€ mysql                    # myqql - c library ì†ŒìŠ¤
+        â”‚  â”œâ”€ occi                     # Oracle occi library ì†ŒìŠ¤
+        â”‚  â”œâ”€ otl                      # OTL library ì†ŒìŠ¤
+        â”‚  â””â”€ pqxx                     # PostgreSQL - libpqxx library ì†ŒìŠ¤
+        â”œâ”€ JSON                     # JSON
+        â”‚  â”œâ”€ jsoncpp                  # jsoncpp library ì†ŒìŠ¤
+        â”‚  â””â”€ rapidjson                # rapidjson library ì†ŒìŠ¤
+        â”œâ”€ c                        # c ì†ŒìŠ¤
+        â”œâ”€ cpp                      # c++ ì†ŒìŠ¤
+        â”œâ”€ msgque                   # Message Queue ì†ŒìŠ¤
+        â”œâ”€ net                      # ë„¤íŠ¸ì›Œí¬ ì†ŒìŠ¤
+        â”œâ”€ openssl                  # openssl ì†ŒìŠ¤
+        â”‚  â””â”€ ssl                      # ssl ì†ŒìŠ¤
+        â”œâ”€ random                   # ë‚œìˆ˜ ì†ŒìŠ¤
+        â””â”€ spdlog                   # spdlog library ì†ŒìŠ¤
 
